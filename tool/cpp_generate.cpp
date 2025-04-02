@@ -1,0 +1,198 @@
+#include "cpp_generate.h"
+
+namespace aquarius
+{
+	cpp_generator::cpp_generator(const std::string& file_ename, const std::string& standard)
+		: namespace_queue_()
+		, file_name_(file_ename)
+		, standard_(standard)
+	{
+		if (!create_file_stream())
+		{
+			throw std::runtime_error("create generate file stream failed!");
+		}
+	}
+
+	cpp_generator::~cpp_generator()
+	{
+		generate_namespace_end();
+	}
+
+	void cpp_generator::generate(const statement& state)
+	{
+		int result = syntax_error;
+
+		auto type = md5(state.type_str);
+
+		switch (type)
+		{
+		case 0:
+			break;
+		case 1:
+			generate_namespace_begin(state);
+			break;
+		case 2:
+			generate_enum(state);
+			break;
+		case 3:
+			generate_message(state);
+
+			req_queue_.push({ state.name_str, state.sequence });
+			break;
+		case 4:
+			{
+				generate_message(state);
+
+				resp_queue_.push({ state.name_str, state.sequence });
+			}
+			break;
+		case 14:
+			generate_message(state);
+			break;
+		default:
+			{
+				generate_single(state);
+			}
+			break;
+		}
+	}
+
+	bool cpp_generator::create_file_stream()
+	{
+		auto file_name = file_name_.substr(0, file_name_.find_last_of("."));
+		if (file_name_.empty())
+			return false;
+
+		file_name += ".proto.hpp";
+
+		ofs_.open(file_name, std::ios::out | std::ios::binary);
+		if (!ofs_.is_open())
+			return false;
+
+		return true;
+	}
+
+	void cpp_generator::generate_namespace_begin(const statement& state)
+	{
+		ofs_ << std::endl << "namespace " << state.type_str << " {";
+
+		namespace_queue_.push('}');
+	}
+
+	void cpp_generator::generate_namespace_end()
+	{
+		while (!namespace_queue_.empty())
+		{
+			ofs_ << namespace_queue_.front();
+			namespace_queue_.pop();
+		}
+	}
+
+	void cpp_generator::generate_enum(const statement& state)
+	{
+		if (standard_ != "c++03" || standard_ != "c++98")
+		{
+			ofs_ << std::endl << "enum class " << state.name_str;
+		}
+		else
+		{
+			ofs_ << std::endl << "enum " << state.name_str;
+		}
+
+		ofs_ << std::endl << "{";
+
+		for (auto& s : state.seqs)
+		{
+			if (s.name_str.empty())
+				continue;
+
+			ofs_ << std::endl << s.name_str << ",";
+		}
+
+		ofs_.seekp(-1, std::ios::cur);
+
+		ofs_ << std::endl <<  "};";
+	}
+
+	void cpp_generator::generate_message(const statement& state)
+	{
+		int result = syntax_error;
+
+		ofs_ << std::endl << "struct " << state.name_str;
+		ofs_ << std::endl << "{" << std::endl;
+		for (auto& s : state.seqs)
+		{
+			if (s.type_str.empty())
+				continue;
+
+			ofs_ << convert_type(s.type_str) << " " << s.name_str << ";\n";
+		}
+
+		ofs_ << "};";
+
+		generate_template(state);
+	}
+
+	void cpp_generator::generate_template(const statement& state)
+	{
+		ofs_ << std::endl << "template <>";
+		ofs_ << std::endl << "struct reflect<" << state.name_str << ">";
+		ofs_ << std::endl << "{";
+		ofs_ << std::endl << "constexpr static std::string_view topic()";
+		ofs_ << std::endl << "{";
+		ofs_ << std::endl << "    return \"" << state.name_str << "\"sv;";
+		ofs_ << std::endl << "}";
+		ofs_ << std::endl;
+		ofs_ << std::endl
+			 << "constexpr static static std::array<std::string_view, " << state.seqs.size() << "> fields()";
+		ofs_ << std::endl << "{";
+		ofs_ << std::endl << "    return {";
+		for (auto& s : state.seqs)
+		{
+			if (s.name_str.empty())
+				continue;
+
+			ofs_ << "\"" << s.name_str << "\"sv, ";
+		}
+
+		ofs_.seekp(-2, std::ios::cur);
+
+		ofs_ << "};";
+
+		ofs_ << std::endl << "}";
+
+		ofs_ << std::endl << "};";
+	}
+
+	void cpp_generator::generate_single(const statement& state)
+	{
+		ofs_ << std::endl << convert_type(state.type_str) << " " << state.name_str << ";\n";
+	}
+
+	std::string cpp_generator::convert_type(const std::string& type_str)
+	{
+		std::string result = type_str;
+		if (type_str == "int32")
+		{
+			result = "int32_t";
+		}
+		else if (type_str == "int64")
+		{
+			result = "int64_t";
+		}
+		else if (type_str == "uint32")
+		{
+			result = "uint32_t";
+		}
+		else if (type_str == "uint64")
+		{
+			result = "uint64_t";
+		}
+		else if (type_str == "string")
+		{
+			result = "std::string";
+		}
+
+		return result;
+	}
+} // namespace aquarius
