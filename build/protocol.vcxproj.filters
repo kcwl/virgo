@@ -19,6 +19,9 @@
     <Filter Include="头文件\serialize">
       <UniqueIdentifier>{0bda6b57-0f8d-4dd4-afcc-72d1ae30ca16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\message">
+      <UniqueIdentifier>{11473cb6-a6c8-4251-855d-081111a2436a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\reflection.hpp">
@@ -41,6 +44,12 @@
     </ClInclude>
     <ClInclude Include="..\include\reflection\reflect.hpp">
       <Filter>头文件\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\proto_header.hpp">
+      <Filter>头文件\message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

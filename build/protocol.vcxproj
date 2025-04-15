@@ -130,6 +130,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\message.hpp" />
+    <ClInclude Include="..\include\message\proto_header.hpp" />
     <ClInclude Include="..\include\reflection.hpp" />
     <ClInclude Include="..\include\reflection\fake_object.hpp" />
     <ClInclude Include="..\include\reflection\member_bind_helper.hpp" />
