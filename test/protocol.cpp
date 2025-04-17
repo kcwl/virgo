@@ -1,7 +1,7 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
 #include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
-#include <serialize.hpp>
+#include <message.hpp>
 
 struct person
 {
@@ -15,6 +15,20 @@ struct person
 	std::vector<uint8_t> info;
 	std::string name;
 	std::vector<int> orders;
+
+	void swap(person& other)
+	{
+		std::swap(sex, other.sex);
+		std::swap(addr, other.addr);
+		std::swap(age, other.age);
+		std::swap(telephone, other.telephone);
+		std::swap(score, other.score);
+		std::swap(hp, other.hp);
+		std::swap(mana, other.mana);
+		std::swap(info, other.info);
+		std::swap(name, other.name);
+		std::swap(orders, other.orders);
+	}
 };
 
 template <>
@@ -89,4 +103,27 @@ BOOST_AUTO_TEST_CASE(binary)
 	person p2 = aquarius::binary<boost::asio::streambuf>::template from<person>(ar);
 
 	BOOST_CHECK_EQUAL(p1, p2);
+}
+
+BOOST_AUTO_TEST_CASE(request)
+{
+	using person_request = aquarius::basic_request<boost::asio::streambuf, person, 0, 1001>;
+
+	person_request req{};
+	req.body().sex = true;
+	req.body().addr = 2;
+	req.body().age = 15;
+	req.body().telephone = 15230214856;
+	req.body().score = 100;
+	req.body().hp = 200;
+	req.body().mana = 300;
+	req.body().info = { 1, 1, 1, 1, 1, 1 };
+	req.body().name = "John";
+	req.body().orders = { 1, 2, 3, 4, 5 };
+
+	boost::asio::streambuf ar{};
+	req.to_binary(ar);
+
+	person_request req1{};
+	req.from_binary(ar);
 }

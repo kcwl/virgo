@@ -45,11 +45,14 @@
     <ClInclude Include="..\include\reflection\reflect.hpp">
       <Filter>头文件\reflection</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\message\proto_header.hpp">
+    <ClInclude Include="..\include\message\header.hpp">
       <Filter>头文件\message</Filter>
     </ClInclude>
     <ClInclude Include="..\include\message.hpp">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\basic_message.hpp">
+      <Filter>头文件\message</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
