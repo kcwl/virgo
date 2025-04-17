@@ -1,4 +1,5 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
+#include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <serialize.hpp>
 
@@ -16,7 +17,7 @@ struct person
 	std::vector<int> orders;
 };
 
-template<>
+template <>
 struct aquarius::reflect<person>
 {
 	using value_type = person;
@@ -28,54 +29,44 @@ struct aquarius::reflect<person>
 
 	constexpr static std::array<std::string_view, 10> fields()
 	{
-		return {"sex"sv,"addr"sv,"age"sv,"telephone"sv, "score"sv, "hp"sv, "mana"sv, "info"sv, "name"sv, "orders"sv};
+		return {
+			"sex"sv, "addr"sv, "age"sv, "telephone"sv, "score"sv, "hp"sv, "mana"sv, "info"sv, "name"sv, "orders"sv
+		};
 	}
 };
 
-class archive
+bool operator==(const person& lhs, const person& rhs)
 {
-public:
-	archive()
-	{
-		buffer_.resize(4096);
-	}
-public:
-	void put(uint8_t value)
-	{
-		buffer_[wpos_++] = value;
-	}
+	return lhs.sex == rhs.sex && lhs.addr == rhs.addr && lhs.age == rhs.age && lhs.telephone == rhs.telephone &&
+		   lhs.score == rhs.score && lhs.hp == rhs.hp && lhs.mana && rhs.mana && lhs.info == rhs.info &&
+		   lhs.name == rhs.name && lhs.orders == rhs.orders;
+}
 
-	uint8_t get()
-	{
-		return buffer_[rpos_++];
-	}
+std::ostream& operator<<(std::ostream& os, const person& p)
+{
+	os << p.sex << "," << p.addr << "," << p.age << "," << p.telephone << "," << p.score << "," << p.hp << "," << p.mana
+	   << ", [";
 
-	void fill(uint32_t count, uint8_t value)
+	for (auto& v : p.info)
 	{
-
+		os << v << ",";
 	}
 
-	auto begin()
+	os.seekp(-1, std::ios::cur);
+
+	os << "]," << p.name << ", [";
+
+	for (auto& v : p.info)
 	{
-		return buffer_.begin();
+		os << v << ",";
 	}
 
-	auto end()
-	{
-		return buffer_.end();
-	}
+	os.seekp(-1, std::ios::cur);
 
-	template<typename _Ty>
-	void get(_Ty& value)
-	{
+	os << "]\n";
 
-	}
-
-private:
-	int wpos_;
-	int rpos_;
-	std::vector<uint8_t> buffer_;
-};
+	return os;
+}
 
 BOOST_AUTO_TEST_CASE(binary)
 {
@@ -87,13 +78,15 @@ BOOST_AUTO_TEST_CASE(binary)
 	p1.score = 100;
 	p1.hp = 200;
 	p1.mana = 300;
-	p1.info = { 1,1,1,1,1,1 };
+	p1.info = { 1, 1, 1, 1, 1, 1 };
 	p1.name = "John";
-	p1.orders = { 1,2,3,4,5 };
+	p1.orders = { 1, 2, 3, 4, 5 };
 
-	archive ar;
+	boost::asio::streambuf ar{};
 
-	person p2;
+	aquarius::binary<boost::asio::streambuf>::to(ar, p1);
 
-	aquarius::to_binary(ar, p1);
+	person p2 = aquarius::binary<boost::asio::streambuf>::template from<person>(ar);
+
+	BOOST_CHECK_EQUAL(p1, p2);
 }
