@@ -1,26 +1,10 @@
 #pragma once
 #include <boost/core/empty_value.hpp>
-#include <message/header.hpp>
+#include <detail/concepts.hpp>
+#include <detail/header.hpp>
 
 namespace aquarius
 {
-	template <typename T>
-	using reference_t = T&;
-
-	template <typename T>
-	concept standard_layout_t = requires(T value) {
-		std::is_standard_layout_v<std::remove_cvref_t<T>>&& std::is_trivial_v<std::remove_cvref_t<T>>;
-
-		value.swap(std::declval<reference_t<T>>());
-	};
-
-	template <typename T>
-	concept standard_header_t = requires(T value) {
-		value.to_binary(std::declval<reference_t<archive>>());
-
-		value.from_binary(std::declval<reference_t<archive>>());
-	};
-
 	template <standard_header_t Header, standard_layout_t Body, std::size_t Number>
 	class basic_message : public Header, public boost::empty_value<Body>
 	{
@@ -30,6 +14,7 @@ namespace aquarius
 
 		using base_body_type = boost::empty_value<body_type>;
 
+	public:
 		inline constexpr static std::size_t proto = Number;
 
 	public:
@@ -73,11 +58,13 @@ namespace aquarius
 	public:
 		bool operator==(const basic_message& other) const
 		{
-			return *header() == *other.header() && body() == other.body();
+			return basic_message::proto == other.proto  && *header() == *other.header() && body() == other.body();
 		}
 
 		std::ostream& operator<<(std::ostream& os) const
 		{
+			os << proto;
+
 			os << *header();
 
 			os << body();
@@ -147,6 +134,8 @@ namespace aquarius
 
 			try
 			{
+				binary::to(completed_buffer_, proto);
+
 				header()->to_binary(completed_buffer_);
 
 				binary::to<body_type>(completed_buffer_, this->get());
@@ -167,6 +156,11 @@ namespace aquarius
 
 			try
 			{
+				std::size_t proto_number = binary::from<std::size_t>(completed_buffer_);
+
+				if (proto_number != proto)
+					return false;
+
 				header()->from_binary(completed_buffer_);
 
 				this->get() = binary::from<body_type>(completed_buffer_);
@@ -184,7 +178,7 @@ namespace aquarius
 	protected:
 		virtual void skip_error()
 		{
-			//archive{}.swap(this->completed_buffer_);
+			// archive{}.swap(this->completed_buffer_);
 		}
 
 	private:

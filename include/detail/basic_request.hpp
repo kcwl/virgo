@@ -1,5 +1,5 @@
 #pragma once
-#include <message/basic_message.hpp>
+#include <detail/basic_message.hpp>
 
 namespace aquarius
 {

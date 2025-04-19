@@ -13,55 +13,52 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\reflection">
-      <UniqueIdentifier>{f6965955-2c0d-4457-9ca8-115ed6a52a5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\serialize">
-      <UniqueIdentifier>{0bda6b57-0f8d-4dd4-afcc-72d1ae30ca16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\message">
-      <UniqueIdentifier>{11473cb6-a6c8-4251-855d-081111a2436a}</UniqueIdentifier>
+    <Filter Include="头文件\detail">
+      <UniqueIdentifier>{9f506efe-3b3c-4e78-aed2-10e3d42abad5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\reflection.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\serialize.hpp">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\serialize\binary.hpp">
-      <Filter>头文件\serialize</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\serialize\json.hpp">
-      <Filter>头文件\serialize</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\reflection\fake_object.hpp">
-      <Filter>头文件\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\reflection\member_bind_helper.hpp">
-      <Filter>头文件\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\reflection\reflect.hpp">
-      <Filter>头文件\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\message\header.hpp">
-      <Filter>头文件\message</Filter>
     </ClInclude>
     <ClInclude Include="..\include\message.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\message\basic_message.hpp">
-      <Filter>头文件\message</Filter>
+    <ClInclude Include="..\include\detail\archive.hpp">
+      <Filter>头文件\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\message\basic_request.hpp">
-      <Filter>头文件\message</Filter>
+    <ClInclude Include="..\include\detail\basic_message.hpp">
+      <Filter>头文件\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\archive.hpp">
-      <Filter>头文件</Filter>
+    <ClInclude Include="..\include\detail\basic_request.hpp">
+      <Filter>头文件\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\message\basic_response.hpp">
-      <Filter>头文件\message</Filter>
+    <ClInclude Include="..\include\detail\basic_response.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\binary.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\fake_object.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\header.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\json.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\member_bind_helper.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\reflect.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\reflection.hpp">
+      <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\detail\concepts.hpp">
+      <Filter>头文件\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

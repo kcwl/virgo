@@ -1,4 +1,4 @@
 #pragma once
-#include <message/basic_message.hpp>
-#include <message/basic_request.hpp>
-#include <message/basic_response.hpp>
+#include <detail/basic_message.hpp>
+#include <detail/basic_request.hpp>
+#include <detail/basic_response.hpp>

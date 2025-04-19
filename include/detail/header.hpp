@@ -1,6 +1,6 @@
 #pragma once
 #include <algorithm>
-#include <archive.hpp>
+#include <detail/archive.hpp>
 #include <cstdint>
 #include <serialize.hpp>
 #include <iostream>

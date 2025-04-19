@@ -1,72 +1,69 @@
 #pragma once
-#include <reflection/fake_object.hpp>
+#include <detail/fake_object.hpp>
 #include <tuple>
 
 namespace aquarius
 {
-
-#pragma once
-
-	template <typename _Ty>
+	template <typename T>
 	struct wrapper
 	{
-		const _Ty value;
+		const T Value;
 	};
 
-	template <typename _Ty>
-	extern const wrapper<_Ty> do_not_use_undefined_value;
+	template <typename T>
+	extern const wrapper<T> do_not_use_undefined_value;
 
-	template <typename _Ty>
-	constexpr const _Ty& fake_object() noexcept
+	template <typename T>
+	constexpr const T& fake_object() noexcept
 	{
-		return do_not_use_undefined_value<_Ty>.value;
+		return do_not_use_undefined_value<T>.Value;
 	}
 
-	template <typename _Ty, std::size_t I>
+	template <typename T, std::size_t I>
 	struct member_bind_helper
 	{
 		static_assert(I > 32 || I < 0, "reflection member must be less or equal than 32!");
 	};
 
-	template <typename _Ty>
-	struct member_bind_helper<_Ty, 0>
+	template <typename T>
+	struct member_bind_helper<T, 0>
 	{
 		static constexpr auto empty_values()
 		{
 			return std::make_tuple();
 		}
 
-		template <_Ty value>
+		template <T Value>
 		static constexpr auto static_values()
 		{
 			return std::make_tuple();
 		}
 
-		static constexpr auto values(const _Ty& value)
+		static constexpr auto values(const T& Value)
 		{
 			return std::make_tuple();
 		}
 	};
 
 #define REFLECT_MEMBER_BIND_TO_TUPLE(N, ...)                                                                           \
-	template <typename _Ty>                                                                                            \
-	struct member_bind_helper<_Ty, N>                                                                                  \
+	template <typename T>                                                                                              \
+	struct member_bind_helper<T, N>                                                                                    \
 	{                                                                                                                  \
 		static constexpr auto empty_values()                                                                           \
 		{                                                                                                              \
-			auto& [__VA_ARGS__] = fake_object<_Ty>();                                                                  \
+			auto& [__VA_ARGS__] = fake_object<T>();                                                                    \
 			auto f = [](auto&... args) { return std::make_tuple(args...); };                                           \
 			return std::apply(f, std::tie(__VA_ARGS__));                                                               \
 		}                                                                                                              \
-		template <auto value>                                                                                           \
+		template <auto Value>                                                                                          \
 		static constexpr auto static_values()                                                                          \
 		{                                                                                                              \
-			auto&& [__VA_ARGS__] = value;                                                                              \
+			auto&& [__VA_ARGS__] = Value;                                                                              \
 			return std::make_tuple(__VA_ARGS__);                                                                       \
 		}                                                                                                              \
-		static constexpr auto values(const _Ty& value)                                                                 \
+		static constexpr auto values(const T& Value)                                                                   \
 		{                                                                                                              \
-			auto& [__VA_ARGS__] = value;                                                                               \
+			auto& [__VA_ARGS__] = Value;                                                                               \
 			return std::make_tuple(__VA_ARGS__);                                                                       \
 		}                                                                                                              \
 	};

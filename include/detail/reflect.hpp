@@ -7,7 +7,7 @@ using namespace std::string_view_literals;
 
 namespace aquarius
 {
-	template <typename _Ty>
+	template <typename T>
 	struct reflect
 	{
 		constexpr static std::string_view topic()
@@ -21,6 +21,6 @@ namespace aquarius
 		}
 	};
 
-	template <typename _Ty>
-	concept reflactable = requires { typename reflect<std::remove_cvref_t<_Ty>>::value_type; };
+	template <typename T>
+	concept reflactable = requires { typename reflect<std::remove_cvref_t<T>>::value_type; };
 } // namespace aquarius
