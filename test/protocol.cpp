@@ -98,18 +98,20 @@ BOOST_AUTO_TEST_CASE(binary)
 
 	boost::asio::streambuf ar{};
 
-	aquarius::binary<boost::asio::streambuf>::to(ar, p1);
+	aquarius::binary::to(ar, p1);
 
-	person p2 = aquarius::binary<boost::asio::streambuf>::template from<person>(ar);
+	person p2 = aquarius::binary::from<person>(ar);
 
 	BOOST_CHECK_EQUAL(p1, p2);
 }
 
 BOOST_AUTO_TEST_CASE(request)
 {
-	using person_request = aquarius::basic_request<boost::asio::streambuf, person, 0, 1001>;
+	using person_request = aquarius::basic_request<person, 1001>;
 
 	person_request req{};
+	req.header()->total_package = 1;
+	req.header()->pack_seq = 1;
 	req.body().sex = true;
 	req.body().addr = 2;
 	req.body().age = 15;
@@ -121,9 +123,15 @@ BOOST_AUTO_TEST_CASE(request)
 	req.body().name = "John";
 	req.body().orders = { 1, 2, 3, 4, 5 };
 
-	boost::asio::streambuf ar{};
-	req.to_binary(ar);
+	aquarius::archive ar{};
+
+	req.disperse(ar, 4096);
 
 	person_request req1{};
-	req.from_binary(ar);
+
+	req1.collect(ar);
+
+	req1.complete();
+
+	BOOST_CHECK_EQUAL(req, req1);
 }

@@ -4,201 +4,190 @@
 
 namespace aquarius
 {
+	template <typename T>
+	using reference_t = T&;
 
-    template<typename T>
-    using reference_t = T&;
+	template <typename T>
+	concept standard_layout_t = requires(T value) {
+		std::is_standard_layout_v<std::remove_cvref_t<T>>&& std::is_trivial_v<std::remove_cvref_t<T>>;
 
-    template<typename T>
-    concept standard_layout_t = requires (T value)
-    {
-        std::is_standard_layout_v<std::remove_cvref_t<T>>&& std::is_trivial_v<std::remove_cvref_t<T>>;
+		value.swap(std::declval<reference_t<T>>());
+	};
 
-        value.swap(std::declval<reference_t<T>>());
-    };
+	template <typename T>
+	concept standard_header_t = requires(T value) {
+		value.to_binary(std::declval<reference_t<archive>>());
 
-    template<typename T>
-    concept standard_header_t = requires(T value)
-    {
-        value.template to_binary<archive_t<class Archive>>(std::declval<reference_t<Archive>>());
+		value.from_binary(std::declval<reference_t<archive>>());
+	};
 
-        //value.template from_binary<archive_t<class Archive>>(std::declval<reference_t<Archive>>());
-    };
+	template <standard_header_t Header, standard_layout_t Body, std::size_t Number>
+	class basic_message : public Header, public boost::empty_value<Body>
+	{
+		using header_type = Header;
 
+		using body_type = Body;
 
-    inline constexpr std::size_t rpc_module = 0;
+		using base_body_type = boost::empty_value<body_type>;
 
-    template<archive_t Archive, standard_header_t Header, standard_layout_t Body, std::size_t Type, std::size_t Number>
-    class basic_message : public Header, public boost::empty_value<Body>
-    {
-        using header_type = Header;
-        using body_type = Body;
-        using base_body_type = boost::empty_value<body_type>;
+		inline constexpr static std::size_t proto = Number;
 
-        inline constexpr static std::size_t poll_type = Type;
+	public:
+		basic_message()
+			: header_type()
+			, base_body_type()
+		{}
 
-        inline constexpr static std::size_t proto = Number;
+		template <typename... Args>
+		basic_message(Args&&... args)
+			: header_type()
+			, base_body_type(std::forward<Args>(args)...)
+		{}
 
-    public:
-        using archive_type = Archive;
+		basic_message(const basic_message&) = default;
 
-    public:
-        basic_message()
-            : header_type()
-            , base_body_type()
-        {
+		basic_message& operator=(const basic_message&) = default;
 
-        }
+		basic_message(basic_message&& other) noexcept
+			: basic_message()
+		{
+			header_type{ other }.swap(*this);
 
-        template<typename... Args>
-        basic_message(Args&&... args)
-            : header_type()
-            , base_body_type(std::forward<Args>(args)...)
-        {
+			body_type{ other.get() }.swap(this->get());
+		}
 
-        }
+		basic_message& operator=(basic_message&& other) noexcept
+		{
+			if (this != std::addressof(other))
+			{
+				header_type{ other }.swap(*this);
 
-        basic_message(const basic_message&) = default;
+				body_type{ other.get() }.swap(this->get());
+			}
 
-        basic_message& operator=(const basic_message&) = default;
+			return *this;
+		}
 
-        basic_message(basic_message&& other) noexcept
-            : basic_message()
-        {
-            header_type{ other }.swap(*this);
+		virtual ~basic_message() = default;
 
-            body_type{ other.get() }.swap(this->get());
-        }
+	public:
+		bool operator==(const basic_message& other) const
+		{
+			return *header() == *other.header() && body() == other.body();
+		}
 
-        basic_message& operator=(basic_message&& other) noexcept
-        {
-            if (this != std::addressof(other))
-            {
-                header_type{ other }.swap(*this);
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			os << *header();
 
-                body_type{ other.get() }.swap(this->get());
-            }
+			os << body();
 
-            return *this;
-        }
+			return os;
+		}
 
-        virtual ~basic_message() = default;
+	public:
+		const header_type* header() const
+		{
+			return this;
+		}
 
-    public:
-        header_type* header()
-        {
-            return this;
-        }
+		header_type* header()
+		{
+			return this;
+		}
 
-        body_type& body()
-        {
-            return this->get();
-        }
+		body_type& body()
+		{
+			return this->get();
+		}
 
-        void to_binary(archive_type& ar)
-        {
-            try
-            {
-                 header().template to_binary(ar);
+		const body_type& body() const
+		{
+			return this->get();
+		}
 
-                 binary<archive_type>::template to<body_type>(ar, this->get());
-            }
-            catch (...)
-            {
-                skip_error(ar);
-            }
-        }
+		auto buffer() -> archive&&
+		{
+			return std::move(completed_buffer_);
+		}
 
-        void from_binary(archive_type& ar)
-        {
-            try
-            {
-                 header().template from_binary(ar);
+		std::size_t collect(archive& ar)
+		{
+			return this->completed_buffer_.sputn((archive::char_type*)ar.data().data(), ar.size());
+		}
 
-                 this->get() = binary<archive_type>::template from<body_type>(ar);
-            }
-            catch (...)
-            {
-                skip_error(ar);
-            }
-        }
+		bool complete()
+		{
+			return this->from_binary();
+		}
 
-    protected:
-        virtual void skip_error(archive_type& ar) = 0;
+		bool disperse(archive& ar, std::size_t unit_size)
+		{
+			if (!this->to_binary())
+				return false;
 
+			std::size_t buffer_size = this->completed_buffer_.size();
 
-    protected:
-        archive_type completed_buffer_;
-    };
+			while (buffer_size != 0)
+			{
+				auto disperse_size = std::min<std::size_t>(unit_size, buffer_size);
 
-    template<archive_t Archive, standard_layout_t Body, std::size_t Type, std::size_t Number>
-    class basic_request : public basic_message<Archive, basic_request_header, Body, Type, Number>
-    {
-        using base_type = basic_message<Archive, basic_request_header, Body, Type, Number>;
+				ar.sputn((archive::char_type*)this->completed_buffer_.data().data(), disperse_size);
 
-        using typename base_type::archive_type;
+				buffer_size -= disperse_size;
+			}
 
-    public:
-        basic_request() = default;
+			return true;
+		}
 
-    public:
-        void collect(archive_type& ar)
-        {
-            this->completed_buffer_.sputn(ar.data(), ar.size());
-        }
+	private:
+		bool to_binary()
+		{
+			bool result = true;
 
-        void complete()
-        {
-            this->from_binary(this->completed_buffer_);
-        }
+			try
+			{
+				header()->to_binary(completed_buffer_);
 
-    protected:
-        virtual void skip_error(archive_type& ar) override
-        {
-            if (this->header()->total_length == 0)
-                return;
+				binary::to<body_type>(completed_buffer_, this->get());
+			}
+			catch (...)
+			{
+				skip_error();
 
-            ar.consume(std::min<int32_t>(this->header()->total_length, static_cast<int>(ar.size())));
-        }
-    };
+				result = false;
+			}
 
-    template<archive_t Archive, standard_layout_t Body, std::size_t Type, std::size_t Number>
-    class basic_response : public basic_message<Archive, basic_response_header, Body, Type, Number>
-    {
-        using base_type = basic_message<Archive, basic_request_header, Body, Type, Number>;
+			return result;
+		}
 
-        using typename base_type::archive_type;
+		bool from_binary()
+		{
+			bool result = true;
 
-    public:
-        basic_response() = default;
+			try
+			{
+				header()->from_binary(completed_buffer_);
 
-    public:
-        void disperse(std::vector<archive_type>& ar, std::size_t unit_size)
-        {
-            this->to_binary(this->completed_buffer_);
+				this->get() = binary::from<body_type>(completed_buffer_);
+			}
+			catch (...)
+			{
+				skip_error();
 
-            std::size_t buffer_size = this->completed_buffer_.size();
+				result = false;
+			}
 
-            while (buffer_size != 0)
-            {
-                ar.emplace_back();
-                auto& back = ar.back();
+			return result;
+		}
 
-                auto disperse_size = std::min<std::size_t>(unit_size, buffer_size);
+	protected:
+		virtual void skip_error()
+		{
+			//archive{}.swap(this->completed_buffer_);
+		}
 
-                back.sputn(this->completed_buffer_.data(), disperse_size);
-
-                buffer_size -= disperse_size;
-            }
-        }
-
-    protected:
-        virtual void skip_error(archive_type& ar) override
-        {
-            if (this->header().total_length == 0)
-                return;
-
-            ar.cosume(std::min<int32_t>(this->header().total_length, ar.size()));
-        }
-    };
-
-}
+	private:
+		archive completed_buffer_;
+	};
+} // namespace aquarius

@@ -130,8 +130,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\archive.hpp" />
     <ClInclude Include="..\include\message.hpp" />
     <ClInclude Include="..\include\message\basic_message.hpp" />
+    <ClInclude Include="..\include\message\basic_request.hpp" />
+    <ClInclude Include="..\include\message\basic_response.hpp" />
     <ClInclude Include="..\include\message\header.hpp" />
     <ClInclude Include="..\include\reflection.hpp" />
     <ClInclude Include="..\include\reflection\fake_object.hpp" />

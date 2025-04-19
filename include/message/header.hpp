@@ -1,50 +1,47 @@
 #pragma once
 #include <algorithm>
+#include <archive.hpp>
 #include <cstdint>
 #include <serialize.hpp>
+#include <iostream>
 
 namespace aquarius
 {
 	class basic_header
 	{
 	public:
-		//template <archive_t _Archive>
-		template <typename _Archive>
-		void to_binary(_Archive& ar)
+		bool operator==(const basic_header& other) const
 		{
-			binary<_Archive>::template to(ar, total_length);
-			binary<_Archive>::template to(ar, compress_length);
-			binary<_Archive>::template to(ar, crc32);
-			binary<_Archive>::template to(ar, total_package);
-			binary<_Archive>::template to(ar, pack_seq);
+			return total_package == other.total_package && pack_seq == other.pack_seq;
 		}
 
-		template <archive_t _Archive>
-		void from_binary(_Archive& ar)
+		std::ostream& operator<<(std::ostream& os) const
 		{
-			total_length = binary<_Archive>::template from<uint32_t>(ar);
-			compress_length = binary<_Archive>::template from<uint32_t>(ar);
-			crc32 = binary<_Archive>::template from<uint32_t>(ar);
-			total_package = binary<_Archive>::template from<uint32_t>(ar);
-			pack_seq = binary<_Archive>::template from<uint32_t>(ar);
+			os << "header: " << total_package << "\t" << pack_seq << "\t";
+
+			return os;
+		}
+
+	public:
+		void to_binary(archive& ar)
+		{
+			binary::to(ar, total_package);
+			binary::to(ar, pack_seq);
+		}
+
+		void from_binary(archive& ar)
+		{
+			total_package = binary::from<uint32_t>(ar);
+			pack_seq = binary::from<uint32_t>(ar);
 		}
 
 		void swap(basic_header& other)
 		{
-			std::swap(total_length, other.total_length);
-			std::swap(compress_length, other.compress_length);
-			std::swap(crc32, other.crc32);
 			std::swap(total_package, other.total_package);
 			std::swap(pack_seq, other.pack_seq);
 		}
 
 	public:
-		uint32_t total_length;
-
-		uint32_t compress_length;
-
-		uint32_t crc32;
-
 		uint32_t total_package;
 
 		uint32_t pack_seq;
@@ -55,20 +52,33 @@ namespace aquarius
 		using base_type = basic_header;
 
 	public:
-		template <archive_t _Archive>
-		void to_binary(_Archive& ar)
+		bool operator==(const basic_request_header& other) const
+		{
+			return base_type::operator==(other) && type == other.type;
+		}
+
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			base_type::operator<<(os);
+
+			os << type;
+
+			return os;
+		}
+
+	public:
+		void to_binary(archive& ar)
 		{
 			base_type::to_binary(ar);
 
-			binary<_Archive>::to(ar, type);
+			binary::to(ar, type);
 		}
 
-		template <archive_t _Archive>
-		void from_binary(_Archive& ar)
+		void from_binary(archive& ar)
 		{
 			base_type::from_binary(ar);
 
-			type = binary<_Archive>::template from<uint32_t>(ar);
+			type = binary::from<uint32_t>(ar);
 		}
 
 		void swap(basic_request_header& other)
@@ -87,20 +97,33 @@ namespace aquarius
 		using base_type = basic_header;
 
 	public:
-		template <archive_t _Archive>
-		void to_binary(_Archive& ar)
+		bool operator==(const basic_response_header& other) const
+		{
+			return base_type::operator==(other) && result == other.result;
+		}
+
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			base_type::operator<<(os);
+
+			os << result;
+
+			return os;
+		}
+
+	public:
+		void to_binary(archive& ar)
 		{
 			base_type::to_binary(ar);
 
-			binary<_Archive>::to(ar, result);
+			binary::to(ar, result);
 		}
 
-		template <archive_t _Archive>
-		void from_binary(_Archive& ar)
+		void from_binary(archive& ar)
 		{
 			base_type::from_binary(ar);
 
-			result = binary<_Archive>::template from<uint32_t>(ar);
+			result = binary::from<uint32_t>(ar);
 		}
 
 		void swap(basic_response_header& other)
@@ -114,3 +137,17 @@ namespace aquarius
 		uint32_t result;
 	};
 } // namespace aquarius
+
+std::ostream& operator<<(std::ostream& os, const aquarius::basic_request_header& other)
+{
+	other << os;
+
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const aquarius::basic_response_header& other)
+{
+	other << os;
+
+	return os;
+}

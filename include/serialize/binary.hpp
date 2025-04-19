@@ -1,9 +1,8 @@
 #pragma once
-#include <concepts>
-#include <limits>
 #include <reflection.hpp>
 #include <string>
 #include <vector>
+#include <archive.hpp>
 
 namespace aquarius
 {
@@ -44,13 +43,6 @@ namespace aquarius
 	template <typename _Ty>
 	concept boolean_t = std::same_as<std::remove_cvref_t<_Ty>, bool>;
 
-	template <typename _Ty>
-	concept archive_t = requires(_Ty value) {
-		typename _Ty::char_type;
-
-		std::is_base_of_v<std::streambuf, std::remove_cvref_t<_Ty>>;
-	};
-
 	template<typename _Ty>
 	struct convert_stream_value_type
 	{
@@ -63,17 +55,16 @@ namespace aquarius
 		using type = uint8_t;
 	};
 
-	template <archive_t _Archive>
 	struct binary
 	{
-		using archive_t = _Archive;
+		using archive_type = archive;
 
-		using value_type = typename archive_t::char_type;
+		using value_type = archive_type::char_type;
 
 		inline constexpr static std::size_t value_size = sizeof(value_type);
 
 		template <boolean_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			uint8_t temp{};
 
@@ -83,7 +74,7 @@ namespace aquarius
 		}
 
 		template <uinteger_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			auto temp = value;
 
@@ -101,7 +92,7 @@ namespace aquarius
 		}
 
 		template <integer_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			auto temp = (value << 1) ^ (value >> (sizeof(_Ty) * 8 - 1));
 
@@ -109,7 +100,7 @@ namespace aquarius
 		}
 
 		template <repeated_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			to(ar, static_cast<uint64_t>(value.size()));
 
@@ -120,7 +111,7 @@ namespace aquarius
 		}
 
 		template <string_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			to(ar, static_cast<uint64_t>(value.size()));
 
@@ -128,13 +119,13 @@ namespace aquarius
 		}
 
 		template <float_t _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			ar.sputn((value_type*)&value, sizeof(_Ty));
 		}
 
 		template <reflactable _Ty>
-		static void to(archive_t& ar, const _Ty& value)
+		static void to(archive_type& ar, const _Ty& value)
 		{
 			auto to_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
 			{ (to(ar, std::get<I>(member_bind_helper<_Ty, member_count<_Ty>()>::values(value))), ...); };
@@ -143,7 +134,7 @@ namespace aquarius
 		}
 
 		template <uinteger_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			using convert_type = typename convert_stream_value_type<value_type>::type;
 			convert_type c{};
@@ -170,7 +161,7 @@ namespace aquarius
 		}
 
 		template <integer_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			_Ty value = static_cast<_Ty>(from<uint64_t>(ar));
 
@@ -178,7 +169,7 @@ namespace aquarius
 		}
 
 		template <float_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			_Ty value;
 
@@ -188,7 +179,7 @@ namespace aquarius
 		}
 
 		template <repeated_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			_Ty value{};
 			std::size_t size = from<std::size_t>(ar);
@@ -207,11 +198,12 @@ namespace aquarius
 		}
 
 		template <string_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			_Ty value{};
 
-			using value_type = archive_t::char_type;
+			using value_type = archive_type::char_type;
+
 			std::size_t size = from<std::size_t>(ar);
 
 			value.resize(size);
@@ -222,7 +214,7 @@ namespace aquarius
 		}
 
 		template <boolean_t _Ty>
-		static auto from(archive_t& ar) -> _Ty
+		static auto from(archive_type& ar) -> _Ty
 		{
 			_Ty value{};
 
@@ -232,7 +224,7 @@ namespace aquarius
 		}
 
 		template <reflactable _Ty>
-		static auto from(archive_t& ar)
+		static auto from(archive_type& ar)
 		{
 			auto from_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
 			{ return _Ty{ from<element_t<I, _Ty>>(ar)... }; };

@@ -54,6 +54,15 @@
     <ClInclude Include="..\include\message\basic_message.hpp">
       <Filter>头文件\message</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\message\basic_request.hpp">
+      <Filter>头文件\message</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\archive.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\message\basic_response.hpp">
+      <Filter>头文件\message</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test\protocol.cpp">
