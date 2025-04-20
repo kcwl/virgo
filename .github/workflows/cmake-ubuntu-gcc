@@ -35,6 +35,9 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBOOST_SHARED_FLAG=true
         -S ${{ github.workspace }}
+      
+    - name: check gcc version
+      run: gcc --version
      
     - name: make
       run: make
