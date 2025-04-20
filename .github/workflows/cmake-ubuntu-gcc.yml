@@ -49,8 +49,8 @@ jobs:
         -DBOOST_SHARED_FLAG=true
         -S ${{ github.workspace }}
 
-    - name: make
-      run: make
+    - name: build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
       
     - name: test
-      run: make test
+      run: ctest --build-config ${{ matrix.build_type }}
