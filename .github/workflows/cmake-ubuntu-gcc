@@ -2,9 +2,9 @@ name: Ubuntu-gcc
 
 on:
   push:
-    branches: [ "action-yaml" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "action-yaml" ]
+    branches: [ "master" ]
 
 jobs:
   build:
