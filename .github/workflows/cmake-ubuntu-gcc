@@ -2,14 +2,14 @@ name: Ubuntu-gcc
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "action-yaml" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.os}}
 
     strategy:
       matrix:
@@ -20,6 +20,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: set reusable strings
+      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
     - name: install boost-1.88
       shell: bash
       run: |
