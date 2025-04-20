@@ -12,14 +12,18 @@ jobs:
     runs-on: ${{matrix.os}}
 
     strategy:
-      matrix:
+       matrix:
         os: [ubuntu-lastest]
         build_type: [Release]
         c_compiler: [gcc]
         cpp_compiler: [g++]
+        include:
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
