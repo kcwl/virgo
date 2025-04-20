@@ -1,8 +1,8 @@
-name: C/C++ CI
+name: Ubuntu Test
 
 on:
   push:
-    branches: [ "action-ubuntu" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -21,8 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
+    - name: install boost-1.88
+      shell: bash
+      run: |
+         sudo add-apt-repository ppa:mhier/libboost-latest
+         sudo apt update
+         sudo apt-get install -y libboost1.88-all-dev
     - name: make
       run: make
     - name: make check
