@@ -21,12 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: install boost-1.88
+    - name: install boost-1.83
       shell: bash
       run: |
          sudo add-apt-repository ppa:mhier/libboost-latest
          sudo apt update
-         sudo apt-get install -y libboost1.88-all-dev
+         sudo apt-get install -y libboost1.83-all-dev
     - name: make
       run: make
     - name: make check
