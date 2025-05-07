@@ -34,3 +34,8 @@
 # vs
 x64/
 .vs/
+proto_define/base/__pycache__/__init__.cpython-313.pyc
+proto_define/base/__pycache__/basic_define.cpython-313.pyc
+proto_define/struct_desc/__pycache__/user.cpython-313.pyc
+proto_define/struct_desc/__pycache__/__init__.cpython-313.pyc
+proto_define/__pycache__/proto_user.cpython-313.pyc
