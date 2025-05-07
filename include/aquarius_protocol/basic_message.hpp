@@ -1,7 +1,7 @@
 #pragma once
 #include <boost/core/empty_value.hpp>
-#include <detail/concepts.hpp>
-#include <detail/header.hpp>
+#include <aquarius_protocol/concepts.hpp>
+#include <aquarius_protocol/header.hpp>
 
 namespace aquarius
 {

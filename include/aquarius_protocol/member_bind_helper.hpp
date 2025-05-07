@@ -1,5 +1,5 @@
 #pragma once
-#include <detail/fake_object.hpp>
+#include <aquarius_protocol/fake_object.hpp>
 #include <tuple>
 
 namespace aquarius

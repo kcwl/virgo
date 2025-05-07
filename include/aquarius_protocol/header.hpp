@@ -1,8 +1,7 @@
 #pragma once
 #include <algorithm>
-#include <detail/archive.hpp>
+#include <aquarius_protocol/archive.hpp>
 #include <cstdint>
-#include <serialize.hpp>
 #include <iostream>
 
 namespace aquarius

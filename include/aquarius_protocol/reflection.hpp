@@ -1,6 +1,6 @@
 #pragma once
-#include <detail/reflect.hpp>
-#include <detail/member_bind_helper.hpp>
+#include <aquarius_protocol/reflect.hpp>
+#include <aquarius_protocol/member_bind_helper.hpp>
 
 namespace aquarius
 {

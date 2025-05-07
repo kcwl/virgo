@@ -1,7 +1,7 @@
 #pragma once
-#include <detail/archive.hpp>
-#include <detail/concepts.hpp>
-#include <detail/reflection.hpp>
+#include <aquarius_protocol/archive.hpp>
+#include <aquarius_protocol/concepts.hpp>
+#include <aquarius_protocol/reflection.hpp>
 #include <string>
 #include <vector>
 

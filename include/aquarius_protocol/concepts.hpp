@@ -1,6 +1,6 @@
 #pragma once
 #include <concepts>
-#include <detail/archive.hpp>
+#include <aquarius_protocol/archive.hpp>
 
 namespace aquarius
 {

@@ -1,7 +1,7 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
 #include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
-#include <message.hpp>
+#include <aquarius_protocol.hpp>
 
 struct person
 {
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(binary)
 
 BOOST_AUTO_TEST_CASE(request)
 {
-	using person_request = aquarius::basic_request<person, 1001>;
+	using person_request = aquarius::ip::tcp::basic_request<person, 1001>;
 
 	person_request req{};
 	req.header()->total_package = 1;
