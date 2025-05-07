@@ -80,7 +80,7 @@ namespace aquarius
 		static void to(archive_type& ar, const T& value)
 		{
 			auto to_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
-			{ (to(ar, std::get<I>(member_bind_helper<T, member_count<T>()>::values(value))), ...); };
+			{ (to(ar, boost::pfr::get<I, T>(value)), ...); };
 
 			to_binary_impl(std::make_index_sequence<member_count<T>()>{});
 		}

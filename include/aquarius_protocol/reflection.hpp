@@ -1,50 +1,33 @@
 #pragma once
 #include <aquarius_protocol/reflect.hpp>
-#include <aquarius_protocol/member_bind_helper.hpp>
+#include <boost/pfr.hpp>
 
 namespace aquarius
 {
-    template<typename T>
-    constexpr auto member_count();
+	template <std::size_t I, typename T>
+	using element_t = boost::pfr::tuple_element_t<I, T>;
 
-    template<std::size_t I, typename T>
-    struct element
-    {
-        using type = std::remove_cvref_t<decltype(std::get<I>(member_bind_helper<T, member_count<T>()>::empty_values()))>;
-    };
+	template <typename T>
+	constexpr auto name()
+	{
+		return reflect<T>::topic();
+	}
 
-    template<std::size_t I, typename T>
-    using element_t = element<I, T>::type;
+	template <std::size_t I, typename T>
+	constexpr auto field()
+	{
+		return std::get<I>(reflect<T>::fields());
+	}
 
-    template<typename T>
-    constexpr auto name()
-    {
-        return reflect<T>::topic();
-    }
+	template <typename T>
+	constexpr auto member_count()
+	{
+		return reflect<T>::fields().size();
+	}
 
-    template<std::size_t I, typename T>
-    constexpr auto field()
-    {
-        return std::get<I>(reflect<T>::fields());
-    }
-
-    template<typename T>
-    constexpr auto member_count()
-    {
-        return reflect<T>::fields().size();
-    }
-
-    template<std::size_t I, auto value>
-    constexpr auto get()
-    {
-        using T = std::remove_cvref_t<decltype(value)>;
-
-        return std::get<I>(member_bind_helper<T, member_count<T>()>::template static_values<value>());
-    }
-
-    template<std::size_t I, typename T>
-    constexpr auto get(const T& value) -> element_t<I, T>
-    {
-        return std::get<I>(member_bind_helper<T, member_count<T>()>::values(value));
-    }
-}
+	template <std::size_t I, typename T>
+	constexpr auto get(const T& value) -> element_t<I, T>
+	{
+		return boost::pfr::get<I, T>(value);
+	}
+} // namespace aquarius
