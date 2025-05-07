@@ -1,26 +1,8 @@
 #pragma once
 #include <concepts>
-#include <aquarius_protocol/archive.hpp>
 
 namespace aquarius
 {
-	template <typename T>
-	using reference_t = T&;
-
-	template <typename T>
-	concept standard_layout_t = requires(T value) {
-		std::is_standard_layout_v<std::remove_cvref_t<T>>&& std::is_trivial_v<std::remove_cvref_t<T>>;
-
-		value.swap(std::declval<reference_t<T>>());
-	};
-
-	template <typename T>
-	concept standard_header_t = requires(T value) {
-		value.to_binary(std::declval<reference_t<archive>>());
-
-		value.from_binary(std::declval<reference_t<archive>>());
-	};
-
 	template <typename T, typename... Args>
 	concept disjunction_same_as = std::disjunction_v<std::is_same<std::remove_cvref_t<T>, Args>...>;
 

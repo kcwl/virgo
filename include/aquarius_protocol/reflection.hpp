@@ -1,5 +1,5 @@
 #pragma once
-#include <aquarius_protocol/reflect.hpp>
+#include <aquarius_protocol/reflect_helper.hpp>
 #include <boost/pfr.hpp>
 
 namespace aquarius

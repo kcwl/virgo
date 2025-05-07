@@ -19,6 +19,9 @@
     <Filter Include="头文件\aquarius_protocol\ip">
       <UniqueIdentifier>{887a0085-c08d-4ecf-9109-e59b00729ff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\aquarius_protocol\ip\tcp">
+      <UniqueIdentifier>{7095afad-0f0a-40d7-b14a-82ca3af6ffed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test\protocol.cpp">
@@ -29,9 +32,6 @@
     <ClInclude Include="..\include\aquarius_protocol.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\archive.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
@@ -41,13 +41,10 @@
     <ClInclude Include="..\include\aquarius_protocol\concepts.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\header.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\json.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\reflect.hpp">
+    <ClInclude Include="..\include\aquarius_protocol\reflect_helper.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp">
@@ -55,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\ip\tcp.hpp">
       <Filter>头文件\aquarius_protocol\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp">
+      <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
