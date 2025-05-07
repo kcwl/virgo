@@ -16,8 +16,8 @@ INT_64_T = 7
 FLOAT_T = 8
 STRING_T = 9
 
-REPEATED_T = 100
-REFLECTABLE = 101
+ARRAY_T = 100
+OBJ_T = 101
 
 TYPE_MAP = {
     BOOLEAN_T : 'bool',
@@ -31,6 +31,8 @@ TYPE_MAP = {
     STRING_T : 'std::string'
 }
 
-PROTO_SUB_ID = 'proto_sub_id'
+PROTO_ID = 'proto_id'
 REQUEST = "request"
 RESPONSE = "response"
+
+

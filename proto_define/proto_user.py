@@ -1,17 +1,17 @@
-from .struct_desc.user import USER
+from .struct_desc.user import *
 from .base.basic_define import *
 
 
-PROTO_GID = 100
+PROTO_GID = 1000  # 1000 ~ 2000的协议号为user模块专用
 
 
 PROTO_GET_USER_INFO = {
-    PROTO_SUB_ID : 1,
+    PROTO_ID : PROTO_GID + 1,
     REQUEST: {
         'uid': UINT64_T,
         
     },
     RESPONSE: {
-        'user': USER,
+        'user': ST_USER,
     }
 }
