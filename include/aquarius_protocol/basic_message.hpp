@@ -58,14 +58,14 @@ namespace aquarius
 	public:
 		bool operator==(const basic_message& other) const
 		{
-			return basic_message::proto == other.proto  && *header() == *other.header() && body() == other.body();
+			return basic_message::proto == other.proto  && header() == other.header() && body() == other.body();
 		}
 
 		std::ostream& operator<<(std::ostream& os) const
 		{
 			os << proto;
 
-			os << *header();
+			os << header();
 
 			os << body();
 
@@ -73,9 +73,9 @@ namespace aquarius
 		}
 
 	public:
-		const header_type* header() const
+		const header_type& header() const
 		{
-			return this;
+			return *this;
 		}
 
 		header_type* header()
