@@ -149,16 +149,19 @@ namespace aquarius
 	} // namespace ip
 } // namespace aquarius
 
-std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::request_header& other)
+namespace std
 {
-	other << os;
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::request_header& other)
+	{
+		other << os;
 
-	return os;
-}
+		return os;
+	}
 
-std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::response_header& other)
-{
-	other << os;
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::response_header& other)
+	{
+		other << os;
 
-	return os;
+		return os;
+	}
 }
