@@ -13,57 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\detail">
-      <UniqueIdentifier>{9f506efe-3b3c-4e78-aed2-10e3d42abad5}</UniqueIdentifier>
+    <Filter Include="头文件\aquarius_protocol">
+      <UniqueIdentifier>{6d6093c5-0beb-4408-8ae9-60aa68983305}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\include\serialize.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\message.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\archive.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\basic_message.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\basic_request.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\basic_response.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\binary.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\fake_object.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\header.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\json.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\member_bind_helper.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\reflect.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\reflection.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\detail\concepts.hpp">
-      <Filter>头文件\detail</Filter>
-    </ClInclude>
+    <Filter Include="头文件\aquarius_protocol\ip">
+      <UniqueIdentifier>{887a0085-c08d-4ecf-9109-e59b00729ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\aquarius_protocol\ip\tcp">
+      <UniqueIdentifier>{7095afad-0f0a-40d7-b14a-82ca3af6ffed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test\protocol.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\aquarius_protocol.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\binary.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\concepts.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\json.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\reflect_helper.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\reflection.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp.hpp">
+      <Filter>头文件\aquarius_protocol\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp">
+      <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

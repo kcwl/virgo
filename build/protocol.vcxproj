@@ -130,23 +130,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\detail\archive.hpp" />
-    <ClInclude Include="..\include\detail\basic_message.hpp" />
-    <ClInclude Include="..\include\detail\basic_request.hpp" />
-    <ClInclude Include="..\include\detail\basic_response.hpp" />
-    <ClInclude Include="..\include\detail\binary.hpp" />
-    <ClInclude Include="..\include\detail\concepts.hpp" />
-    <ClInclude Include="..\include\detail\fake_object.hpp" />
-    <ClInclude Include="..\include\detail\header.hpp" />
-    <ClInclude Include="..\include\detail\json.hpp" />
-    <ClInclude Include="..\include\detail\member_bind_helper.hpp" />
-    <ClInclude Include="..\include\detail\reflect.hpp" />
-    <ClInclude Include="..\include\detail\reflection.hpp" />
-    <ClInclude Include="..\include\message.hpp" />
-    <ClInclude Include="..\include\serialize.hpp" />
+    <ClCompile Include="..\test\protocol.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\test\protocol.cpp" />
+    <ClInclude Include="..\include\aquarius_protocol.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\binary.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\json.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\reflect_helper.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\reflection.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
