@@ -410,8 +410,8 @@ BOOST_AUTO_TEST_CASE(request)
 	using person_request = aquarius::ip::tcp::request<person, 1001>;
 
 	person_request req{};
-	req.header()->crc32 = 1;
-	req.header()->timestamp = 1;
+	req.header()->crc32_ = 1;
+	req.header()->timestamp_ = 1;
 	req.body().sex = true;
 	req.body().addr = 2;
 	req.body().age = 15;
