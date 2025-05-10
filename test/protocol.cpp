@@ -2,6 +2,8 @@
 #include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <message.hpp>
+#include "../generated/struct/user.hpp"
+#include "../generated/proto_user.hpp"
 
 struct person
 {
@@ -112,7 +114,7 @@ BOOST_AUTO_TEST_CASE(request)
 	person_request req{};
 	req.header()->total_package = 1;
 	req.header()->pack_seq = 1;
-	req.body().sex = true;
+	req.body().sex = true;	
 	req.body().addr = 2;
 	req.body().age = 15;
 	req.body().telephone = 15230214856;
@@ -134,4 +136,50 @@ BOOST_AUTO_TEST_CASE(request)
 	req1.complete();
 
 	BOOST_CHECK_EQUAL(req, req1);
+}
+
+
+BOOST_AUTO_TEST_CASE(proto_st)
+{
+	Avatar p1;
+	p1.avatar_id = 100;
+	p1.avatar_type = 10;
+
+	boost::asio::streambuf ar{};
+
+	aquarius::binary::to(ar, p1);
+
+	Avatar p2 = aquarius::binary::from<Avatar>(ar);
+	std::cout << "Avatar: avatar_id = " << p2.avatar_id << ", avatar_type =" << p2.avatar_type << std::endl;
+
+//	BOOST_CHECK_EQUAL(req, req1);
+}
+
+
+BOOST_AUTO_TEST_CASE(proto_desc)
+{
+	ProtoGetSimpleUserInfo p1;
+	std::cout << "proto_id = " << p1.proto_id << std::endl;
+
+	p1.request.uid = 10086;
+	boost::asio::streambuf ar{};
+	aquarius::binary::to(ar, p1.request);
+
+	ProtoGetSimpleUserInfo p2;
+	p2.request = aquarius::binary::from<ProtoGetSimpleUserInfo::Request>(ar);
+	std::cout << "Request: uid = " << p2.request.uid << std::endl;
+
+
+
+	p1.response.user.hp = 100;
+	p1.response.user.score = "hello";
+
+	//boost::asio::streambuf ar{};
+
+	aquarius::binary::to(ar, p1.response);
+
+	p2.response = aquarius::binary::from<ProtoGetSimpleUserInfo::Response>(ar);
+	std::cout << "Response: hp = " << p2.response.user.hp << ", score = " << p2.response.user.score << std::endl;
+
+	//	BOOST_CHECK_EQUAL(req, req1);
 }

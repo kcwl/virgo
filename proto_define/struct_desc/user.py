@@ -3,7 +3,7 @@ from ..base.basic_define import *
 
 AVATAR = {
     'avatar_id' : UINT32_T,
-    'avatar_type' : UINT8_T
+    'avatar_type' : UINT64_T
 }
 
 ITEM = {

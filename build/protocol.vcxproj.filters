@@ -16,6 +16,12 @@
     <Filter Include="头文件\detail">
       <UniqueIdentifier>{9f506efe-3b3c-4e78-aed2-10e3d42abad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\proto">
+      <UniqueIdentifier>{864bd25a-d582-4618-affc-14b890b87376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\proto\struct">
+      <UniqueIdentifier>{8d7ef465-428a-4fe9-a568-4c0c36b9bf74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\serialize.hpp">
@@ -59,6 +65,15 @@
     </ClInclude>
     <ClInclude Include="..\include\detail\concepts.hpp">
       <Filter>头文件\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\generated\struct\user.hpp">
+      <Filter>源文件\proto\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="..\generated\proto_user.hpp">
+      <Filter>源文件\proto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\generated\proto_user.hpp" />
+    <ClInclude Include="..\generated\struct\user.hpp" />
     <ClInclude Include="..\include\detail\archive.hpp" />
     <ClInclude Include="..\include\detail\basic_message.hpp" />
     <ClInclude Include="..\include\detail\basic_request.hpp" />
@@ -152,6 +154,7 @@
     <ClInclude Include="..\include\detail\reflection.hpp" />
     <ClInclude Include="..\include\message.hpp" />
     <ClInclude Include="..\include\serialize.hpp" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test\protocol.cpp" />
