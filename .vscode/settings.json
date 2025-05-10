@@ -9,6 +9,10 @@
         "cstdlib": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
-        "cwchar": "cpp"
+        "cwchar": "cpp",
+        "clocale": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "cwctype": "cpp"
     }
 }

@@ -9,6 +9,7 @@ import inspect
 def render_struct(struct_name, struct_define, strcut_name_dict, base_indent_str="      "):
     '''渲染c++结构体'''
     struct_str = f"{base_indent_str}struct {struct_name}{{\n"
+    
     for field_name, field_type in struct_define.items():
         if is_proto_simple_type(field_type):  
             struct_str += f"{base_indent_str}     {field_type} {field_name};\n"
@@ -22,8 +23,35 @@ def render_struct(struct_name, struct_define, strcut_name_dict, base_indent_str=
         else:
             print(f"Unknown Type {field_type}")
             exit(1)
-        
+
+    struct_str += f"{base_indent_str}     void swap({struct_name}& other)\n"
+    struct_str += f"{base_indent_str}     {{\n"
+    for field_name, field_type in struct_define.items():
+        struct_str += f"{base_indent_str}           std::swap({field_name}, other.{field_name});\n"
+    struct_str += f"{base_indent_str}     }}\n" 
     struct_str += f"{base_indent_str}}};\n\n"
+    return struct_str
+
+def render_struct_reflect(struct_name, struct_define, base_indent_str="      "):
+    struct_str = f"{base_indent_str}template <>\n"   
+    struct_str += f"{base_indent_str}struct aquarius::reflect<{struct_name}>\n"
+    struct_str += f"{base_indent_str}{{\n"
+    struct_str += f"{base_indent_str}     using value_type = {struct_name};\n"
+    struct_str += f"{base_indent_str}     constexpr static std::string_view topic()\n"
+    struct_str += f"{base_indent_str}     {{\n"
+    struct_str += f"{base_indent_str}         return \"{struct_name}\"sv;\n"
+    struct_str += f"{base_indent_str}     }}\n"
+    struct_str += f"{base_indent_str}     constexpr static std::array<std::string_view, {len(struct_define)}> fields()\n"
+    struct_str += f"{base_indent_str}     {{\n"
+    struct_str += f"{base_indent_str}         return {{"
+    for i, (field_name, _) in enumerate(struct_define.items()):
+        if i == 0:
+            struct_str += f'"{field_name}"sv'
+        else:
+            struct_str += f', "{field_name}"sv'
+    struct_str += f"}};\n"
+    struct_str += f"{base_indent_str}     }}\n"
+    struct_str += f"{base_indent_str}}}\n\n"
     return struct_str
 
 
@@ -73,10 +101,12 @@ for module_name, structs in struct_module_dict.items():
     output_file = os.path.join(output_path, "struct", f"{module_name}.hpp")
     struct_file_str = "#include <string>\n"
     struct_file_str += "#include <vector>\n"
+    struct_file_str += "#include <message.hpp>\n"
     struct_file_str += "namespace proto_define{\n\n"
     for struct_name, struct_define in structs.items():
          print(f"struct module => {module_name}, st_name = {struct_name}")
          struct_file_str += render_struct(struct_name, struct_define, strcut_name_dict)
+         struct_file_str += render_struct_reflect(struct_name, struct_define)
     struct_file_str += "\n}"
     with open(output_file, 'w', encoding='utf8') as f:
         f.write(struct_file_str)
@@ -139,7 +169,8 @@ for proto_file in proto_files:
         
     proto_file_str = "#include <string>\n"
     proto_file_str += "#include <vector>\n"
-        
+    proto_file_str += "#include <message.hpp>\n"    
+    
     for module_name in depend_modules:
         proto_file_str += f"#include \"struct/{module_name}.hpp\"\n"
     proto_file_str += f"\n\n"
@@ -152,11 +183,15 @@ for proto_file in proto_files:
         req_st = proto_define[REQUEST]
         resp_st = proto_define[RESPONSE]
         proto_file_str += render_struct("Request", req_st, strcut_name_dict, "            ")
-        proto_file_str += render_struct("Request", resp_st, strcut_name_dict, "            ")
+        proto_file_str += render_struct("Response", resp_st, strcut_name_dict, "            ")
         
-        proto_file_str += f"        private:\n"
         proto_file_str += f"            uint64_t proto_id;\n"
+        proto_file_str += f"            Request request;\n"
+        proto_file_str += f"            Response response;\n"
         proto_file_str += f"    }};\n\n"
+        
+        proto_file_str += render_struct_reflect(f"{proto_name}::Request", req_st, "     ")
+        proto_file_str += render_struct_reflect(f"{proto_name}::Response", resp_st, "     ")
     proto_file_str += f"}};\n\n"    
     proto_file_path = os.path.join(output_path, f"proto_{module_name}.hpp")
     with open(proto_file_path, 'w', encoding='utf8') as f:
