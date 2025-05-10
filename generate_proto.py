@@ -6,9 +6,29 @@ import os
 import importlib.util
 import inspect
 
+def to_camel_case(s: str) -> str:
+    """
+    将字符串从下划线命名法转换为驼峰命名法。
+
+    参数:
+    s (str): 输入的字符串，使用下划线命名法。
+
+    返回:
+    str: 转换后的字符串，使用驼峰命名法。
+    """
+    components = s.split('_')  # 将字符串按下划线分割成组件
+    if not components:
+        components = [s]  # 如果没有下划线，则返回原字符串
+    # 将第一个组件的首字母转换为小写（如果它原本是大写的话），其余组件的首字母转换为大写
+    camel_case_str = ''.join(x.capitalize() for x in components)
+    return camel_case_str
+
+
+
 def render_struct(struct_name, struct_define, strcut_name_dict, base_indent_str="      "):
     '''渲染c++结构体'''
-    struct_str = f"{base_indent_str}struct {struct_name}{{\n"
+    camel_case_strcut_name = to_camel_case(struct_name)
+    struct_str = f"{base_indent_str}struct {camel_case_strcut_name}{{\n"
     
     for field_name, field_type in struct_define.items():
         if is_proto_simple_type(field_type):  
@@ -24,7 +44,7 @@ def render_struct(struct_name, struct_define, strcut_name_dict, base_indent_str=
             print(f"Unknown Type {field_type}")
             exit(1)
 
-    struct_str += f"{base_indent_str}     void swap({struct_name}& other)\n"
+    struct_str += f"{base_indent_str}     void swap({camel_case_strcut_name}& other)\n"
     struct_str += f"{base_indent_str}     {{\n"
     for field_name, field_type in struct_define.items():
         struct_str += f"{base_indent_str}           std::swap({field_name}, other.{field_name});\n"
@@ -33,13 +53,15 @@ def render_struct(struct_name, struct_define, strcut_name_dict, base_indent_str=
     return struct_str
 
 def render_struct_reflect(struct_name, struct_define, base_indent_str="      "):
+    names = struct_name.split("::")
+    camel_case_strcut_name = "::".join([to_camel_case(name) for name in names])
     struct_str = f"{base_indent_str}template <>\n"   
-    struct_str += f"{base_indent_str}struct aquarius::reflect<{struct_name}>\n"
+    struct_str += f"{base_indent_str}struct aquarius::reflect<{camel_case_strcut_name}>\n"
     struct_str += f"{base_indent_str}{{\n"
-    struct_str += f"{base_indent_str}     using value_type = {struct_name};\n"
+    struct_str += f"{base_indent_str}     using value_type = {camel_case_strcut_name};\n"
     struct_str += f"{base_indent_str}     constexpr static std::string_view topic()\n"
     struct_str += f"{base_indent_str}     {{\n"
-    struct_str += f"{base_indent_str}         return \"{struct_name}\"sv;\n"
+    struct_str += f"{base_indent_str}         return \"{camel_case_strcut_name}\"sv;\n"
     struct_str += f"{base_indent_str}     }}\n"
     struct_str += f"{base_indent_str}     constexpr static std::array<std::string_view, {len(struct_define)}> fields()\n"
     struct_str += f"{base_indent_str}     {{\n"
@@ -177,8 +199,9 @@ for proto_file in proto_files:
     proto_file_str += "namespace proto_define{\n\n"
     for proto_name, proto_define in proto_defines:
         proto_id = proto_define[PROTO_ID]
-        proto_file_str += f"    class {proto_name}\n    {{\n        public:\n"
-        proto_file_str += f"            {proto_name}(): proto_id({proto_id}){{ }}\n\n"
+        camel_case_proto_name = to_camel_case(proto_name)
+        proto_file_str += f"    class {camel_case_proto_name}\n    {{\n        public:\n"
+        proto_file_str += f"            {camel_case_proto_name}(): proto_id({proto_id}){{ }}\n\n"
         
         req_st = proto_define[REQUEST]
         resp_st = proto_define[RESPONSE]

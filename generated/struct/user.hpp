@@ -3,10 +3,10 @@
 #include <message.hpp>
 namespace proto_define{
 
-      struct AVATAR{
+      struct Avatar{
            uint32_t avatar_id;
            uint8_t avatar_type;
-           void swap(AVATAR& other)
+           void swap(Avatar& other)
            {
                  std::swap(avatar_id, other.avatar_id);
                  std::swap(avatar_type, other.avatar_type);
@@ -14,12 +14,12 @@ namespace proto_define{
       };
 
       template <>
-      struct aquarius::reflect<AVATAR>
+      struct aquarius::reflect<Avatar>
       {
-           using value_type = AVATAR;
+           using value_type = Avatar;
            constexpr static std::string_view topic()
            {
-               return "AVATAR"sv;
+               return "Avatar"sv;
            }
            constexpr static std::array<std::string_view, 2> fields()
            {
@@ -27,10 +27,10 @@ namespace proto_define{
            }
       }
 
-      struct ITEM{
+      struct Item{
            uint32_t item_id;
            uint32_t item_num;
-           void swap(ITEM& other)
+           void swap(Item& other)
            {
                  std::swap(item_id, other.item_id);
                  std::swap(item_num, other.item_num);
@@ -38,12 +38,12 @@ namespace proto_define{
       };
 
       template <>
-      struct aquarius::reflect<ITEM>
+      struct aquarius::reflect<Item>
       {
-           using value_type = ITEM;
+           using value_type = Item;
            constexpr static std::string_view topic()
            {
-               return "ITEM"sv;
+               return "Item"sv;
            }
            constexpr static std::array<std::string_view, 2> fields()
            {
@@ -51,7 +51,7 @@ namespace proto_define{
            }
       }
 
-      struct USER{
+      struct User{
            bool sex;
            uint32_t addr;
            int32_t age;
@@ -62,7 +62,7 @@ namespace proto_define{
            AVATAR avatar;
            std::vector<ITEM> items;
            std::vector<int8_t> orders;
-           void swap(USER& other)
+           void swap(User& other)
            {
                  std::swap(sex, other.sex);
                  std::swap(addr, other.addr);
@@ -78,12 +78,12 @@ namespace proto_define{
       };
 
       template <>
-      struct aquarius::reflect<USER>
+      struct aquarius::reflect<User>
       {
-           using value_type = USER;
+           using value_type = User;
            constexpr static std::string_view topic()
            {
-               return "USER"sv;
+               return "User"sv;
            }
            constexpr static std::array<std::string_view, 10> fields()
            {
@@ -91,13 +91,13 @@ namespace proto_define{
            }
       }
 
-      struct USER_SIMPLE{
+      struct UserSimple{
            std::string score;
            float hp;
            std::string name;
            std::vector<ITEM> items;
            std::vector<int8_t> orders;
-           void swap(USER_SIMPLE& other)
+           void swap(UserSimple& other)
            {
                  std::swap(score, other.score);
                  std::swap(hp, other.hp);
@@ -108,12 +108,12 @@ namespace proto_define{
       };
 
       template <>
-      struct aquarius::reflect<USER_SIMPLE>
+      struct aquarius::reflect<UserSimple>
       {
-           using value_type = USER_SIMPLE;
+           using value_type = UserSimple;
            constexpr static std::string_view topic()
            {
-               return "USER_SIMPLE"sv;
+               return "UserSimple"sv;
            }
            constexpr static std::array<std::string_view, 5> fields()
            {

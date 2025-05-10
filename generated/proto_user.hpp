@@ -6,10 +6,10 @@
 
 namespace proto_define{
 
-    class PROTO_GET_SIMPLE_USER_INFO
+    class ProtoGetSimpleUserInfo
     {
         public:
-            PROTO_GET_SIMPLE_USER_INFO(): proto_id(1002){ }
+            ProtoGetSimpleUserInfo(): proto_id(1002){ }
 
             struct Request{
                  uint64_t uid;
@@ -33,12 +33,12 @@ namespace proto_define{
     };
 
      template <>
-     struct aquarius::reflect<PROTO_GET_SIMPLE_USER_INFO::Request>
+     struct aquarius::reflect<ProtoGetSimpleUserInfo::Request>
      {
-          using value_type = PROTO_GET_SIMPLE_USER_INFO::Request;
+          using value_type = ProtoGetSimpleUserInfo::Request;
           constexpr static std::string_view topic()
           {
-              return "PROTO_GET_SIMPLE_USER_INFO::Request"sv;
+              return "ProtoGetSimpleUserInfo::Request"sv;
           }
           constexpr static std::array<std::string_view, 1> fields()
           {
@@ -47,12 +47,12 @@ namespace proto_define{
      }
 
      template <>
-     struct aquarius::reflect<PROTO_GET_SIMPLE_USER_INFO::Response>
+     struct aquarius::reflect<ProtoGetSimpleUserInfo::Response>
      {
-          using value_type = PROTO_GET_SIMPLE_USER_INFO::Response;
+          using value_type = ProtoGetSimpleUserInfo::Response;
           constexpr static std::string_view topic()
           {
-              return "PROTO_GET_SIMPLE_USER_INFO::Response"sv;
+              return "ProtoGetSimpleUserInfo::Response"sv;
           }
           constexpr static std::array<std::string_view, 1> fields()
           {
@@ -60,10 +60,10 @@ namespace proto_define{
           }
      }
 
-    class PROTO_GET_USER_INFO
+    class ProtoGetUserInfo
     {
         public:
-            PROTO_GET_USER_INFO(): proto_id(1001){ }
+            ProtoGetUserInfo(): proto_id(1001){ }
 
             struct Request{
                  uint64_t uid;
@@ -87,12 +87,12 @@ namespace proto_define{
     };
 
      template <>
-     struct aquarius::reflect<PROTO_GET_USER_INFO::Request>
+     struct aquarius::reflect<ProtoGetUserInfo::Request>
      {
-          using value_type = PROTO_GET_USER_INFO::Request;
+          using value_type = ProtoGetUserInfo::Request;
           constexpr static std::string_view topic()
           {
-              return "PROTO_GET_USER_INFO::Request"sv;
+              return "ProtoGetUserInfo::Request"sv;
           }
           constexpr static std::array<std::string_view, 1> fields()
           {
@@ -101,12 +101,12 @@ namespace proto_define{
      }
 
      template <>
-     struct aquarius::reflect<PROTO_GET_USER_INFO::Response>
+     struct aquarius::reflect<ProtoGetUserInfo::Response>
      {
-          using value_type = PROTO_GET_USER_INFO::Response;
+          using value_type = ProtoGetUserInfo::Response;
           constexpr static std::string_view topic()
           {
-              return "PROTO_GET_USER_INFO::Response"sv;
+              return "ProtoGetUserInfo::Response"sv;
           }
           constexpr static std::array<std::string_view, 1> fields()
           {
