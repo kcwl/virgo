@@ -34,39 +34,3 @@ BASIC_TYPES = [
 PROTO_ID = 'proto_id'
 REQUEST = "request"
 RESPONSE = "response"
-
-def is_proto_value_type(target):
-    if not isinstance(target, dict) or not dict:
-        return False
-    
-    for val in target.values():
-        if val in BASIC_TYPES:
-            continue
-        if isinstance(val, list) and len(val) == 2 and val[0] == OBJ_T:
-            continue
-        if isinstance(val, list) and len(val) >= 2 and val[0] == ARRAY_T:
-            if len(val) == 2 and val[1] in BASIC_TYPES:
-                continue
-            if len(val) == 3 and  val[1] == OBJ_T:
-                continue    
-        return False
-    return True
-
-
-def is_proto_simple_type(target):
-    '''简单类型, 如int'''
-    if not isinstance(target, str):
-        return False
-    return target in BASIC_TYPES
-
-def is_proto_obj_type(target):
-    '''对象类型, 有结构当以'''
-    if not isinstance(target, list) or len(target) != 2:
-        return False
-    return target[0] == OBJ_T
-
-def is_proto_array_type(target):
-    '''数组类型, 如int[]'''
-    if not isinstance(target, list) or len(target) < 2:
-        return False
-    return target[0] == ARRAY_T
