@@ -36,7 +36,7 @@ namespace aquarius
 		basic_message(basic_message&& other) noexcept
 			: basic_message()
 		{
-			header_type{ other }.swap(*this);
+			*this = std::move(static_cast<header_type>(other));
 
 			body_type{ other.get() }.swap(this->get());
 		}
@@ -45,7 +45,7 @@ namespace aquarius
 		{
 			if (this != std::addressof(other))
 			{
-				header_type{ other }.swap(*this);
+				*this = std::move(static_cast<header_type>(other));
 
 				body_type{ other.get() }.swap(this->get());
 			}
