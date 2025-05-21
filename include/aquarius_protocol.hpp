@@ -4,6 +4,8 @@
 #include <aquarius_protocol/concepts.hpp>
 #include <aquarius_protocol/ip/tcp.hpp>
 #include <aquarius_protocol/ip/tcp/header.hpp>
+#include <aquarius_protocol/ip/tcp/package_processor.hpp>
 #include <aquarius_protocol/json.hpp>
+#include <aquarius_protocol/package_processor.hpp>
 #include <aquarius_protocol/reflect_helper.hpp>
 #include <aquarius_protocol/reflection.hpp>

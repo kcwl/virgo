@@ -56,5 +56,11 @@
     <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp">
       <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\package_processor.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\package_processor.hpp">
+      <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
