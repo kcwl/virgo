@@ -35,3 +35,4 @@
 */.vs/*
 build/*/x64/
 *.pdb
+build/x64

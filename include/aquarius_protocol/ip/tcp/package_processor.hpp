@@ -1,6 +1,6 @@
 #pragma once
-#include <boost/asio.hpp>
 #include <aquarius_protocol/package_processor.hpp>
+#include <boost/asio.hpp>
 #include <list>
 #include <map>
 
@@ -16,14 +16,13 @@ namespace aquarius
 			normal = package | complete
 		};
 
-		template<typename FlexBuffer>
 		struct sequence
 		{
 			struct block
 			{
 				std::size_t seq;
 
-				FlexBuffer buffer;
+				flex_buffer buffer;
 			};
 
 			std::size_t total;
@@ -38,12 +37,13 @@ namespace aquarius
 			}
 		};
 	} // namespace tcp
-	template<typename FlexBuffer>
-	struct package_processor<FlexBuffer, boost::asio::ip::tcp>
-	{
-		static constexpr std::size_t package_limit = 4096;
 
-		auto read(FlexBuffer& buffer) -> std::tuple<std::size_t, FlexBuffer>
+	template <>
+	struct package_processor<protocol::tcp>
+	{
+		static constexpr std::size_t package_limit = 4096 - 5;
+
+		auto read(flex_buffer& buffer) -> std::tuple<std::size_t, flex_buffer>
 		{
 			uint8_t flag{};
 			buffer.load(&flag, 1);
@@ -78,69 +78,61 @@ namespace aquarius
 
 			if (mv == tcp::mvcc::normal || mv == tcp::mvcc::complete)
 			{
-				int counter = 0;
+				flex_buffer complete_buffer(pack.buffers.size() * flex_buffer::capacity);
 
-				FlexBuffer complete_buffer;
-
-				for (auto iter = pack.buffers.begin(); iter != pack.buffers.end();)
+				for (auto iter = pack.buffers.begin(); iter != pack.buffers.end(); iter++)
 				{
-					if (iter->seq == counter++)
-					{
-						complete_buffer.save(iter->buffer.wdata(), iter->buffer.size());
-
-						iter++;
-					}
-					else
-					{
-						partical_insert_sort(pack.buffers, iter, pack.buffers.end(), counter);
-					}
+					complete_buffer.save(iter->buffer.wdata(), iter->buffer.size());
 				}
 
 				buffers.erase(req_id);
 
 				return { req_id, complete_buffer };
 			}
+
+			return {};
 		}
 
-		
-		std::vector<FlexBuffer> write(std::size_t proto, FlexBuffer buffer)
+		std::vector<flex_buffer> write(std::size_t proto, flex_buffer& buffer)
 		{
-			std::vector<FlexBuffer> complete_buffers{};
+			std::vector<flex_buffer> complete_buffers{};
 
 			auto buffer_size = buffer.size();
 
-			uint8_t total = static_cast<uint8_t>(buffer_size / package_limit) + 1;
+			uint8_t total = static_cast<uint8_t>((buffer_size + package_limit) / package_limit);
 
-			uint8_t flag = (total << 2) | static_cast<uint8_t>(tcp::mvcc::header);
+			uint8_t flag = total == 1 ? total << 2 | static_cast<uint8_t>(tcp::mvcc::normal)
+									  : total << 2 | static_cast<uint8_t>(tcp::mvcc::header);
 
 			int counter = 0;
 
-			while (buffer_size != 0)
+			while (true)
 			{
 				auto cur_size = std::min<std::size_t>(buffer_size, package_limit);
-
-				if (counter != 0) [[unlikely]]
-				{
-					cur_size < buffer_size
-						? flag = static_cast<uint8_t>(counter << 2) | static_cast<uint8_t>(tcp::mvcc::package)
-						: flag = static_cast<uint8_t>(counter << 2) | static_cast<uint8_t>(tcp::mvcc::complete);
-				}
 
 				complete_buffers.push_back({});
 				auto& write_buffer = complete_buffers.back();
 				write_buffer.save((uint8_t*)&flag, 1);
 				write_buffer.save((uint8_t*)&proto, sizeof(uint32_t));
 				write_buffer.save((uint8_t*)buffer.wdata(), cur_size);
+				buffer.consume(cur_size);
 				buffer_size -= cur_size;
 
 				++counter;
+
+				if (buffer_size == 0)
+					break;
+
+				buffer_size > package_limit
+					? flag = static_cast<uint8_t>(counter << 2) | static_cast<uint8_t>(tcp::mvcc::package)
+					: flag = static_cast<uint8_t>(counter << 2) | static_cast<uint8_t>(tcp::mvcc::complete);
 			}
 
 			return complete_buffers;
 		}
 
-		template <typename Iterator, typename FlexBuffer>
-		void partical_insert_sort(std::list<typename tcp::sequence<FlexBuffer>::block>& buffer, Iterator begin, Iterator end,
+		template <typename Iterator>
+		void partical_insert_sort(std::list<tcp::sequence::block>& buffer, Iterator begin, Iterator end,
 								  std::size_t pred)
 		{
 			for (auto iter = begin; iter != end;)
@@ -153,6 +145,6 @@ namespace aquarius
 			}
 		}
 
-		std::map<std::size_t, typename tcp::sequence<FlexBuffer>> buffers;
+		std::map<std::size_t, tcp::sequence> buffers;
 	};
 } // namespace aquarius

@@ -1,7 +1,9 @@
 #pragma once
+#include <aquarius_protocol/basic_flex_buffer.hpp>
 #include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/binary.hpp>
 #include <aquarius_protocol/concepts.hpp>
+#include <aquarius_protocol/ip/flex_buffer.hpp>
 #include <aquarius_protocol/ip/tcp.hpp>
 #include <aquarius_protocol/ip/tcp/header.hpp>
 #include <aquarius_protocol/ip/tcp/package_processor.hpp>

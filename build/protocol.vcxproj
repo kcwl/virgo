@@ -134,9 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\aquarius_protocol.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_flex_buffer.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\binary.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\ip\flex_buffer.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\ip\tcp.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\ip\tcp\package_processor.hpp" />

@@ -56,18 +56,18 @@ namespace aquarius
 	} // namespace ip
 } // namespace aquarius
 
-template <typename Body, std::size_t Number>
-std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::request<Body, Number>& other)
-{
-	other << os;
-
-	return os;
-}
-
-template <typename Body, std::size_t Number>
-std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::response<Body, Number>& other)
-{
-	other << os;
-
-	return os;
-}
+//template <typename Body, std::size_t Number>
+//std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::request<Body, Number>& other)
+//{
+//	other << os;
+//
+//	return os;
+//}
+//
+//template <typename Body, std::size_t Number>
+//std::ostream& operator<<(std::ostream& os, const aquarius::ip::tcp::response<Body, Number>& other)
+//{
+//	other << os;
+//
+//	return os;
+//}

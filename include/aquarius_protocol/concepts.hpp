@@ -1,5 +1,7 @@
 #pragma once
 #include <concepts>
+#include <vector>
+#include <string>
 
 namespace aquarius
 {

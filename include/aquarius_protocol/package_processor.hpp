@@ -2,6 +2,13 @@
 
 namespace aquarius
 {
-	template <typename FlexBuffer, typename T>
+	enum class protocol
+	{
+		tcp,
+		udp,
+		http
+	};
+
+	template <protocol Protocol>
 	struct package_processor;
-}
+} // namespace aquarius
