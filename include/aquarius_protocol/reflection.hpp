@@ -24,10 +24,4 @@ namespace aquarius
 	{
 		return reflect<T>::fields().size();
 	}
-
-	template <std::size_t I, typename T>
-	constexpr auto get(const T& value) -> element_t<I, T>
-	{
-		return boost::pfr::get<I, T>(value);
-	}
 } // namespace aquarius

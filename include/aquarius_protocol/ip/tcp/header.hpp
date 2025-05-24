@@ -13,6 +13,9 @@ namespace aquarius
 			class header_base
 			{
 			public:
+				constexpr static std::size_t header_static_size = 8;
+
+			public:
 				header_base()
 					: crc32_(0)
 					, timestamp_(0)

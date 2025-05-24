@@ -35,3 +35,5 @@
 */.vs/*
 build/*/x64/
 *.pdb
+build/x64
+centos_build/

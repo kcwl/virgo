@@ -1,7 +1,8 @@
 #pragma once
-#include <boost/core/empty_value.hpp>
-#include <aquarius_protocol/concepts.hpp>
 #include <aquarius_protocol/binary.hpp>
+#include <aquarius_protocol/concepts.hpp>
+#include <aquarius_protocol/ip/flex_buffer.hpp>
+#include <boost/core/empty_value.hpp>
 
 namespace aquarius
 {
@@ -58,7 +59,7 @@ namespace aquarius
 	public:
 		bool operator==(const basic_message& other) const
 		{
-			return basic_message::proto == other.proto  && header() == other.header() && body() == other.body();
+			return basic_message::proto == other.proto && header() == other.header() && body() == other.body();
 		}
 
 		std::ostream& operator<<(std::ostream& os) const
@@ -93,59 +94,29 @@ namespace aquarius
 			return this->get();
 		}
 
-		template<typename Buffer>
-		bool to_binary(Buffer& completed_buffer)
+		bool to_binary(flex_buffer& completed_buffer)
 		{
-			bool result = true;
+			binary::to(completed_buffer, proto);
 
-			try
-			{
-				binary::to(completed_buffer, proto);
+			header()->to_binary(completed_buffer);
 
-				header()->to_binary(completed_buffer);
+			binary::to<body_type>(completed_buffer, this->get());
 
-				binary::to<body_type>(completed_buffer, this->get());
-			}
-			catch (...)
-			{
-				skip_error();
-
-				result = false;
-			}
-
-			return result;
+			return true;
 		}
 
-		template<typename Buffer>
-		bool from_binary(Buffer& completed_buffer)
+		bool from_binary(flex_buffer& completed_buffer)
 		{
-			bool result = true;
+			std::size_t proto_number = binary::from<std::size_t>(completed_buffer);
 
-			try
-			{
-				std::size_t proto_number = binary::from<std::size_t>(completed_buffer);
+			if (proto_number != proto)
+				return false;
 
-				if (proto_number != proto)
-					return false;
+			header()->from_binary(completed_buffer);
 
-				header()->from_binary(completed_buffer);
+			this->get() = binary::from<body_type>(completed_buffer);
 
-				this->get() = binary::from<body_type>(completed_buffer);
-			}
-			catch (...)
-			{
-				skip_error();
-
-				result = false;
-			}
-
-			return result;
-		}
-
-	protected:
-		virtual void skip_error()
-		{
-			// archive{}.swap(this->completed_buffer_);
+			return true;
 		}
 	};
 } // namespace aquarius
