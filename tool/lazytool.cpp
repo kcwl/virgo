@@ -128,6 +128,8 @@ int main(int argc, char** args)
 
         aquarius::cpp_generator gen{ file, standard };
 
+        gen.generate_header();
+
         for (auto& state : statements)
         {
             gen.generate(state);

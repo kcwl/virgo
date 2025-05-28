@@ -57,6 +57,11 @@ namespace aquarius
 		}
 	}
 
+	void cpp_generator::generate_header()
+	{
+		ofs_ << "#include <aquarius_protocol.hpp>\n\n";
+	}
+
 	bool cpp_generator::create_file_stream()
 	{
 		auto file_name = file_name_.substr(0, file_name_.find_last_of("."));
@@ -136,7 +141,7 @@ namespace aquarius
 	void cpp_generator::generate_template(const statement& state)
 	{
 		ofs_ << std::endl << "template <>";
-		ofs_ << std::endl << "struct reflect<" << state.name_str << ">";
+		ofs_ << std::endl << "struct aquarius::reflect<" << state.name_str << ">";
 		ofs_ << std::endl << "{";
 		ofs_ << std::endl << "constexpr static std::string_view topic()";
 		ofs_ << std::endl << "{";
@@ -144,7 +149,7 @@ namespace aquarius
 		ofs_ << std::endl << "}";
 		ofs_ << std::endl;
 		ofs_ << std::endl
-			 << "constexpr static static std::array<std::string_view, " << state.seqs.size() << "> fields()";
+			 << "constexpr static std::array<std::string_view, " << state.seqs.size() << "> fields()";
 		ofs_ << std::endl << "{";
 		ofs_ << std::endl << "    return {";
 		for (auto& s : state.seqs)
@@ -166,6 +171,9 @@ namespace aquarius
 
 	void cpp_generator::generate_single(const statement& state)
 	{
+		if (state.type_str.empty())
+			return;
+
 		ofs_ << std::endl << convert_type(state.type_str) << " " << state.name_str << ";\n";
 	}
 

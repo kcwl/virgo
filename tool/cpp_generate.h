@@ -15,6 +15,8 @@ namespace aquarius
 	public:
 		void generate(const statement& state);
 
+		void generate_header();
+
 	private:
 		bool create_file_stream();
 
