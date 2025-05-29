@@ -31,6 +31,10 @@
 *.out
 *.app
 
-# vs
-x64/
+# visual studio
+*/.vs/*
+build/*/x64/
+*.pdb
+build/x64
+centos_build/
 .vs/
