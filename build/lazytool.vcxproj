@@ -18,6 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tool\lazytool\cpp_generate.cpp" />
+    <ClCompile Include="..\tool\lazytool\lazytool.cpp" />
+    <ClCompile Include="..\tool\lazytool\parse.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tool\lazytool\cpp_generate.h" />
+    <ClInclude Include="..\tool\lazytool\parse.h" />
+    <ClInclude Include="..\tool\lazytool\statement.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -129,16 +139,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\tool\cpp_generate.cpp" />
-    <ClCompile Include="..\tool\lazytool.cpp" />
-    <ClCompile Include="..\tool\parse.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\tool\cpp_generate.h" />
-    <ClInclude Include="..\tool\statement.hpp" />
-    <ClInclude Include="..\tool\parse.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -15,24 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tool\lazytool.cpp">
+    <ClCompile Include="..\tool\lazytool\cpp_generate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\tool\parse.cpp">
+    <ClCompile Include="..\tool\lazytool\lazytool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\tool\cpp_generate.cpp">
+    <ClCompile Include="..\tool\lazytool\parse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tool\parse.h">
+    <ClInclude Include="..\tool\lazytool\cpp_generate.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\tool\statement.hpp">
+    <ClInclude Include="..\tool\lazytool\parse.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\tool\cpp_generate.h">
+    <ClInclude Include="..\tool\lazytool\statement.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
