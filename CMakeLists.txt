@@ -12,6 +12,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(deps)
 
-add_subdirectory(test)
+add_subdirectory(tool)
 
 enable_testing()
+
+add_subdirectory(test)
