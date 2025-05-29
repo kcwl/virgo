@@ -219,7 +219,7 @@ namespace aquarius
 
 			auto c = ifs.peek();
 
-			if (std::isalnum(c))
+			if (std::isalnum(c) || c == '_')
 			{
 				keyword += static_cast<char>(ifs.get());
 			}

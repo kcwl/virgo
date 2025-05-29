@@ -157,7 +157,10 @@ namespace aquarius
 			ofs_ << "\"" << s->name_str << "\"sv, ";
 		}
 
-		ofs_.seekp(-2, std::ios::cur);
+		if (!state->seqs.empty())
+		{
+			ofs_.seekp(-2, std::ios::cur);
+		}
 
 		ofs_ << "};";
 
@@ -179,8 +182,8 @@ namespace aquarius
 		ofs_ << "struct " << state->name_str << "\n";
 		ofs_ << "{\n";
 		ofs_ << "\tconstexpr static std::size_t Proto = " << std::hash<std::string>()(state->name_str) << ";\n";
-		ofs_ << "\tusing tcp_request = request<" << state->tcp.req << ">;\n";
-		ofs_ << "\tusing tcp_response = response<" << state->tcp.resp << ">;\n";
+		ofs_ << "\tusing tcp_request = aquarius::ip::tcp::request<" << state->tcp.req << ">;\n";
+		ofs_ << "\tusing tcp_response = aquarius::ip::tcp::response<" << state->tcp.resp << ">;\n";
 		ofs_ << "};\n";
 	}
 
