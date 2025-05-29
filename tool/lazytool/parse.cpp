@@ -1,4 +1,6 @@
 #include "parse.h"
+#include <algorithm>
+#include <format>
 #include <iostream>
 
 namespace aquarius
@@ -92,7 +94,6 @@ namespace aquarius
 
 		read_keyword(ifs, type_str);
 
-
 		if (type_str == "bytes")
 		{
 			state_ptr = new statement_base("std::vector<uint8_t>");
@@ -161,8 +162,6 @@ namespace aquarius
 		read_value_for(ifs, state_ptr->name_str);
 
 		std::string key_word{};
-
-		
 
 		while (!ifs.eof())
 		{
