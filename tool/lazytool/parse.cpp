@@ -362,7 +362,7 @@ namespace aquarius
 		if (value != "enum" && value == "message" && value == "rpc" && value != "import" && value != "namespace")
 		{
 			throw std::runtime_error(
-				std::format("{} is not statement keyword! eg: enum message rpc import or namespace"));
+				std::format("{} is not statement keyword! eg: enum message rpc import or namespace", value));
 		}
 	}
 
