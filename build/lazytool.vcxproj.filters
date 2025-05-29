@@ -21,9 +21,6 @@
     <ClCompile Include="..\tool\parse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\tool\statement.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\tool\cpp_generate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -32,7 +29,7 @@
     <ClInclude Include="..\tool\parse.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\tool\statement.h">
+    <ClInclude Include="..\tool\statement.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\tool\cpp_generate.h">

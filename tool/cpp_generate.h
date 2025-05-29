@@ -1,5 +1,5 @@
 #pragma once
-#include "statement.h"
+#include "statement.hpp"
 #include <fstream>
 #include <queue>
 
@@ -13,24 +13,26 @@ namespace aquarius
 		~cpp_generator();
 
 	public:
-		void generate(const statement& state);
+		void generate(statement_base* state);
 
 		void generate_header();
 
 	private:
 		bool create_file_stream();
 
-		void generate_namespace_begin(const statement& state);
+		void generate_namespace_begin(statement_base* state);
 
 		void generate_namespace_end();
 
-		void generate_enum(const statement& state);
+		void generate_enum(enum_statement* state);
 
-		void generate_message(const statement& state);
+		void generate_message(message_statement* state);
 
-		void generate_template(const statement& state);
+		void generate_template(message_statement* state);
 
-		void generate_single(const statement& state);
+		void generate_single(statement_base* state);
+
+		void generate_rpc(rpc_statement* state);
 
 	private:
 		std::string convert_type(const std::string& type_str);

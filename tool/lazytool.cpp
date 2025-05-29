@@ -130,7 +130,7 @@ int main(int argc, char** args)
 
         gen.generate_header();
 
-        for (auto& state : statements)
+        for (auto state : statements)
         {
             gen.generate(state);
         }

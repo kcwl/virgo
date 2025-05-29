@@ -1,98 +1,60 @@
 #pragma once
-#include <string>
-#include <queue>
-#include <vector>
+#include "statement.hpp"
 #include <fstream>
-#include "statement.h"
+#include <queue>
+#include <string>
+#include <vector>
 
 namespace aquarius
 {
-    class parse
-    {
-    public:
-        parse();
+	class parse
+	{
+	public:
+		parse();
 
-    public:
-        bool read_file(const std::string& file_name);
+	public:
+		bool read_file(const std::string& file_name);
 
-        std::vector<statement> get_statements();
+		std::vector<statement_base*> get_statements();
 
-    private:
-        int parse_statement(std::fstream& ifs, statement& state);
+	private:
+		void parse_statement(std::fstream& ifs, statement_base*& state_ptr);
 
-    private:
-        int read_normal(std::fstream& ifs, statement& state);
+		void parse_message_statement(std::fstream& ifs, statement_base*& state_ptr);
 
-        int read_normal_bytes(std::fstream& ifs, statement& state);
+		void read_normal(std::fstream& ifs, statement_base* state_ptr);
 
-        int read_enum(std::fstream& ifs, statement& state);
+		void read_normal_bytes(std::fstream& ifs, statement_base* state_ptr);
 
-        int read_message(std::fstream& ifs, statement& state, bool is_service = false);
+		void read_enum(std::fstream& ifs, enum_statement* state_ptr);
 
-    private:
-        template<typename... _Args>
-        std::string trip(std::string& str, _Args&&... args)
-        {
-            if (str.empty())
-                return str;
+		void read_message(std::fstream& ifs, message_statement* state_ptr);
 
-            (str.erase(std::remove(str.begin(), str.end(), args), str.end()), ...);
+		void read_rpc(std::fstream& ifs, rpc_statement* state_ptr);
 
-            return str;
-        }
+		void read_repeated(std::fstream& ifs, statement_base* state_ptr);
 
-        template <typename... _Args>
-        void skip_if(std::fstream& ifs, _Args&&... args)
-        {
-            while (!ifs.eof())
-            {
-                auto c = ifs.peek();
+		void log(const std::string& str, int line);
 
-                if (c == '\n')
-                {
-                    column_++;
-                    row_ = 1;
-                }
-                else {
-                    row_++;
-                }
+		void read_keyword(std::fstream& ifs, std::string& keyword);
 
-                if (((c == args) || ...))
-                {
-                    ifs.get();
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
+		void read_value(std::fstream& ifs, std::string& value);
 
-        void log(const std::string& str, int line);
+		void read_value_of(std::fstream& ifs, std::string& value);
 
-        int read_util(std::fstream& ifs, char sp, std::string& value);
+		void read_value_for(std::fstream& ifs, std::string& value);
 
-        int read_util(std::fstream& ifs, char sp);
+		void read_statement_keyword(std::fstream& ifs, std::string& value);
 
-        int seek_end(std::fstream& ifs);
+		bool read_for_end(std::fstream& ifs);
 
-        int read_keyword(std::fstream& ifs, std::string& keyword);
+		bool check_type(std::string& type);
 
-        int read_value(std::fstream& ifs, std::string& value);
+	private:
+		std::vector<statement_base*> statements_;
 
-        int read_value_of(std::fstream& ifs, std::string& value);
+		int row_;
 
-        int read_sequence(std::fstream& ifs, std::string& sequence);
-
-        int read_value_for(std::fstream& ifs, std::string& value);
-
-        bool check_type(std::string& type);
-
-    private:
-        std::vector<statement> statements_;
-
-        int row_;
-
-        int column_;
-    };
-}
+		int column_;
+	};
+} // namespace aquarius

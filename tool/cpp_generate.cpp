@@ -18,42 +18,32 @@ namespace aquarius
 		generate_namespace_end();
 	}
 
-	void cpp_generator::generate(const statement& state)
+	void cpp_generator::generate(statement_base* state)
 	{
-		int result = syntax_error;
+		if (!state)
+			return;
 
-		auto type = md5(state.type_str);
+		auto type_str = state->type_str;
 
-		switch (type)
+		if (type_str == "message")
 		{
-		case 0:
-			break;
-		case 1:
+			generate_message(static_cast<message_statement*>(state));
+		}
+		else if (type_str == "enum")
+		{
+			generate_enum(static_cast<enum_statement*>(state));
+		}
+		else if (type_str == "rpc")
+		{
+			generate_rpc(static_cast<rpc_statement*>(state));
+		}
+		else if (type_str == "import")
+		{
+			generate_single(state);
+		}
+		else if (type_str == "namespace")
+		{
 			generate_namespace_begin(state);
-			break;
-		case 2:
-			generate_enum(state);
-			break;
-		case 3:
-			generate_message(state);
-
-			req_queue_.push({ state.name_str, state.sequence });
-			break;
-		case 4:
-			{
-				generate_message(state);
-
-				resp_queue_.push({ state.name_str, state.sequence });
-			}
-			break;
-		case 14:
-			generate_message(state);
-			break;
-		default:
-			{
-				generate_single(state);
-			}
-			break;
 		}
 	}
 
@@ -77,9 +67,9 @@ namespace aquarius
 		return true;
 	}
 
-	void cpp_generator::generate_namespace_begin(const statement& state)
+	void cpp_generator::generate_namespace_begin(statement_base* state)
 	{
-		ofs_ << std::endl << "namespace " << state.type_str << " {";
+		ofs_ << std::endl << "namespace " << state->type_str << " {";
 
 		namespace_queue_.push('}');
 	}
@@ -93,25 +83,25 @@ namespace aquarius
 		}
 	}
 
-	void cpp_generator::generate_enum(const statement& state)
+	void cpp_generator::generate_enum(enum_statement* state)
 	{
 		if (standard_ != "c++03" || standard_ != "c++98")
 		{
-			ofs_ << std::endl << "enum class " << state.name_str;
+			ofs_ << std::endl << "enum class " << state->name_str;
 		}
 		else
 		{
-			ofs_ << std::endl << "enum " << state.name_str;
+			ofs_ << std::endl << "enum " << state->name_str;
 		}
 
 		ofs_ << std::endl << "{";
 
-		for (auto& s : state.seqs)
+		for (auto& s : state->value)
 		{
-			if (s.name_str.empty())
+			if (s.empty())
 				continue;
 
-			ofs_ << std::endl << s.name_str << ",";
+			ofs_ << std::endl << '\t' << s << ",";
 		}
 
 		ofs_.seekp(-1, std::ios::cur);
@@ -119,18 +109,25 @@ namespace aquarius
 		ofs_ << std::endl <<  "};";
 	}
 
-	void cpp_generator::generate_message(const statement& state)
+	void cpp_generator::generate_message(message_statement* state)
 	{
-		int result = syntax_error;
-
-		ofs_ << std::endl << "struct " << state.name_str;
+		ofs_ << std::endl << "struct " << state->name_str;
 		ofs_ << std::endl << "{" << std::endl;
-		for (auto& s : state.seqs)
+		for (auto& s : state->seqs)
 		{
-			if (s.type_str.empty())
+			if (s->type_str.empty())
 				continue;
 
-			ofs_ << convert_type(s.type_str) << " " << s.name_str << ";\n";
+			if (s->sub_type == "repeated")
+			{
+				ofs_ << "\tstd::vector<" << convert_type(s->type_str) << ">";
+			}
+			else
+			{
+				ofs_ << '\t' << convert_type(s->type_str);
+			}
+
+			ofs_ << " " <<  s->name_str << ";\n";
 		}
 
 		ofs_ << "};";
@@ -138,43 +135,53 @@ namespace aquarius
 		generate_template(state);
 	}
 
-	void cpp_generator::generate_template(const statement& state)
+	void cpp_generator::generate_template(message_statement* state)
 	{
 		ofs_ << std::endl << "template <>";
-		ofs_ << std::endl << "struct aquarius::reflect<" << state.name_str << ">";
+		ofs_ << std::endl << "struct aquarius::reflect<" << state->name_str << ">";
 		ofs_ << std::endl << "{";
-		ofs_ << std::endl << "constexpr static std::string_view topic()";
-		ofs_ << std::endl << "{";
-		ofs_ << std::endl << "    return \"" << state.name_str << "\"sv;";
-		ofs_ << std::endl << "}";
+		ofs_ << std::endl << "\tconstexpr static std::string_view topic()";
+		ofs_ << std::endl << "\t{";
+		ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
+		ofs_ << std::endl << "\t}";
 		ofs_ << std::endl;
 		ofs_ << std::endl
-			 << "constexpr static std::array<std::string_view, " << state.seqs.size() << "> fields()";
-		ofs_ << std::endl << "{";
-		ofs_ << std::endl << "    return {";
-		for (auto& s : state.seqs)
+			 << "\tconstexpr static std::array<std::string_view, " << state->seqs.size() << "> fields()";
+		ofs_ << std::endl << "\t{";
+		ofs_ << std::endl << "\t\treturn {";
+		for (auto& s : state->seqs)
 		{
-			if (s.name_str.empty())
+			if (s->name_str.empty())
 				continue;
 
-			ofs_ << "\"" << s.name_str << "\"sv, ";
+			ofs_ << "\"" << s->name_str << "\"sv, ";
 		}
 
 		ofs_.seekp(-2, std::ios::cur);
 
 		ofs_ << "};";
 
-		ofs_ << std::endl << "}";
+		ofs_ << std::endl << "\t}";
 
-		ofs_ << std::endl << "};";
+		ofs_ << std::endl << "};\n";
 	}
 
-	void cpp_generator::generate_single(const statement& state)
+	void cpp_generator::generate_single(statement_base* state)
 	{
-		if (state.type_str.empty())
+		if (state->type_str.empty())
 			return;
 
-		ofs_ << std::endl << convert_type(state.type_str) << " " << state.name_str << ";\n";
+		ofs_ << std::endl <<'\t' << convert_type(state->type_str) << " " << state->name_str << ";\n";
+	}
+
+	void cpp_generator::generate_rpc(rpc_statement* state)
+	{
+		ofs_ << "struct " << state->name_str << "\n";
+		ofs_ << "{\n";
+		ofs_ << "\tconstexpr static std::size_t Proto = " << std::hash<std::string>()(state->name_str) << ";\n";
+		ofs_ << "\tusing tcp_request = request<" << state->tcp.req << ">;\n";
+		ofs_ << "\tusing tcp_response = response<" << state->tcp.resp << ">;\n";
+		ofs_ << "};\n";
 	}
 
 	std::string cpp_generator::convert_type(const std::string& type_str)
