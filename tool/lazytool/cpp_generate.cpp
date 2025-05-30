@@ -140,6 +140,7 @@ namespace aquarius
 		ofs_ << std::endl << "template <>";
 		ofs_ << std::endl << "struct aquarius::reflect<" << state->name_str << ">";
 		ofs_ << std::endl << "{";
+		ofs_ << std::endl << "\tusing value_type = " << state->name_str << ";";
 		ofs_ << std::endl << "\tconstexpr static std::string_view topic()";
 		ofs_ << std::endl << "\t{";
 		ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
@@ -181,9 +182,8 @@ namespace aquarius
 	{
 		ofs_ << "struct " << state->name_str << "\n";
 		ofs_ << "{\n";
-		ofs_ << "\tconstexpr static std::size_t Proto = " << std::hash<std::string>()(state->name_str) << ";\n";
-		ofs_ << "\tusing tcp_request = aquarius::ip::tcp::request<" << state->tcp.req << ">;\n";
-		ofs_ << "\tusing tcp_response = aquarius::ip::tcp::response<" << state->tcp.resp << ">;\n";
+		ofs_ << "\tusing tcp_request = aquarius::ip::tcp::request<" << state->tcp.req << ", " <<std::hash<std::string>()(state->tcp.req + "tcp_request") << ">;\n";
+		ofs_ << "\tusing tcp_response = aquarius::ip::tcp::response<" << state->tcp.resp << ", " << std::hash<std::string>()(state->tcp.resp + "tcp_response") << ">;\n";
 		ofs_ << "};\n";
 	}
 
