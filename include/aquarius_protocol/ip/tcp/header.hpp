@@ -87,6 +87,8 @@ namespace aquarius
 				uint32_t crc32_;
 
 				int64_t timestamp_;
+
+				uint64_t uuid_;
 			};
 
 			class request_header : public header_base

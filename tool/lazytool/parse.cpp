@@ -94,6 +94,12 @@ namespace aquarius
 
 		read_keyword(ifs, type_str);
 
+		if (state_ptr)
+		{
+			delete state_ptr;
+			state_ptr = nullptr;
+		}
+
 		if (type_str == "bytes")
 		{
 			state_ptr = new statement_base("std::vector<uint8_t>");
@@ -197,11 +203,9 @@ namespace aquarius
 
 	void parse::read_repeated(std::fstream& ifs, statement_base* state_ptr)
 	{
+		parse_message_statement(ifs, state_ptr);
+
 		state_ptr->sub_type = "repeated";
-
-		read_keyword(ifs, state_ptr->type_str);
-
-		read_value(ifs, state_ptr->name_str);
 	}
 
 	void parse::log(const std::string& str, int line)

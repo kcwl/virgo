@@ -49,6 +49,7 @@ namespace aquarius
 
 	void cpp_generator::generate_header()
 	{
+		ofs_ << "#pragma once\n";
 		ofs_ << "#include <aquarius_protocol.hpp>\n\n";
 	}
 
