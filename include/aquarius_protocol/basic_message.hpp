@@ -24,31 +24,24 @@ namespace aquarius
 			, base_body_type()
 		{}
 
-		template <typename... Args>
-		basic_message(Args&&... args)
-			: header_type()
-			, base_body_type(std::forward<Args>(args)...)
-		{}
-
 		basic_message(const basic_message&) = default;
 
 		basic_message& operator=(const basic_message&) = default;
 
 		basic_message(basic_message&& other) noexcept
-			: basic_message()
+			: header_type(std::move(other))
+			, base_body_type(boost::empty_init, std::move(other.get()))
 		{
-			*this = std::move(static_cast<header_type>(other));
 
-			body_type{ other.get() }.swap(this->get());
 		}
 
 		basic_message& operator=(basic_message&& other) noexcept
 		{
 			if (this != std::addressof(other))
 			{
-				*this = std::move(static_cast<header_type>(other));
+				header_type::operator=(std::move(other));
 
-				body_type{ other.get() }.swap(this->get());
+				this->get() = std::move(other.get());
 			}
 
 			return *this;

@@ -227,6 +227,11 @@ namespace aquarius
 					return os;
 				}
 
+				void set_result(uint32_t result)
+				{
+					result_ = result;
+				}
+
 			public:
 				template <typename Buffer>
 				void to_binary(Buffer& ar)

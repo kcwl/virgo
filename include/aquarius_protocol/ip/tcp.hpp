@@ -12,6 +12,8 @@ namespace aquarius
 			class request : public basic_message<request_header, Body, Number>
 			{
 				using base_type = basic_message<request_header, Body, Number>;
+			public:
+				static constexpr std::size_t proto = Number;
 
 			public:
 				request() = default;
@@ -34,6 +36,8 @@ namespace aquarius
 			class response : public basic_message<response_header, Body, Number>
 			{
 				using base_type = basic_message<response_header, Body, Number>;
+			public:
+				static constexpr std::size_t proto = Number;
 
 			public:
 				response() = default;
