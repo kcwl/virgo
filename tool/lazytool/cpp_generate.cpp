@@ -49,6 +49,7 @@ namespace aquarius
 
 	void cpp_generator::generate_header()
 	{
+		ofs_ << "#pragma once\n";
 		ofs_ << "#include <aquarius_protocol.hpp>\n\n";
 	}
 
@@ -140,6 +141,7 @@ namespace aquarius
 		ofs_ << std::endl << "template <>";
 		ofs_ << std::endl << "struct aquarius::reflect<" << state->name_str << ">";
 		ofs_ << std::endl << "{";
+		ofs_ << std::endl << "\tusing value_type = " << state->name_str << ";";
 		ofs_ << std::endl << "\tconstexpr static std::string_view topic()";
 		ofs_ << std::endl << "\t{";
 		ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
@@ -157,7 +159,10 @@ namespace aquarius
 			ofs_ << "\"" << s->name_str << "\"sv, ";
 		}
 
-		ofs_.seekp(-2, std::ios::cur);
+		if (!state->seqs.empty())
+		{
+			ofs_.seekp(-2, std::ios::cur);
+		}
 
 		ofs_ << "};";
 
@@ -178,9 +183,8 @@ namespace aquarius
 	{
 		ofs_ << "struct " << state->name_str << "\n";
 		ofs_ << "{\n";
-		ofs_ << "\tconstexpr static std::size_t Proto = " << std::hash<std::string>()(state->name_str) << ";\n";
-		ofs_ << "\tusing tcp_request = request<" << state->tcp.req << ">;\n";
-		ofs_ << "\tusing tcp_response = response<" << state->tcp.resp << ">;\n";
+		ofs_ << "\tusing tcp_request = aquarius::ip::tcp::request<" << state->tcp.req << ", " <<std::hash<std::string>()(state->tcp.req + "tcp_request") << ">;\n";
+		ofs_ << "\tusing tcp_response = aquarius::ip::tcp::response<" << state->tcp.resp << ", " << std::hash<std::string>()(state->tcp.resp + "tcp_response") << ">;\n";
 		ofs_ << "};\n";
 	}
 
