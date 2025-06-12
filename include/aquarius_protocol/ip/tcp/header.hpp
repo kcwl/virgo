@@ -19,16 +19,19 @@ namespace aquarius
 				header_base()
 					: crc32_(0)
 					, timestamp_(0)
+					, uuid_(0)
 				{}
 
 				header_base(const header_base& other)
 					: crc32_(other.crc32_)
 					, timestamp_(other.timestamp_)
+					, uuid_(other.uuid_)
 				{}
 
 				header_base(header_base&& other)
 					: crc32_(std::exchange(other.crc32_, 0))
 					, timestamp_(std::exchange(other.timestamp_, 0))
+					, uuid_(std::exchange(other.uuid_, 0))
 				{}
 
 				header_base& operator=(const header_base& other)
@@ -38,6 +41,8 @@ namespace aquarius
 						crc32_ = other.crc32_;
 
 						timestamp_ = other.timestamp_;
+
+						uuid_ = other.uuid_;
 					}
 
 					return *this;
@@ -50,6 +55,8 @@ namespace aquarius
 						crc32_ = std::exchange(other.crc32_, 0);
 
 						timestamp_ = std::exchange(other.timestamp_, 0);
+
+						uuid_ = std::exchange(other.uuid_, 0);
 					}
 
 					return *this;
@@ -96,16 +103,14 @@ namespace aquarius
 				using base_type = header_base;
 
 			public:
-				request_header()
-					: type()
-				{}
+				request_header() = default;
 
 				request_header(const request_header& other)
 					: base_type(other)
 					, type(other.type)
 				{}
 
-				request_header(request_header&& other)
+				request_header(request_header&& other) noexcept
 					: base_type(std::move(other))
 					, type(std::exchange(other.type, 0))
 				{}
@@ -227,6 +232,11 @@ namespace aquarius
 					os << result_;
 
 					return os;
+				}
+
+				void set_result(uint32_t result)
+				{
+					result_ = result;
 				}
 
 			public:
