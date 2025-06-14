@@ -65,9 +65,9 @@ namespace aquarius
 	};
 
 	template <typename Body, std::size_t Number>
-	class tcp_request : public basic_message<tcp_request_header, Body, Number>
+	class tcp_request : public detail::basic_message<tcp_request_header, Body, Number>
 	{
-		using base_type = basic_message<tcp_request_header, Body, Number>;
+		using base_type = detail::basic_message<tcp_request_header, Body, Number>;
 
 	public:
 		static constexpr std::size_t proto = Number;
