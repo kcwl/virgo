@@ -7,22 +7,19 @@ namespace aquarius
 {
 	namespace detail
 	{
-		template <typename Header, typename Body, std::size_t Number>
-		class basic_message : public Header, public boost::empty_value<Body>
+		template <typename Protocol, typename Body>
+		class basic_message : public Protocol, public boost::empty_value<Body>
 		{
-			using header_type = Header;
+			using header_type = typename Protocol::header;
 
 			using body_type = Body;
 
-			using base_body_type = boost::empty_value<body_type>;
-
-		public:
-			inline constexpr static std::size_t proto = Number;
+			using base_body = boost::empty_value<body_type>;
 
 		public:
 			basic_message()
 				: header_type()
-				, base_body_type()
+				, base_body()
 			{}
 
 			basic_message(const basic_message&) = default;
@@ -31,7 +28,7 @@ namespace aquarius
 
 			basic_message(basic_message&& other) noexcept
 				: header_type(std::move(other))
-				, base_body_type(boost::empty_init, std::move(other.get()))
+				, base_body(boost::empty_init, std::move(other.get()))
 			{}
 
 			basic_message& operator=(basic_message&& other) noexcept
@@ -56,8 +53,6 @@ namespace aquarius
 
 			std::ostream& operator<<(std::ostream& os) const
 			{
-				os << proto;
-
 				os << header();
 
 				os << body();
@@ -88,9 +83,7 @@ namespace aquarius
 
 			bool to_binary(const std::vector<char>& completed_buffer)
 			{
-				serialize::to_binary(proto, completed_buffer);
-
-				header()->to_binary(completed_buffer);
+				header_type::to_binary(completed_buffer);
 
 				serialize::to_binary<body_type>(this->get(), completed_buffer);
 
@@ -99,12 +92,7 @@ namespace aquarius
 
 			bool from_binary(const std::vector<char>& completed_buffer)
 			{
-				std::size_t proto_number = serialize::from_binary<std::size_t>(completed_buffer);
-
-				if (proto_number != proto)
-					return false;
-
-				header()->from_binary(completed_buffer);
+				header_type::from_binary(completed_buffer);
 
 				this->get() = serialize::from_binary<body_type>(completed_buffer);
 

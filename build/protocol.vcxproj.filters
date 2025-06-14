@@ -44,10 +44,10 @@
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\tcp_request.hpp">
+    <ClInclude Include="..\include\aquarius_protocol\basic_request.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\tcp_response.hpp">
+    <ClInclude Include="..\include\aquarius_protocol\basic_response.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\detail\basic_message.hpp">
@@ -55,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\detail\header_base.hpp">
       <Filter>头文件\aquarius_protocol\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\tcp_header.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

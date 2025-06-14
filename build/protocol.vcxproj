@@ -141,8 +141,9 @@
     <ClInclude Include="..\include\aquarius_protocol\json.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\reflect_helper.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\tcp_request.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\tcp_response.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\tcp_header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_request.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_response.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
