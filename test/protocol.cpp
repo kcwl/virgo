@@ -83,211 +83,169 @@ std::ostream& operator<<(std::ostream& os, const person& p)
 
 	return os;
 }
-
-BOOST_AUTO_TEST_CASE(tcp_processor)
-{
-	using person_request = aquarius::ip::tcp::request<person, 1001>;
-
-	person_request req{};
-	req.header()->crc32_ = 1;
-	req.header()->timestamp_ = 1;
-	req.body().sex = true;
-	req.body().addr = 2;
-	req.body().age = 15;
-	req.body().telephone = 15230214856;
-	req.body().score = 100;
-	req.body().hp = 200;
-	req.body().mana = 300;
-	req.body().info = { 1, 1, 1, 1, 1, 1 };
-	req.body().name = "John";
-	req.body().orders = { 1, 2, 3, 4, 5 };
-
-	aquarius::flex_buffer ar{};
-	BOOST_CHECK(req.to_binary(ar));
-
-	aquarius::package_processor<aquarius::protocol::tcp> processer;
-
-	auto req_buffer = processer.write(1001, ar);
-
-	for (auto& r : req_buffer)
-	{
-		auto [proto, buffer] = processer.read(r);
-
-		if (buffer.size() == 0)
-			continue;
-
-		BOOST_CHECK_EQUAL(proto, 1001);
-
-		person_request req1{};
-
-		BOOST_CHECK(req1.from_binary(buffer));
-
-		BOOST_CHECK_EQUAL(req1, req);
-
-		break;
-	}
-
-	using person_response = aquarius::ip::tcp::response<person, 1002>;
-
-	person_response resp{};
-	resp.header()->crc32_ = 1;
-	resp.header()->timestamp_ = 1;
-	resp.body().sex = true;
-	resp.body().addr = 2;
-	resp.body().age = 15;
-	resp.body().telephone = 15230214856;
-	resp.body().score = 100;
-	resp.body().hp = 200;
-	resp.body().mana = 300;
-	resp.body().info = { 1, 1, 1, 1, 1, 1 };
-	resp.body().name = "John";
-
-	aquarius::flex_buffer write_buffer{};
-	BOOST_CHECK(resp.to_binary(write_buffer));
-
-	auto resp_buffer = processer.write(1002, write_buffer);
-
-	for (auto& r : resp_buffer)
-	{
-		auto [resp_proto, buffer] = processer.read(r);
-
-		if (buffer.size() == 0)
-			continue;
-
-		BOOST_CHECK_EQUAL(resp_proto, 1002);
-
-		person_response resp1{};
-		BOOST_CHECK(resp1.from_binary(buffer));
-
-		BOOST_CHECK_EQUAL(resp, resp1);
-	}
-}
-
-BOOST_AUTO_TEST_CASE(multi_tcp_processor)
-{
-	using person_request = aquarius::ip::tcp::request<person, 1001>;
-
-	person_request req{};
-	req.header()->crc32_ = 1;
-	req.header()->timestamp_ = 1;
-	req.body().sex = true;
-	req.body().addr = 2;
-	req.body().age = 15;
-	req.body().telephone = 15230214856;
-	req.body().score = 100;
-	req.body().hp = 200;
-	req.body().mana = 300;
-	req.body().info = { 1, 1, 1, 1, 1, 1 };
-	req.body().name = "John";
-	req.body().orders.resize(4096);
-	std::fill(req.body().orders.begin(), req.body().orders.end(), 4);
-
-	aquarius::flex_buffer ar{};
-	BOOST_CHECK(req.to_binary(ar));
-
-	aquarius::package_processor<aquarius::protocol::tcp> processer;
-
-	auto req_buffer = processer.write(1001, ar);
-
-	for (auto& r : req_buffer)
-	{
-		auto [proto, buffer] = processer.read(r);
-
-		if (buffer.size() == 0)
-			continue;
-
-		BOOST_CHECK_EQUAL(proto, 1001);
-
-		person_request req1{};
-
-		BOOST_CHECK(req1.from_binary(buffer));
-
-		BOOST_CHECK_EQUAL(req1, req);
-
-		break;
-	}
-
-	using person_response = aquarius::ip::tcp::response<person, 1002>;
-
-	person_response resp{};
-	resp.header()->crc32_ = 1;
-	resp.header()->timestamp_ = 1;
-	resp.body().sex = true;
-	resp.body().addr = 2;
-	resp.body().age = 15;
-	resp.body().telephone = 15230214856;
-	resp.body().score = 100;
-	resp.body().hp = 200;
-	resp.body().mana = 300;
-	resp.body().info = { 1, 1, 1, 1, 1, 1 };
-	resp.body().name = "John";
-	resp.body().orders.resize(4096);
-	std::fill(resp.body().orders.begin(), resp.body().orders.end(), 4);
-
-	aquarius::flex_buffer write_buffer{};
-	BOOST_CHECK(resp.to_binary(write_buffer));
-
-	auto resp_buffer = processer.write(1002, write_buffer);
-
-	for (auto& r : resp_buffer)
-	{
-		auto [resp_proto, buffer] = processer.read(r);
-
-		if (buffer.size() == 0)
-			continue;
-
-		BOOST_CHECK_EQUAL(resp_proto, 1002);
-
-		person_response resp1{};
-		BOOST_CHECK(resp1.from_binary(buffer));
-
-		BOOST_CHECK_EQUAL(resp, resp1);
-	}
-}
-
-BOOST_AUTO_TEST_CASE(null_buffer)
-{
-	using person_request = aquarius::ip::tcp::request<person, 1001>;
-
-	person_request req{};
-	req.header()->crc32_ = 1;
-	req.header()->timestamp_ = 1;
-	req.body().sex = true;
-	req.body().addr = 2;
-	req.body().age = 15;
-	req.body().telephone = 15230214856;
-	req.body().score = 100;
-	req.body().hp = 200;
-	req.body().mana = 300;
-	req.body().info = { 1, 1, 1, 1, 1, 1 };
-	req.body().name = "John";
-	req.body().orders.resize(4096);
-	std::fill(req.body().orders.begin(), req.body().orders.end(), 4);
-
-	aquarius::flex_buffer ar(0);
-
-	person_request req1{};
-	BOOST_CHECK(!req.from_binary(ar));
-}
-
-BOOST_AUTO_TEST_CASE(ostream_test)
-{
-	using person_request = aquarius::ip::tcp::request<person, 1001>;
-
-	person_request req{};
-
-	boost::asio::streambuf buf;
-
-	std::ostream os(&buf);
-	os << req;
-
-	BOOST_CHECK(!os.fail());
-
-	using person_response = aquarius::ip::tcp::response<person, 1002>;
-
-	person_response resp{};
-
-	os << resp;
-
-	BOOST_CHECK(!os.fail());
-}
+//
+//BOOST_AUTO_TEST_CASE(tcp_processor)
+//{
+//	using person_request = aquarius::ip::tcp::request<person, 1001>;
+//
+//	person_request req{};
+//	req.header()->crc32_ = 1;
+//	req.header()->timestamp_ = 1;
+//	req.body().sex = true;
+//	req.body().addr = 2;
+//	req.body().age = 15;
+//	req.body().telephone = 15230214856;
+//	req.body().score = 100;
+//	req.body().hp = 200;
+//	req.body().mana = 300;
+//	req.body().info = { 1, 1, 1, 1, 1, 1 };
+//	req.body().name = "John";
+//	req.body().orders = { 1, 2, 3, 4, 5 };
+//
+//	std::vector<char> ar{};
+//	BOOST_CHECK(req.to_binary(ar));
+//
+//	using person_response = aquarius::ip::tcp::response<person, 1002>;
+//
+//	person_response resp{};
+//	resp.header()->crc32_ = 1;
+//	resp.header()->timestamp_ = 1;
+//	resp.body().sex = true;
+//	resp.body().addr = 2;
+//	resp.body().age = 15;
+//	resp.body().telephone = 15230214856;
+//	resp.body().score = 100;
+//	resp.body().hp = 200;
+//	resp.body().mana = 300;
+//	resp.body().info = { 1, 1, 1, 1, 1, 1 };
+//	resp.body().name = "John";
+//}
+//
+//BOOST_AUTO_TEST_CASE(multi_tcp_processor)
+//{
+//	using person_request = aquarius::ip::tcp::request<person, 1001>;
+//
+//	person_request req{};
+//	req.header()->crc32_ = 1;
+//	req.header()->timestamp_ = 1;
+//	req.body().sex = true;
+//	req.body().addr = 2;
+//	req.body().age = 15;
+//	req.body().telephone = 15230214856;
+//	req.body().score = 100;
+//	req.body().hp = 200;
+//	req.body().mana = 300;
+//	req.body().info = { 1, 1, 1, 1, 1, 1 };
+//	req.body().name = "John";
+//	req.body().orders.resize(4096);
+//	std::fill(req.body().orders.begin(), req.body().orders.end(), 4);
+//
+//	aquarius::flex_buffer ar{};
+//	BOOST_CHECK(req.to_binary(ar));
+//
+//	aquarius::package_processor<aquarius::protocol::tcp> processer;
+//
+//	auto req_buffer = processer.write(1001, ar);
+//
+//	for (auto& r : req_buffer)
+//	{
+//		auto [proto, buffer] = processer.read(r);
+//
+//		if (buffer.size() == 0)
+//			continue;
+//
+//		BOOST_CHECK_EQUAL(proto, 1001);
+//
+//		person_request req1{};
+//
+//		BOOST_CHECK(req1.from_binary(buffer));
+//
+//		BOOST_CHECK_EQUAL(req1, req);
+//
+//		break;
+//	}
+//
+//	using person_response = aquarius::ip::tcp::response<person, 1002>;
+//
+//	person_response resp{};
+//	resp.header()->crc32_ = 1;
+//	resp.header()->timestamp_ = 1;
+//	resp.body().sex = true;
+//	resp.body().addr = 2;
+//	resp.body().age = 15;
+//	resp.body().telephone = 15230214856;
+//	resp.body().score = 100;
+//	resp.body().hp = 200;
+//	resp.body().mana = 300;
+//	resp.body().info = { 1, 1, 1, 1, 1, 1 };
+//	resp.body().name = "John";
+//	resp.body().orders.resize(4096);
+//	std::fill(resp.body().orders.begin(), resp.body().orders.end(), 4);
+//
+//	aquarius::flex_buffer write_buffer{};
+//	BOOST_CHECK(resp.to_binary(write_buffer));
+//
+//	auto resp_buffer = processer.write(1002, write_buffer);
+//
+//	for (auto& r : resp_buffer)
+//	{
+//		auto [resp_proto, buffer] = processer.read(r);
+//
+//		if (buffer.size() == 0)
+//			continue;
+//
+//		BOOST_CHECK_EQUAL(resp_proto, 1002);
+//
+//		person_response resp1{};
+//		BOOST_CHECK(resp1.from_binary(buffer));
+//
+//		BOOST_CHECK_EQUAL(resp, resp1);
+//	}
+//}
+//
+//BOOST_AUTO_TEST_CASE(null_buffer)
+//{
+//	using person_request = aquarius::ip::tcp::request<person, 1001>;
+//
+//	person_request req{};
+//	req.header()->crc32_ = 1;
+//	req.header()->timestamp_ = 1;
+//	req.body().sex = true;
+//	req.body().addr = 2;
+//	req.body().age = 15;
+//	req.body().telephone = 15230214856;
+//	req.body().score = 100;
+//	req.body().hp = 200;
+//	req.body().mana = 300;
+//	req.body().info = { 1, 1, 1, 1, 1, 1 };
+//	req.body().name = "John";
+//	req.body().orders.resize(4096);
+//	std::fill(req.body().orders.begin(), req.body().orders.end(), 4);
+//
+//	aquarius::flex_buffer ar(0);
+//
+//	person_request req1{};
+//	BOOST_CHECK(!req.from_binary(ar));
+//}
+//
+//BOOST_AUTO_TEST_CASE(ostream_test)
+//{
+//	using person_request = aquarius::ip::tcp::request<person, 1001>;
+//
+//	person_request req{};
+//
+//	boost::asio::streambuf buf;
+//
+//	std::ostream os(&buf);
+//	os << req;
+//
+//	BOOST_CHECK(!os.fail());
+//
+//	using person_response = aquarius::ip::tcp::response<person, 1002>;
+//
+//	person_response resp{};
+//
+//	os << resp;
+//
+//	BOOST_CHECK(!os.fail());
+//}

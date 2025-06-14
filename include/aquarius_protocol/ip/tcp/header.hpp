@@ -79,15 +79,15 @@ namespace aquarius
 				template <typename Buffer>
 				void to_binary(Buffer& ar)
 				{
-					binary::to(ar, crc32_);
-					binary::to(ar, timestamp_);
+					serialize::to_binary(ar, crc32_);
+					serialize::to_binary(ar, timestamp_);
 				}
 
 				template <typename Buffer>
 				void from_binary(Buffer& ar)
 				{
-					crc32_ = binary::from<uint32_t>(ar);
-					timestamp_ = binary::from<int64_t>(ar);
+					crc32_ = serialize::from_binary<uint32_t>(ar);
+					timestamp_ = serialize::from_binary<int64_t>(ar);
 				}
 
 			public:
@@ -160,7 +160,7 @@ namespace aquarius
 				{
 					base_type::to_binary(ar);
 
-					binary::to(ar, type);
+					serialize::to_binary(ar, type);
 				}
 
 				template <typename Buffer>
@@ -168,7 +168,7 @@ namespace aquarius
 				{
 					base_type::from_binary(ar);
 
-					type = binary::from<uint32_t>(ar);
+					type = serialize::from_binary<uint32_t>(ar);
 				}
 
 			public:
@@ -245,7 +245,7 @@ namespace aquarius
 				{
 					base_type::to_binary(ar);
 
-					binary::to(ar, result_);
+					serialize::to_binary(ar, result_);
 				}
 
 				template <typename Buffer>
@@ -253,7 +253,7 @@ namespace aquarius
 				{
 					base_type::from_binary(ar);
 
-					result_ = binary::from<uint32_t>(ar);
+					result_ = serialize::from_binary<uint32_t>(ar);
 				}
 
 			public:

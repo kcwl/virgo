@@ -54,5 +54,6 @@ namespace aquarius
 	{
 		using type = uint8_t;
 	};
-
+	template<typename T>
+	concept zig_zag = disjunction_same_as<T, int8_t, int16_t, int32_t, int64_t>;
 } // namespace aquarius

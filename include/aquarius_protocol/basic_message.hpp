@@ -1,7 +1,6 @@
 #pragma once
 #include <aquarius_protocol/binary.hpp>
 #include <aquarius_protocol/concepts.hpp>
-#include <aquarius_protocol/ip/flex_buffer.hpp>
 #include <boost/core/empty_value.hpp>
 
 namespace aquarius
@@ -31,9 +30,7 @@ namespace aquarius
 		basic_message(basic_message&& other) noexcept
 			: header_type(std::move(other))
 			, base_body_type(boost::empty_init, std::move(other.get()))
-		{
-
-		}
+		{}
 
 		basic_message& operator=(basic_message&& other) noexcept
 		{
@@ -87,27 +84,27 @@ namespace aquarius
 			return this->get();
 		}
 
-		bool to_binary(flex_buffer& completed_buffer)
+		bool to_binary(const std::vector<char>& completed_buffer)
 		{
-			binary::to(completed_buffer, proto);
+			serialize::to_binary(proto, completed_buffer);
 
 			header()->to_binary(completed_buffer);
 
-			binary::to<body_type>(completed_buffer, this->get());
+			serialize::to_binary<body_type>(this->get(), completed_buffer);
 
 			return true;
 		}
 
-		bool from_binary(flex_buffer& completed_buffer)
+		bool from_binary(const std::vector<char>& completed_buffer)
 		{
-			std::size_t proto_number = binary::from<std::size_t>(completed_buffer);
+			std::size_t proto_number = serialize::from_binary<std::size_t>(completed_buffer);
 
 			if (proto_number != proto)
 				return false;
 
 			header()->from_binary(completed_buffer);
 
-			this->get() = binary::from<body_type>(completed_buffer);
+			this->get() = serialize::from_binary<body_type>(completed_buffer);
 
 			return true;
 		}
