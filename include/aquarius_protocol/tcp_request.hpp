@@ -4,9 +4,10 @@
 
 namespace aquarius
 {
-	class tcp_request_header : public detail::header_base
+	template<typename Raw>
+	class tcp_request_header : public detail::header_base<Raw>
 	{
-		using base_type = detail::header_base;
+		using base_type = detail::header_base<Raw>;
 
 	public:
 		tcp_request_header() = default;
@@ -64,10 +65,10 @@ namespace aquarius
 		}
 	};
 
-	template <typename Body, std::size_t Number>
-	class tcp_request : public detail::basic_message<tcp_request_header, Body, Number>
+	template <typename Raw, typename Body, std::size_t Number>
+	class tcp_request : public detail::basic_message<tcp_request_header<Raw>, Body, Number>
 	{
-		using base_type = detail::basic_message<tcp_request_header, Body, Number>;
+		using base_type = detail::basic_message<tcp_request_header<Raw>, Body, Number>;
 
 	public:
 		static constexpr std::size_t proto = Number;
@@ -92,7 +93,8 @@ namespace aquarius
 
 namespace std
 {
-	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_request_header& other)
+	template<typename Raw>
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_request_header<Raw>& other)
 	{
 		other << os;
 

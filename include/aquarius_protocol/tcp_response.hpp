@@ -4,9 +4,10 @@
 
 namespace aquarius
 {
-	class tcp_response_header : public detail::header_base
+	template<typename Raw>
+	class tcp_response_header : public detail::header_base<Raw>
 	{
-		using base_type = detail::header_base;
+		using base_type = detail::header_base<Raw>;
 
 	public:
 		tcp_response_header()
@@ -88,10 +89,10 @@ namespace aquarius
 		uint32_t result_;
 	};
 
-	template <typename Body, std::size_t Number>
-	class tcp_response : public detail::basic_message<tcp_response_header, Body, Number>
+	template <typename Raw, typename Body, std::size_t Number>
+	class tcp_response : public detail::basic_message<tcp_response_header<Raw>, Body, Number>
 	{
-		using base_type = detail::basic_message<tcp_response_header, Body, Number>;
+		using base_type = detail::basic_message<tcp_response_header<Raw>, Body, Number>;
 
 	public:
 		static constexpr std::size_t proto = Number;
@@ -116,7 +117,8 @@ namespace aquarius
 
 namespace std
 {
-	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_response_header& other)
+	template<typename Raw>
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_response_header<Raw>& other)
 	{
 		other << os;
 

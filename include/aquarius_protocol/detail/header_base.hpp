@@ -9,7 +9,8 @@ namespace aquarius
 {
 	namespace detail
 	{
-		class header_base
+		template<typename Raw>
+		class header_base : public Raw
 		{
 		public:
 			header_base()
