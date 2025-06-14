@@ -68,7 +68,7 @@ namespace aquarius
 
 			read_enum(ifs, static_cast<enum_statement*>(state_ptr));
 		}
-		else if (type_str == "rpc")
+		else if (type_str == "tcp" || type_str == "udp" || type_str == "http")
 		{
 			state_ptr = new rpc_statement(type_str);
 
@@ -169,35 +169,22 @@ namespace aquarius
 
 		std::string key_word{};
 
-		while (!ifs.eof())
+		read_keyword(ifs, key_word);
+
+		if (key_word == "rpc")
 		{
-			if (read_for_end(ifs))
-				break;
-
+			read_keyword(ifs, state_ptr->rpc.req);
 			read_keyword(ifs, key_word);
+			read_value(ifs, state_ptr->rpc.resp);
+		}
+		else
+		{
+			throw std::runtime_error("read_rpc maybe keword is not support!");
+		}
 
-			if (key_word == "tcp")
-			{
-				read_keyword(ifs, state_ptr->tcp.req);
-				read_keyword(ifs, key_word);
-				read_value(ifs, state_ptr->tcp.resp);
-			}
-			else if (key_word == "udp")
-			{
-				read_keyword(ifs, state_ptr->udp.req);
-				read_keyword(ifs, key_word);
-				read_value(ifs, state_ptr->udp.resp);
-			}
-			else if (key_word == "http")
-			{
-				read_keyword(ifs, state_ptr->udp.req);
-				read_keyword(ifs, key_word);
-				read_value(ifs, state_ptr->udp.resp);
-			}
-			else
-			{
-				throw std::runtime_error("read_rpc maybe keword is not support!");
-			}
+		if (!read_for_end(ifs))
+		{
+			throw std::runtime_error("read_rpc maybe not end!");
 		}
 	}
 
