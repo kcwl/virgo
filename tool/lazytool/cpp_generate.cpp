@@ -33,7 +33,7 @@ namespace aquarius
 		{
 			generate_enum(static_cast<enum_statement*>(state));
 		}
-		else if (type_str == "rpc")
+		else if (type_str == "tcp" || type_str == "udp" || type_str == "http")
 		{
 			generate_rpc(static_cast<rpc_statement*>(state));
 		}
@@ -107,7 +107,7 @@ namespace aquarius
 
 		ofs_.seekp(-1, std::ios::cur);
 
-		ofs_ << std::endl <<  "};";
+		ofs_ << std::endl << "};";
 	}
 
 	void cpp_generator::generate_message(message_statement* state)
@@ -128,7 +128,7 @@ namespace aquarius
 				ofs_ << '\t' << convert_type(s->type_str);
 			}
 
-			ofs_ << " " <<  s->name_str << ";\n";
+			ofs_ << " " << s->name_str << ";\n";
 		}
 
 		ofs_ << "};";
@@ -147,8 +147,7 @@ namespace aquarius
 		ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
 		ofs_ << std::endl << "\t}";
 		ofs_ << std::endl;
-		ofs_ << std::endl
-			 << "\tconstexpr static std::array<std::string_view, " << state->seqs.size() << "> fields()";
+		ofs_ << std::endl << "\tconstexpr static std::array<std::string_view, " << state->seqs.size() << "> fields()";
 		ofs_ << std::endl << "\t{";
 		ofs_ << std::endl << "\t\treturn {";
 		for (auto& s : state->seqs)
@@ -176,16 +175,24 @@ namespace aquarius
 		if (state->type_str.empty())
 			return;
 
-		ofs_ << std::endl <<'\t' << convert_type(state->type_str) << " " << state->name_str << ";\n";
+		ofs_ << std::endl << '\t' << convert_type(state->type_str) << " " << state->name_str << ";\n";
 	}
 
 	void cpp_generator::generate_rpc(rpc_statement* state)
 	{
-		ofs_ << "struct " << state->name_str << "\n";
-		ofs_ << "{\n";
-		ofs_ << "\tusing tcp_request = aquarius::ip::tcp::request<" << state->tcp.req << ", " <<std::hash<std::string>()(state->tcp.req + "tcp_request") << ">;\n";
-		ofs_ << "\tusing tcp_response = aquarius::ip::tcp::response<" << state->tcp.resp << ", " << std::hash<std::string>()(state->tcp.resp + "tcp_response") << ">;\n";
-		ofs_ << "};\n";
+		std::string protocl("tcp");
+
+		if (state->type_str == "udp")
+		{
+			protocl = "udp";
+		}
+		else if (state->type_str == "http")
+		{
+			protocl = "http";
+		}
+
+		ofs_ << " using rpc_" << state->name_str << " = aquarius::basic_rpc<aquarius::" << protocl << ", "
+			 << state->rpc.req << ">, aquarius::basic_rpc<aquarius::tcp, " << state->rpc.resp << ">;\n";
 	}
 
 	std::string cpp_generator::convert_type(const std::string& type_str)

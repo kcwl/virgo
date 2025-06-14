@@ -16,11 +16,8 @@
     <Filter Include="头文件\aquarius_protocol">
       <UniqueIdentifier>{6d6093c5-0beb-4408-8ae9-60aa68983305}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\aquarius_protocol\ip">
-      <UniqueIdentifier>{887a0085-c08d-4ecf-9109-e59b00729ff4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\aquarius_protocol\ip\tcp">
-      <UniqueIdentifier>{7095afad-0f0a-40d7-b14a-82ca3af6ffed}</UniqueIdentifier>
+    <Filter Include="头文件\aquarius_protocol\detail">
+      <UniqueIdentifier>{a33e8c38-186b-430e-9481-2f93f1e43185}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,9 +28,6 @@
   <ItemGroup>
     <ClInclude Include="..\include\aquarius_protocol.hpp">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\include\aquarius_protocol\binary.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
@@ -50,23 +44,23 @@
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\ip\tcp.hpp">
-      <Filter>头文件\aquarius_protocol\ip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\header.hpp">
-      <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\package_processor.hpp">
+    <ClInclude Include="..\include\aquarius_protocol\basic_request.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\ip\tcp\package_processor.hpp">
-      <Filter>头文件\aquarius_protocol\ip\tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_flex_buffer.hpp">
+    <ClInclude Include="..\include\aquarius_protocol\basic_response.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\ip\flex_buffer.hpp">
-      <Filter>头文件\aquarius_protocol\ip</Filter>
+    <ClInclude Include="..\include\aquarius_protocol\detail\basic_message.hpp">
+      <Filter>头文件\aquarius_protocol\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\detail\header_base.hpp">
+      <Filter>头文件\aquarius_protocol\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\tcp_header.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\basic_rpc.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

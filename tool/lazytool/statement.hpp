@@ -58,8 +58,6 @@ namespace aquarius
 			std::string resp;
 		};
 
-		impl_type tcp;
-		impl_type udp;
-		impl_type http;
+		impl_type rpc;
 	};
 }

@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <boost/asio/buffer.hpp>
 
 namespace aquarius
 {
@@ -10,13 +11,7 @@ namespace aquarius
 	concept disjunction_same_as = std::disjunction_v<std::is_same<std::remove_cvref_t<T>, Args>...>;
 
 	template <typename T>
-	concept integer_t = disjunction_same_as<T, int8_t, int16_t, int32_t, int64_t>;
-
-	template <typename T>
-	concept uinteger_t = disjunction_same_as<T, uint8_t, uint16_t, uint32_t, uint64_t>;
-
-	template <typename T>
-	concept float_t = disjunction_same_as<std::remove_cvref_t<T>, float, double>;
+	concept integer_t = disjunction_same_as<T, uint8_t, uint16_t, uint32_t, uint64_t>;
 
 	template <typename T>
 	struct is_vector : std::false_type
@@ -40,19 +35,6 @@ namespace aquarius
 	template <typename T>
 	concept repeated_t = is_vector<std::remove_cvref_t<T>>::value;
 
-	template <typename T>
-	concept boolean_t = std::same_as<std::remove_cvref_t<T>, bool>;
-
-	template <typename T>
-	struct convert_stream_value_type
-	{
-		using type = T;
-	};
-
-	template <>
-	struct convert_stream_value_type<char>
-	{
-		using type = uint8_t;
-	};
-
+	template<typename T>
+	concept zig_zag = disjunction_same_as<T, int8_t, int16_t, int32_t, int64_t>;
 } // namespace aquarius
