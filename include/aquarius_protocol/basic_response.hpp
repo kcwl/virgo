@@ -3,10 +3,12 @@
 
 namespace aquarius
 {
-	template <typename Protocl, typename Body>
-	class basic_response : public detail::basic_message<Protocl, Body>
+	template <typename Protocol, typename Body>
+	class basic_response : public detail::basic_message<Protocol, Body>
 	{
-		using base_type = detail::basic_message<Protocl, Body>;
+		using base_type = detail::basic_message<Protocol, Body>;
+
+		using header_type = typename Protocol::response_header;
 
 	public:
 		basic_response() = default;
@@ -14,14 +16,52 @@ namespace aquarius
 	public:
 		bool operator==(const basic_response& other) const
 		{
-			return base_type::operator==(other);
+			return base_type::operator==(other) && header() == other.header();
 		}
 
 		std::ostream& operator<<(std::ostream& os) const
 		{
+			header_ << os;
+
 			base_type::operator<<(os);
 
 			return os;
 		}
+
+	public:
+		const header_type& header() const
+		{
+			return header_;
+		}
+
+		header_type* header()
+		{
+			return &header_;
+		}
+
+		virtual bool pack(std::vector<char>& completed_buffer)
+		{
+			if (!header_.pack(completed_buffer))
+				return false;
+
+			if (!base_type::pack(completed_buffer))
+				return false;
+
+			return true;
+		}
+
+		virtual bool unpack(const std::vector<char>& completed_buffer)
+		{
+			if (!header_.unpack(completed_buffer))
+				return false;
+
+			if (!Protocol::unpack(completed_buffer))
+				return false;
+
+			return true;
+		}
+
+	private:
+		header_type header_;
 	};
 } // namespace aquarius

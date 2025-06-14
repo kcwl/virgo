@@ -83,44 +83,52 @@ std::ostream& operator<<(std::ostream& os, const person& p)
 
 	return os;
 }
-//
-//BOOST_AUTO_TEST_CASE(tcp_processor)
-//{
-//	using person_request = aquarius::ip::tcp::request<person, 1001>;
-//
-//	person_request req{};
-//	req.header()->crc32_ = 1;
-//	req.header()->timestamp_ = 1;
-//	req.body().sex = true;
-//	req.body().addr = 2;
-//	req.body().age = 15;
-//	req.body().telephone = 15230214856;
-//	req.body().score = 100;
-//	req.body().hp = 200;
-//	req.body().mana = 300;
-//	req.body().info = { 1, 1, 1, 1, 1, 1 };
-//	req.body().name = "John";
-//	req.body().orders = { 1, 2, 3, 4, 5 };
-//
-//	std::vector<char> ar{};
-//	BOOST_CHECK(req.to_binary(ar));
-//
-//	using person_response = aquarius::ip::tcp::response<person, 1002>;
-//
-//	person_response resp{};
-//	resp.header()->crc32_ = 1;
-//	resp.header()->timestamp_ = 1;
-//	resp.body().sex = true;
-//	resp.body().addr = 2;
-//	resp.body().age = 15;
-//	resp.body().telephone = 15230214856;
-//	resp.body().score = 100;
-//	resp.body().hp = 200;
-//	resp.body().mana = 300;
-//	resp.body().info = { 1, 1, 1, 1, 1, 1 };
-//	resp.body().name = "John";
-//}
-//
+
+struct tcp
+{
+	using request_header = aquarius::tcp_request_header;
+	using response_header = aquarius::tcp_response_header;
+
+	bool pack(std::vector<char>& buff)
+	{
+		return true;
+	}
+
+	bool unpack(const std::vector<char>& buff)
+	{
+		return true;
+	}
+};
+
+BOOST_AUTO_TEST_CASE(tcp_proto)
+{
+	using person_request = aquarius::basic_request<tcp, person>;
+	using person_response = aquarius::basic_response<tcp, person>;
+	using person_rpc = aquarius::basic_rpc<person_request, person_response>;
+
+	person_rpc rpc{};
+	auto& req = rpc.request();
+	req.header()->uuid_ = 1;
+	req.body().sex = true;
+	req.body().addr = 2;
+	req.body().age = 15;
+	req.body().telephone = 15230214856;
+	req.body().score = 100;
+	req.body().hp = 200;
+	req.body().mana = 300;
+	req.body().info = { 1, 1, 1, 1, 1, 1 };
+	req.body().name = "John";
+	req.body().orders = { 1, 2, 3, 4, 5 };
+
+	std::vector<char> buf = rpc.pack_req();
+
+	rpc.unpack_resp(buf);
+
+	BOOST_CHECK_EQUAL(rpc.request().header()->uuid_, rpc.response().header()->uuid_);
+
+	BOOST_CHECK_EQUAL(rpc.request().body(), rpc.response().body());
+}
+
 //BOOST_AUTO_TEST_CASE(multi_tcp_processor)
 //{
 //	using person_request = aquarius::ip::tcp::request<person, 1001>;

@@ -9,8 +9,7 @@ namespace aquarius
 {
 	namespace detail
 	{
-		template<typename Raw>
-		class header_base : public Raw
+		class header_base
 		{
 		public:
 			header_base()
@@ -21,7 +20,7 @@ namespace aquarius
 				: uuid_(other.uuid_)
 			{}
 
-			header_base(header_base&& other)
+			header_base(header_base&& other) noexcept
 				: uuid_(std::exchange(other.uuid_, 0))
 			{}
 
@@ -59,12 +58,12 @@ namespace aquarius
 			}
 
 		public:
-			void to_binary(std::vector<char>& buff)
+			void pack(std::vector<char>& buff)
 			{
 				serialize::to_binary(uuid_, buff);
 			}
 
-			void from_binary(const std::vector<char>& buff)
+			void unpack(const std::vector<char>& buff)
 			{
 				uuid_ = serialize::from_binary<uint64_t>(buff);
 			}

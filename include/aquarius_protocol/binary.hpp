@@ -63,7 +63,7 @@ namespace aquarius
 			auto to_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
 			{ (to_binary(boost::pfr::get<I, T>(value), buff), ...); };
 
-			to_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>()>{});
+			to_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
 		}
 
 		template <integer_t T, typename BufferSequence>
@@ -111,7 +111,7 @@ namespace aquarius
 		template <zig_zag T, typename BuffSequence>
 		inline auto from_binary(const BuffSequence& buff) -> T
 		{
-			T value = from_binary<uint64_t>(buff);
+			T value = static_cast<T>(from_binary<uint64_t>(buff));
 
 			return static_cast<T>((value >> 1) ^ (~(value & 1) + 1));
 		}
@@ -128,7 +128,14 @@ namespace aquarius
 
 			auto sp = std::span(buff).subspan(0, t_size);
 
-			return *static_cast<T*>(sp.data());
+			if constexpr (!std::convertible_to<T*, const char*>)
+			{
+				return !!*sp.data();
+			}
+			else
+			{
+				return *static_cast<T*>(sp.data());
+			}
 		}
 
 		template <repeated_t T, typename BuffSequence>
@@ -144,7 +151,7 @@ namespace aquarius
 
 			for (int i = 0; i < size; ++i)
 			{
-				value[i] = from<typename T::value_type>(buff);
+				value[i] = from_binary<typename T::value_type>(buff);
 			}
 
 			return value;
@@ -159,7 +166,7 @@ namespace aquarius
 
 			std::size_t size = from_binary<std::size_t>(buff);
 
-			return std::string(std::span(buff.data(), size));
+			return std::string(buff.data(), size - 1);
 		}
 
 		template <reflactable T, typename BuffSequence>
@@ -168,7 +175,7 @@ namespace aquarius
 			auto from_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
 			{ return T{ from_binary<boost::pfr::tuple_element_t<I, T>>(buff)... }; };
 
-			return from_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>()>{});
+			return from_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
 		}
 	} // namespace serialize
 } // namespace aquarius

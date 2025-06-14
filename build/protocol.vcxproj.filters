@@ -59,5 +59,8 @@
     <ClInclude Include="..\include\aquarius_protocol\tcp_header.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\basic_rpc.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

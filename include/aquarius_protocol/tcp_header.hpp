@@ -3,10 +3,9 @@
 
 namespace aquarius
 {
-	template <typename Raw>
-	class tcp_request_header : public detail::header_base<Raw>
+	class tcp_request_header : public detail::header_base
 	{
-		using base_type = detail::header_base<Raw>;
+		using base_type = detail::header_base;
 
 	public:
 		tcp_request_header() = default;
@@ -53,21 +52,24 @@ namespace aquarius
 		}
 
 	public:
-		void to_binary(std::vector<char>& buff)
+		bool pack(std::vector<char>& buff)
 		{
-			base_type::to_binary(buff);
+			base_type::pack(buff);
+
+			return true;
 		}
 
-		void from_binary(const std::vector<char>& buff)
+		bool unpack(const std::vector<char>& buff)
 		{
-			base_type::from_binary(buff);
+			base_type::unpack(buff);
+
+			return true;
 		}
 	};
 
-	template <typename Raw>
-	class tcp_response_header : public detail::header_base<Raw>
+	class tcp_response_header : public detail::header_base
 	{
-		using base_type = detail::header_base<Raw>;
+		using base_type = detail::header_base;
 
 	public:
 		tcp_response_header()
@@ -129,20 +131,22 @@ namespace aquarius
 		}
 
 	public:
-		template <typename Buffer>
-		void to_binary(Buffer& ar)
+		bool pack(std::vector<char>& buff)
 		{
-			base_type::to_binary(ar);
+			base_type::pack(buff);
 
-			serialize::to_binary(ar, result_);
+			serialize::to_binary(result_, buff);
+
+			return true;
 		}
-
-		template <typename Buffer>
-		void from_binary(Buffer& ar)
+		
+		bool unpack(const std::vector<char>& buff)
 		{
-			base_type::from_binary(ar);
+			base_type::unpack(buff);
 
-			result_ = serialize::from_binary<uint32_t>(ar);
+			result_ = serialize::from_binary<uint32_t>(buff);
+
+			return true;
 		}
 
 	public:
@@ -152,16 +156,14 @@ namespace aquarius
 
 namespace std
 {
-	template <typename Raw>
-	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_request_header<Raw>& other)
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_request_header& other)
 	{
 		other << os;
 
 		return os;
 	}
 
-	template <typename Raw>
-	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_response_header<Raw>& other)
+	inline std::ostream& operator<<(std::ostream& os, const aquarius::tcp_response_header& other)
 	{
 		other << os;
 

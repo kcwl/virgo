@@ -8,20 +8,60 @@ namespace aquarius
 	{
 		using base_type = detail::basic_message<Protocol, Body>;
 
+		using header_type = typename Protocol::request_header;
+
 	public:
 		basic_request() = default;
 
 	public:
 		bool operator==(const basic_request& other) const
 		{
-			return base_type::operator==(other);
+			return base_type::operator==(other) && header() == other.header();
 		}
 
 		std::ostream& operator<<(std::ostream& os) const
 		{
+			header_ << os;
+
 			base_type::operator<<(os);
 
 			return os;
 		}
+
+	public:
+		const header_type& header() const
+		{
+			return header_;
+		}
+
+		header_type* header()
+		{
+			return &header_;
+		}
+
+		virtual bool pack(std::vector<char>& completed_buffer)
+		{
+			if (!header_.pack(completed_buffer))
+				return false;
+
+			if (!base_type::pack(completed_buffer))
+				return false;
+
+			return true;
+		}
+
+		virtual bool unpack(const std::vector<char>& completed_buffer)
+		{
+			if (!header_.unpack(completed_buffer))
+				return false;
+
+			if (!Protocol::unpack(completed_buffer))
+				return false;
+
+			return true;
+		}
+
+	private:
+		header_type header_;
 	};
 } // namespace aquarius
