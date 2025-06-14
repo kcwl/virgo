@@ -33,7 +33,7 @@ namespace aquarius
 		{
 			generate_enum(static_cast<enum_statement*>(state));
 		}
-		else if (type_str == "rpc")
+		else if (type_str == "tcp" || type_str == "udp" || type_str == "http")
 		{
 			generate_rpc(static_cast<rpc_statement*>(state));
 		}
@@ -191,8 +191,8 @@ namespace aquarius
 			protocl = "http";
 		}
 
-		ofs_ << " using " << state->name_str << "_rpc" << " aquarius::basic_rpc<aquarius::" << protocl << ", "
-			 << state->rpc.req << ">, aquarius::basic_rpc<aquarius::tcp, " << state->rpc.resp << ">;";
+		ofs_ << " using rpc_" << state->name_str << " = aquarius::basic_rpc<aquarius::" << protocl << ", "
+			 << state->rpc.req << ">, aquarius::basic_rpc<aquarius::tcp, " << state->rpc.resp << ">;\n";
 	}
 
 	std::string cpp_generator::convert_type(const std::string& type_str)
