@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <boost/asio/buffer.hpp>
 
 namespace aquarius
 {

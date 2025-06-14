@@ -65,17 +65,13 @@ namespace aquarius
 
 			virtual bool pack(std::vector<char>& completed_buffer)
 			{
-				Protocol::pack(completed_buffer);
-
 				serialize::to_binary<body_type>(this->get(), completed_buffer);
 
 				return true;
 			}
 
-			virtual bool unpack(const std::vector<char>& completed_buffer)
+			virtual bool unpack(std::vector<char>& completed_buffer)
 			{
-				Protocol::unpack(completed_buffer);
-
 				this->get() = serialize::from_binary<body_type>(completed_buffer);
 
 				return true;

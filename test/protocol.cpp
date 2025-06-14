@@ -122,11 +122,33 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 
 	std::vector<char> buf = rpc.pack_req();
 
-	rpc.unpack_resp(buf);
+	person_rpc rpc1{};
 
-	BOOST_CHECK_EQUAL(rpc.request().header()->uuid_, rpc.response().header()->uuid_);
+	rpc1.unpack_req(buf);
 
-	BOOST_CHECK_EQUAL(rpc.request().body(), rpc.response().body());
+	BOOST_CHECK_EQUAL(*rpc.request().header(), *rpc1.request().header());
+	BOOST_CHECK_EQUAL(rpc.request().body(), rpc1.request().body());
+
+
+	auto& resp = rpc.response();
+	resp.header()->uuid_ = 1;
+	resp.body().sex = true;
+	resp.body().addr = 2;
+	resp.body().age = 15;
+	resp.body().telephone = 15230214856;
+	resp.body().score = 100;
+	resp.body().hp = 200;
+	resp.body().mana = 300;
+	resp.body().info = { 1, 1, 1, 1, 1, 1 };
+	resp.body().name = "John";
+	resp.body().orders = { 1, 2, 3, 4, 5 };
+
+	auto resp_buf = rpc.pack_resp();
+
+	rpc1.unpack_resp(resp_buf);
+
+	BOOST_CHECK_EQUAL(*rpc.response().header(), *rpc1.response().header());
+	BOOST_CHECK_EQUAL(rpc.response().body(), rpc1.response().body());
 }
 
 //BOOST_AUTO_TEST_CASE(multi_tcp_processor)

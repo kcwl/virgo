@@ -59,7 +59,7 @@ namespace aquarius
 			return true;
 		}
 
-		bool unpack(const std::vector<char>& buff)
+		bool unpack(std::vector<char>& buff)
 		{
 			base_type::unpack(buff);
 
@@ -140,7 +140,7 @@ namespace aquarius
 			return true;
 		}
 		
-		bool unpack(const std::vector<char>& buff)
+		bool unpack(std::vector<char>& buff)
 		{
 			base_type::unpack(buff);
 

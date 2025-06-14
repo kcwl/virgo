@@ -41,6 +41,9 @@ namespace aquarius
 
 		virtual bool pack(std::vector<char>& completed_buffer)
 		{
+			if (!Protocol::pack(completed_buffer))
+				return false;
+
 			if (!header_.pack(completed_buffer))
 				return false;
 
@@ -50,12 +53,15 @@ namespace aquarius
 			return true;
 		}
 
-		virtual bool unpack(const std::vector<char>& completed_buffer)
+		virtual bool unpack(std::vector<char>& completed_buffer)
 		{
+			if (!Protocol::unpack(completed_buffer))
+				return false;
+
 			if (!header_.unpack(completed_buffer))
 				return false;
 
-			if (!Protocol::unpack(completed_buffer))
+			if (!base_type::unpack(completed_buffer))
 				return false;
 
 			return true;

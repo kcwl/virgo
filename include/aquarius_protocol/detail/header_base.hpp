@@ -63,7 +63,7 @@ namespace aquarius
 				serialize::to_binary(uuid_, buff);
 			}
 
-			void unpack(const std::vector<char>& buff)
+			void unpack(std::vector<char>& buff)
 			{
 				uuid_ = serialize::from_binary<uint64_t>(buff);
 			}

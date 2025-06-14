@@ -67,49 +67,50 @@ namespace aquarius
 		}
 
 		template <integer_t T, typename BufferSequence>
-		inline auto from_binary(const BufferSequence& buff) -> T
+		inline auto from_binary(BufferSequence& buff) -> T
 		{
-			T value{};
-
 			auto span_buff = std::span(buff);
 
 			auto iter = std::find_if(span_buff.begin(), span_buff.end(), [](const auto s) { return (s & 0x80) == 0; });
 
-			auto length = std::distance(span_buff.begin(), iter);
-
-			if (length == 0)
+			if (iter == span_buff.end())
 				return T{};
 
-			auto& span_begin = span_buff[0];
-			if (span_begin < 0x80)
-				return static_cast<T>(span_begin);
+			auto length = std::distance(span_buff.begin(), iter) + 1;
 
-			value += span_begin;
-			value -= 0x80;
-
-			auto sub_span = span_buff.subspan(1, length);
-
-			int8_t temp_bit = 7;
-
-			for (auto& s : sub_span)
+			T value = static_cast<uint8_t>(span_buff[0]);
+			if (value >= 0x80)
 			{
-				if ((s & 0x80) != 0)
-				{
-					value += ((static_cast<T>(s) & 0x7f) << temp_bit);
+				value -= 0x80;
 
-					temp_bit += 7;
-				}
-				else
+				auto sub_span = span_buff.subspan(1, length - 1);
+
+				int8_t temp_bit = 7;
+
+				for (auto& s : sub_span)
 				{
-					value += (static_cast<T>(s) << temp_bit);
+					if ((s & 0x80) != 0)
+					{
+						value += static_cast<T>(s & 0x7f) << temp_bit;
+
+						temp_bit += 7;
+					}
+					else
+					{
+						value += (static_cast<T>(s) << temp_bit);
+					}
 				}
 			}
+
+			auto dynamic_buf = boost::asio::dynamic_buffer(buff);
+
+			dynamic_buf.consume(length);
 
 			return value;
 		}
 
 		template <zig_zag T, typename BuffSequence>
-		inline auto from_binary(const BuffSequence& buff) -> T
+		inline auto from_binary(BuffSequence& buff) -> T
 		{
 			T value = static_cast<T>(from_binary<uint64_t>(buff));
 
@@ -117,7 +118,7 @@ namespace aquarius
 		}
 
 		template <typename T, typename BuffSequence>
-		inline auto from_binary(const BuffSequence& buff) -> T
+		inline auto from_binary(BuffSequence& buff) -> T
 		{
 			auto size = buff.size();
 
@@ -128,18 +129,26 @@ namespace aquarius
 
 			auto sp = std::span(buff).subspan(0, t_size);
 
-			if constexpr (!std::convertible_to<T*, const char*>)
+			T value{};
+
+			if constexpr (std::same_as<T, bool>)
 			{
-				return !!*sp.data();
+				value =  !!*sp.data();
 			}
 			else
 			{
-				return *static_cast<T*>(sp.data());
+				std::memcpy((char*)&value, sp.data(), t_size);
 			}
+
+			auto dynamic_buf = boost::asio::dynamic_buffer(buff);
+
+			dynamic_buf.consume(t_size);
+
+			return value;
 		}
 
 		template <repeated_t T, typename BuffSequence>
-		inline auto from_binary(const BuffSequence& buff) -> T
+		inline auto from_binary(BuffSequence& buff) -> T
 		{
 			T value{};
 			std::size_t size = from_binary<std::size_t>(buff);
@@ -158,19 +167,23 @@ namespace aquarius
 		}
 
 		template <string_t T, typename BuffSequence>
-		inline auto from_binary(const BuffSequence& buff) -> T
+		inline auto from_binary(BuffSequence& buff) -> T
 		{
-			T value{};
-
 			using value_type = typename BuffSequence::value_type;
 
 			std::size_t size = from_binary<std::size_t>(buff);
 
-			return std::string(buff.data(), size - 1);
+			T value = T(buff.data(), size);
+
+			auto dynamic_buf = boost::asio::dynamic_buffer(buff);
+
+			dynamic_buf.consume(size);
+
+			return value;
 		}
 
 		template <reflactable T, typename BuffSequence>
-		inline auto from_binary(const BuffSequence& buff) -> T
+		inline auto from_binary(BuffSequence& buff) -> T
 		{
 			auto from_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
 			{ return T{ from_binary<boost::pfr::tuple_element_t<I, T>>(buff)... }; };

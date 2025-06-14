@@ -12,12 +12,12 @@ namespace aquarius
 		using response_type = Response;
 
 	public:
-		void unpack_req(const std::vector<char>& buff)
+		void unpack_req(std::vector<char>& buff)
 		{
 			request_.unpack(buff);
 		}
 
-		void unpack_resp(const std::vector<char>& buff)
+		void unpack_resp(std::vector<char>& buff)
 		{
 			response_.unpack(buff);
 		}
