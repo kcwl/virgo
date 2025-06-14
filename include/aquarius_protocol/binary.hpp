@@ -73,7 +73,7 @@ namespace aquarius
 
 			auto span_buff = std::span(buff);
 
-			auto iter = std::find_if(span_buff.begin(), span_buff.end(), [](const auto s) { return s & 0x80 == 0; });
+			auto iter = std::find_if(span_buff.begin(), span_buff.end(), [](const auto s) { return (s & 0x80) == 0; });
 
 			auto length = std::distance(span_buff.begin(), iter);
 
