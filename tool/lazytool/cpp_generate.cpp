@@ -191,8 +191,12 @@ namespace aquarius
 			protocl = "http";
 		}
 
-		ofs_ << " using rpc_" << state->name_str << " = aquarius::basic_rpc<aquarius::" << protocl << ", "
-			 << state->rpc.req << ">, aquarius::basic_rpc<aquarius::tcp, " << state->rpc.resp << ">;\n";
+		ofs_ << "struct rpc_" << state->name_str << std::endl;
+		ofs_ << "{\n";
+		ofs_ << "\tusing request = aquarius::basic_request<aquarius::" << protocl << ", " << state->rpc.req << ">;\n";
+		ofs_ << "\tusing response = aquarius::basic_response<aquarius::" << protocl << ", " << state->rpc.resp << ">;\n";
+		ofs_ << "};\n";
+		ofs_ << std::endl;
 	}
 
 	std::string cpp_generator::convert_type(const std::string& type_str)

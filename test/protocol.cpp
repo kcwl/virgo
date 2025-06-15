@@ -100,14 +100,15 @@ struct tcp
 	}
 };
 
+struct rpc_person
+{
+	using request = aquarius::basic_request<tcp, person>;
+	using response = aquarius::basic_response<tcp, person>;
+};
+
 BOOST_AUTO_TEST_CASE(tcp_proto)
 {
-	using person_request = aquarius::basic_request<tcp, person>;
-	using person_response = aquarius::basic_response<tcp, person>;
-	using person_rpc = aquarius::basic_rpc<person_request, person_response>;
-
-	person_rpc rpc{};
-	auto& req = rpc.request();
+	rpc_person::request req{};
 	req.header()->uuid_ = 1;
 	req.body().sex = true;
 	req.body().addr = 2;
@@ -120,17 +121,17 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	req.body().name = "John";
 	req.body().orders = { 1, 2, 3, 4, 5 };
 
-	std::vector<char> buf = rpc.pack_req();
+	std::vector<char> buf = req.pack();
 
-	person_rpc rpc1{};
+	rpc_person::request req1{};
 
-	rpc1.unpack_req(buf);
+	BOOST_CHECK(req1.unpack(buf));
 
-	BOOST_CHECK_EQUAL(*rpc.request().header(), *rpc1.request().header());
-	BOOST_CHECK_EQUAL(rpc.request().body(), rpc1.request().body());
+	BOOST_CHECK_EQUAL(*req.header(), *req1.header());
+	BOOST_CHECK_EQUAL(req.body(), req1.body());
 
 
-	auto& resp = rpc.response();
+	rpc_person::response resp{};
 	resp.header()->uuid_ = 1;
 	resp.body().sex = true;
 	resp.body().addr = 2;
@@ -143,12 +144,13 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	resp.body().name = "John";
 	resp.body().orders = { 1, 2, 3, 4, 5 };
 
-	auto resp_buf = rpc.pack_resp();
+	auto resp_buf = resp.pack();
 
-	rpc1.unpack_resp(resp_buf);
+	rpc_person::response resp1{};
+	BOOST_CHECK(resp1.unpack(resp_buf));
 
-	BOOST_CHECK_EQUAL(*rpc.response().header(), *rpc1.response().header());
-	BOOST_CHECK_EQUAL(rpc.response().body(), rpc1.response().body());
+	BOOST_CHECK_EQUAL(*resp.header(), *resp1.header());
+	BOOST_CHECK_EQUAL(resp.body(), resp1.body());
 }
 
 //BOOST_AUTO_TEST_CASE(multi_tcp_processor)
