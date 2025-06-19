@@ -39,17 +39,15 @@ namespace aquarius
 			return &header_;
 		}
 
-		virtual std::vector<char> pack()
+		virtual bool pack(std::vector<char>& completed_buffer)
 		{
-			std::vector<char> completed_buffer{};
-
 			if (!header_.pack(completed_buffer))
-				return {};
+				return  false;
 
 			if (!base_type::pack(completed_buffer))
-				return {};
+				return false;
 
-			return completed_buffer;
+			return true;
 		}
 
 		virtual bool unpack(std::vector<char>& completed_buffer)
