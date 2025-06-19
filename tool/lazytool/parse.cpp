@@ -165,7 +165,9 @@ namespace aquarius
 
 	void parse::read_rpc(std::fstream& ifs, rpc_statement* state_ptr)
 	{
-		read_value_for(ifs, state_ptr->name_str);
+		read_value_of(ifs, state_ptr->name_str);
+
+		read_value_for(ifs, state_ptr->number);
 
 		std::string key_word{};
 
@@ -197,7 +199,7 @@ namespace aquarius
 
 	std::string parse::log(const std::string& str, int line)
 	{
-		return std::format("column: {} row: {}\t {}\t line: {}\n", column_, row_, str, line);
+		return std::format("column: {} row: {}\t {}\n", column_, row_, str);
 	}
 
 	void parse::read_keyword(std::fstream& ifs, std::string& keyword)

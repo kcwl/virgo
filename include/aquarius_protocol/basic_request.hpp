@@ -4,9 +4,9 @@
 namespace aquarius
 {
 	template <typename Protocol, typename Body>
-	class basic_request : public detail::basic_message<Protocol, Body>
+	class basic_request : public detail::basic_message<Body>
 	{
-		using base_type = detail::basic_message<Protocol, Body>;
+		using base_type = detail::basic_message<Body>;
 
 		using header_type = typename Protocol::request_header;
 
@@ -41,11 +41,8 @@ namespace aquarius
 
 		virtual bool pack(std::vector<char>& completed_buffer)
 		{
-			if (!Protocol::pack(completed_buffer))
-				return false;
-
 			if (!header_.pack(completed_buffer))
-				return false;
+				return  false;
 
 			if (!base_type::pack(completed_buffer))
 				return false;
@@ -55,9 +52,6 @@ namespace aquarius
 
 		virtual bool unpack(std::vector<char>& completed_buffer)
 		{
-			if (!Protocol::unpack(completed_buffer))
-				return false;
-
 			if (!header_.unpack(completed_buffer))
 				return false;
 

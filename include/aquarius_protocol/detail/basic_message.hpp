@@ -7,8 +7,8 @@ namespace aquarius
 {
 	namespace detail
 	{
-		template <typename Protocol, typename Body>
-		class basic_message : public Protocol, public boost::empty_value<Body>
+		template <typename Body>
+		class basic_message : public boost::empty_value<Body>
 		{
 			using body_type = Body;
 

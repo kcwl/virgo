@@ -59,5 +59,7 @@ namespace aquarius
 		};
 
 		impl_type rpc;
+
+		std::string number;
 	};
 }
