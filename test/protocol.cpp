@@ -121,7 +121,8 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	req.body().name = "John";
 	req.body().orders = { 1, 2, 3, 4, 5 };
 
-	std::vector<char> buf = req.pack();
+	std::vector<char> buf;
+	req.pack(buf);
 
 	rpc_person::request req1{};
 
@@ -144,7 +145,8 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	resp.body().name = "John";
 	resp.body().orders = { 1, 2, 3, 4, 5 };
 
-	auto resp_buf = resp.pack();
+	std::vector<char> resp_buf{};
+	resp.pack(resp_buf);
 
 	rpc_person::response resp1{};
 	BOOST_CHECK(resp1.unpack(resp_buf));

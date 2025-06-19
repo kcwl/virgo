@@ -193,8 +193,10 @@ namespace aquarius
 
 		ofs_ << "struct rpc_" << state->name_str << std::endl;
 		ofs_ << "{\n";
+		ofs_ << "\tconstexpr static auto id = " << state->number << ";\n";
 		ofs_ << "\tusing request = aquarius::basic_request<aquarius::" << protocl << ", " << state->rpc.req << ">;\n";
-		ofs_ << "\tusing response = aquarius::basic_response<aquarius::" << protocl << ", " << state->rpc.resp << ">;\n";
+		ofs_ << "\tusing response = aquarius::basic_response<aquarius::" << protocl << ", " << state->rpc.resp
+			 << ">;\n";
 		ofs_ << "};\n";
 		ofs_ << std::endl;
 	}
