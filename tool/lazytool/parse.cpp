@@ -181,12 +181,12 @@ namespace aquarius
 		}
 		else
 		{
-			throw std::runtime_error(log("read_rpc maybe keword is not support!", __LINE__));
+			throw std::runtime_error(log("read_rpc maybe keword is not support!"));
 		}
 
 		if (!read_for_end(ifs))
 		{
-			throw std::runtime_error(log("read_rpc maybe not end!",__LINE__));
+			throw std::runtime_error(log("read_rpc maybe not end!"));
 		}
 	}
 
@@ -197,7 +197,7 @@ namespace aquarius
 		state_ptr->sub_type = "repeated";
 	}
 
-	std::string parse::log(const std::string& str, int line)
+	std::string parse::log(const std::string& str)
 	{
 		return std::format("column: {} row: {}\t {}\n", column_, row_, str);
 	}
@@ -227,7 +227,7 @@ namespace aquarius
 			}
 			else
 			{
-				throw std::runtime_error(log("read keyword syntax error!", __LINE__));
+				throw std::runtime_error(log("read keyword syntax error!"));
 			}
 		}
 	}
@@ -263,7 +263,7 @@ namespace aquarius
 			}
 			else
 			{
-				throw std::runtime_error(log("read_value syntax error!", __LINE__));
+				throw std::runtime_error(log("read_value syntax error!"));
 			}
 		}
 	}
@@ -304,7 +304,7 @@ namespace aquarius
 			}
 			else
 			{
-				throw std::runtime_error(log("unexpected character", __LINE__));
+				throw std::runtime_error(log("unexpected character"));
 			}
 		}
 	}
@@ -315,7 +315,7 @@ namespace aquarius
 
 		if (ifs.eof())
 		{
-			throw std::runtime_error(log("read_value_for file is eof!", __LINE__));
+			throw std::runtime_error(log("read_value_for file is eof!"));
 		}
 
 		while (!ifs.eof())
@@ -343,7 +343,7 @@ namespace aquarius
 			}
 			else
 			{
-				throw std::runtime_error(log("read_value_for syntax error!", __LINE__));
+				throw std::runtime_error(log("read_value_for syntax error!"));
 			}
 		}
 	}

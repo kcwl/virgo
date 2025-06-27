@@ -37,4 +37,8 @@ namespace aquarius
 
 	template<typename T>
 	concept zig_zag = disjunction_same_as<T, int8_t, int16_t, int32_t, int64_t>;
+
+
+	template<typename T>
+	concept reflectable = std::is_trivially_copyable_v<T> && std::is_standard_layout_v<T>;
 } // namespace aquarius
