@@ -1,0 +1,34 @@
+[2025-06-28 10:47:14] [info] Start Program:
+Path:".\\x64\\Debug\\lazytool.exe"
+Arguments:
+Working directory: not set.
+Modules: Selected: * Excluded: 
+Sources: Selected: F:\git\aquarius-fs-server-centos\3rd\aquarius\3rd\aquarius_protocol\include Excluded: 
+Log Level: Normal
+Cover Children: 0
+Aggregate by file: 1
+Continue after C++ exception: 0
+Optimized build support: 0
+Export: html 
+Input coverage: 
+Unified diff: 
+Excluded line regular expressions: 
+Substitute pdb source paths: 
+[2025-06-28 10:47:14] [info] Module: F:\git\aquarius-fs-server-centos\3rd\aquarius\3rd\aquarius_protocol\build\x64\Debug\lazytool.exe is selected because it matches selected pattern: *
+[2025-06-28 10:47:14] [info] Module: C:\Windows\System32\ntdll.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\kernel32.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\KernelBase.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\vcruntime140d.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\msvcp140d.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\vcruntime140_1d.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\ucrtbased.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\kernel.appcore.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\msvcrt.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] Module: C:\Windows\System32\rpcrt4.dll is selected because it matches selected pattern: *
+[2025-06-28 10:47:15] [info] ----------------------------------------------------
+[2025-06-28 10:47:15] [info] Coverage generated in Folder F:\git\aquarius-fs-server-centos\3rd\aquarius\3rd\aquarius_protocol\build\CoverageReport-2025-06-28-10h47m15s
+[2025-06-28 10:47:15] [info] ----------------------------------------------------
+[2025-06-28 10:47:15] [info] The code coverage report is not what you expect? See the FAQ https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ.
+[2025-06-28 10:47:15] [warning] No source files were selected. Please check the values of --sources and --excluded_sources.
+You can try to remove all --sources and --excluded_sources and use --sources=F:\git\aquarius-fs-server-centos\3rd\aquarius\3rd\aquarius_protocol\tool\lazytool instead.
+For additional help, see https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ#coverage-report-is-empty.
