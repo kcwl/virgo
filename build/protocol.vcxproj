@@ -144,6 +144,8 @@
     <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\http_filed_type.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\http_method.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_response.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_request.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\http_status.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\json.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp" />

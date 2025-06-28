@@ -9,6 +9,8 @@
 #include <aquarius_protocol/concepts.hpp>
 #include <aquarius_protocol/http_filed_type.hpp>
 #include <aquarius_protocol/http_method.hpp>
+#include <aquarius_protocol/http_request.hpp>
+#include <aquarius_protocol/http_response.hpp>
 #include <aquarius_protocol/http_status.hpp>
 #include <aquarius_protocol/json.hpp>
 #include <aquarius_protocol/reflection.hpp>
