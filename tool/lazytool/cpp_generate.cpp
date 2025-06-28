@@ -180,23 +180,22 @@ namespace aquarius
 
 	void cpp_generator::generate_rpc(rpc_statement* state)
 	{
-		std::string protocl("tcp");
+		std::string protocol("tcp");
 
 		if (state->type_str == "udp")
 		{
-			protocl = "udp";
+			protocol = "udp";
 		}
 		else if (state->type_str == "http")
 		{
-			protocl = "http";
+			protocol = "http";
 		}
 
 		ofs_ << "struct rpc_" << state->name_str << std::endl;
 		ofs_ << "{\n";
 		ofs_ << "\tconstexpr static auto id = " << state->number << ";\n";
-		ofs_ << "\tusing request = aquarius::basic_request<aquarius::" << protocl << ", " << state->rpc.req << ">;\n";
-		ofs_ << "\tusing response = aquarius::basic_response<aquarius::" << protocl << ", " << state->rpc.resp
-			 << ">;\n";
+		ofs_ << "\tusing request = aquarius::" << protocol << "_request<" << state->rpc.req << ">;\n";
+		ofs_ << "\tusing response = aquarius::" << protocol << "_response<" << state->rpc.resp << ">;\n";
 		ofs_ << "};\n";
 		ofs_ << std::endl;
 	}

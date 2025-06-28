@@ -1,7 +1,6 @@
 #pragma once
 #include <aquarius_protocol/concepts.hpp>
-#include <aquarius_protocol/reflect_helper.hpp>
-#include <boost/pfr.hpp>
+#include <aquarius_protocol/reflection.hpp>
 #include <span>
 
 namespace aquarius
@@ -57,13 +56,13 @@ namespace aquarius
 			std::copy(std::begin(value), std::end(value), std::back_inserter(buff));
 		}
 
-		template <reflactable T, typename BufferSequence>
+		template <reflectable T, typename BufferSequence>
 		static void to_binary(const T& value, BufferSequence& buff)
 		{
 			auto to_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
-			{ (to_binary(boost::pfr::get<I, T>(value), buff), ...); };
+			{ (to_binary(reflect::get<I, T>(value), buff), ...); };
 
-			to_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
+			to_binary_impl(std::make_index_sequence<reflect::tuple_size_v<T>>{});
 		}
 
 		template <integer_t T, typename BufferSequence>
@@ -74,7 +73,9 @@ namespace aquarius
 			auto iter = std::find_if(span_buff.begin(), span_buff.end(), [](const auto s) { return (s & 0x80) == 0; });
 
 			if (iter == span_buff.end())
-				return T{};
+			{
+				throw std::runtime_error("syntax error!");
+			}
 
 			auto length = std::distance(span_buff.begin(), iter) + 1;
 
@@ -125,7 +126,9 @@ namespace aquarius
 			constexpr auto t_size = sizeof(T);
 
 			if (t_size > size) [[unlikely]]
-				return {};
+			{
+				throw std::runtime_error("buffer is not enough!");
+			}
 
 			auto sp = std::span(buff).subspan(0, t_size);
 
@@ -182,13 +185,13 @@ namespace aquarius
 			return value;
 		}
 
-		template <reflactable T, typename BuffSequence>
+		template <reflectable T, typename BuffSequence>
 		inline auto from_binary(BuffSequence& buff) -> T
 		{
 			auto from_binary_impl = [&]<std::size_t... I>(std::index_sequence<I...>)
-			{ return T{ from_binary<boost::pfr::tuple_element_t<I, T>>(buff)... }; };
+			{ return T{ from_binary<reflect::tuple_element_t<I, T>>(buff)... }; };
 
-			return from_binary_impl(std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
+			return from_binary_impl(std::make_index_sequence<reflect::tuple_size_v<T>>{});
 		}
 	} // namespace serialize
 } // namespace aquarius

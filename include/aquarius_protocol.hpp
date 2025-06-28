@@ -1,9 +1,11 @@
 #pragma once
-#include <aquarius_protocol/basic_request.hpp>
-#include <aquarius_protocol/basic_response.hpp>
+#include <aquarius_protocol/basic_header.hpp>
+#include <aquarius_protocol/basic_message.hpp>
+#include <aquarius_protocol/basic_tcp_header.hpp>
+#include <aquarius_protocol/basic_tcp_message.hpp>
 #include <aquarius_protocol/binary.hpp>
 #include <aquarius_protocol/concepts.hpp>
 #include <aquarius_protocol/json.hpp>
-#include <aquarius_protocol/reflect_helper.hpp>
 #include <aquarius_protocol/reflection.hpp>
-#include <aquarius_protocol/tcp_header.hpp>
+#include <aquarius_protocol/tcp_request.hpp>
+#include <aquarius_protocol/tcp_response.hpp>

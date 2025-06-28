@@ -1,7 +1,7 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
 #include <aquarius_protocol.hpp>
-#include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <sstream>
 #include <iostream>
 
 
@@ -17,38 +17,6 @@ struct person
 	std::vector<uint8_t> info;
 	std::string name;
 	std::vector<int> orders;
-
-	void swap(person& other)
-	{
-		std::swap(sex, other.sex);
-		std::swap(addr, other.addr);
-		std::swap(age, other.age);
-		std::swap(telephone, other.telephone);
-		std::swap(score, other.score);
-		std::swap(hp, other.hp);
-		std::swap(mana, other.mana);
-		std::swap(info, other.info);
-		std::swap(name, other.name);
-		std::swap(orders, other.orders);
-	}
-};
-
-template <>
-struct aquarius::reflect<person>
-{
-	using value_type = person;
-
-	constexpr static std::string_view topic()
-	{
-		return "person"sv;
-	}
-
-	constexpr static std::array<std::string_view, 10> fields()
-	{
-		return {
-			"sex"sv, "addr"sv, "age"sv, "telephone"sv, "score"sv, "hp"sv, "mana"sv, "info"sv, "name"sv, "orders"sv
-		};
-	}
 };
 
 bool operator==(const person& lhs, const person& rhs)
@@ -84,32 +52,16 @@ std::ostream& operator<<(std::ostream& os, const person& p)
 	return os;
 }
 
-struct tcp
-{
-	using request_header = aquarius::tcp_request_header;
-	using response_header = aquarius::tcp_response_header;
-
-	bool pack(std::vector<char>& buff)
-	{
-		return true;
-	}
-
-	bool unpack(const std::vector<char>& buff)
-	{
-		return true;
-	}
-};
-
 struct rpc_person
 {
-	using request = aquarius::basic_request<tcp, person>;
-	using response = aquarius::basic_response<tcp, person>;
+	using request = aquarius::tcp_request<person>;
+	using response = aquarius::tcp_response<person>;
 };
 
 BOOST_AUTO_TEST_CASE(tcp_proto)
 {
 	rpc_person::request req{};
-	req.header()->uuid_ = 1;
+	req.header()->uuid(1);
 	req.body().sex = true;
 	req.body().addr = 2;
 	req.body().age = 15;
@@ -126,14 +78,14 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 
 	rpc_person::request req1{};
 
-	BOOST_CHECK(req1.unpack(buf));
+	req1.unpack(buf);
 
-	BOOST_CHECK_EQUAL(*req.header(), *req1.header());
-	BOOST_CHECK_EQUAL(req.body(), req1.body());
+	BOOST_CHECK_EQUAL(req, req1);
 
 
 	rpc_person::response resp{};
-	resp.header()->uuid_ = 1;
+	resp.header()->uuid(1);
+	resp.header()->result(1);
 	resp.body().sex = true;
 	resp.body().addr = 2;
 	resp.body().age = 15;
@@ -149,10 +101,9 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	resp.pack(resp_buf);
 
 	rpc_person::response resp1{};
-	BOOST_CHECK(resp1.unpack(resp_buf));
+	resp1.unpack(resp_buf);
 
-	BOOST_CHECK_EQUAL(*resp.header(), *resp1.header());
-	BOOST_CHECK_EQUAL(resp.body(), resp1.body());
+	BOOST_CHECK_EQUAL(resp, resp1);
 }
 
 //BOOST_AUTO_TEST_CASE(multi_tcp_processor)
@@ -262,24 +213,24 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 //	BOOST_CHECK(!req.from_binary(ar));
 //}
 //
-//BOOST_AUTO_TEST_CASE(ostream_test)
-//{
-//	using person_request = aquarius::ip::tcp::request<person, 1001>;
-//
-//	person_request req{};
-//
-//	boost::asio::streambuf buf;
-//
-//	std::ostream os(&buf);
-//	os << req;
-//
-//	BOOST_CHECK(!os.fail());
-//
-//	using person_response = aquarius::ip::tcp::response<person, 1002>;
-//
-//	person_response resp{};
-//
-//	os << resp;
-//
-//	BOOST_CHECK(!os.fail());
-//}
+
+class test_streambuf : public std::streambuf {};
+
+BOOST_AUTO_TEST_CASE(for_ostream_test)
+{
+	test_streambuf buf;
+
+	std::ostream os(&buf);
+
+	rpc_person::request req{};
+
+	os << req;
+
+	BOOST_CHECK(os.fail());
+
+	rpc_person::response resp{};
+
+	os << resp;
+
+	BOOST_CHECK(os.fail());
+}

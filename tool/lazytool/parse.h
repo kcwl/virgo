@@ -34,7 +34,7 @@ namespace aquarius
 
 		void read_repeated(std::fstream& ifs, statement_base* state_ptr);
 
-		std::string log(const std::string& str, int line);
+		std::string log(const std::string& str);
 
 		void read_keyword(std::fstream& ifs, std::string& keyword);
 
