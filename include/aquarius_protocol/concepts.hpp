@@ -40,5 +40,5 @@ namespace aquarius
 
 
 	template<typename T>
-	concept reflectable = std::is_trivially_copyable_v<T> && std::is_standard_layout_v<T>;
+	concept reflectable = std::is_trivially_copyable_v<T> && std::is_standard_layout_v<T> && std::is_class_v<T>;
 } // namespace aquarius

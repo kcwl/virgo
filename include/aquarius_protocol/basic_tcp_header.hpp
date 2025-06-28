@@ -30,15 +30,6 @@ namespace aquarius
 			return os;
 		}
 
-		std::ostream& operator<<(std::ostream& os)
-		{
-			base_type::operator<<(os);
-
-			os << impl_.rpc_id << "\t" << impl_.crc << "\t" << impl_.length << "\t" << impl_.timestamp;
-
-			return os;
-		}
-
 	public:
 		uint64_t rpc_id() const
 		{
@@ -76,25 +67,20 @@ namespace aquarius
 		}
 
 	public:
-		template <typename T>
-		std::size_t unpack(std::span<T> buffer)
+		template <typename BuffSequence>
+		void unpack(BuffSequence& buffer)
 		{
-			constexpr auto size = sizeof(impl);
+			base_type::unpack(buffer);
 
-			if (buffer.size() < size)
-				return 0;
-
-			std::memcpy((char*)&impl_, buffer.data(), size);
-
-			return size;
+			impl_ = serialize::from_binary<impl>(buffer);
 		}
 
 		template <typename BufferSequence>
 		void pack(BufferSequence& buffer)
 		{
-			constexpr auto size = sizeof(impl);
+			base_type::pack(buffer);
 
-			std::copy((char*)&impl_, (char*)&impl_ + size, std::back_inserter(buffer));
+			serialize::to_binary(impl_, buffer);
 		}
 
 	private:
@@ -104,14 +90,6 @@ namespace aquarius
 			uint64_t length;
 			uint32_t crc;
 			int64_t timestamp;
-
-			impl()
-				: rpc_id(0)
-				, length(0)
-				, crc(0)
-				, timestamp(0)
-			{}
-
 		} impl_;
 	};
 
@@ -127,6 +105,16 @@ namespace aquarius
 		basic_tcp_header()
 			: impl_()
 		{}
+
+	public:
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			base_type::operator<<(os);
+
+			os << impl_.crc << "\t" << impl_.length << "\t" << impl_.timestamp << "\t" << impl_.result;
+
+			return os;
+		}
 
 	public:
 		uint64_t length() const
@@ -170,25 +158,16 @@ namespace aquarius
 		}
 
 	public:
-		template <typename T>
-		std::size_t unpack(std::span<T> buffer)
+		template <typename BufferSequence>
+		void unpack(BufferSequence& buffer)
 		{
-			constexpr auto size = sizeof(impl);
-
-			if (buffer.size() < size)
-				return 0;
-
-			std::memcpy((char*)&impl_, buffer.data(), size);
-
-			return size;
+			impl_ = serialize::from_binary<impl>(buffer);
 		}
 
 		template <typename BufferSequence>
 		void pack(BufferSequence& buffer)
 		{
-			constexpr auto size = sizeof(impl);
-
-			std::copy((char*)&impl_, (char*)&impl_ + size, std::back_inserter(buffer));
+			serialize::to_binary(impl_, buffer);
 		}
 
 	private:
@@ -198,14 +177,6 @@ namespace aquarius
 			uint32_t crc;
 			int64_t timestamp;
 			int32_t result;
-
-			impl()
-				: length(0)
-				, crc(0)
-				, timestamp(0)
-				, result(0)
-			{}
-
 		} impl_;
 	};
 } // namespace aquarius

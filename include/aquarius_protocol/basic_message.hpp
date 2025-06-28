@@ -5,18 +5,30 @@
 
 namespace aquarius
 {
-	template <typename Body>
+	template <typename Body, typename Allocator>
 	class basic_message : public boost::empty_value<Body>
 	{
-	public:
-		using body_type = Body;
+		static_assert(std::is_pointer_v<Body>, "body must be a regular pointer");
 
-		using base_body = boost::empty_value<body_type>;
+	public:
+		using body_type = std::remove_pointer_t<Body>;
+
+		using base_body = boost::empty_value<Body>;
 
 		using base_type = basic_message;
 
 	public:
-		basic_message() = default;
+		basic_message()
+			: alloc_()
+		{
+			this->get() = alloc_.allocate(1);
+
+			::new (static_cast<void*>(this->get())) body_type();
+		}
+
+		basic_message(const Allocator& alloc)
+			: alloc_(alloc)
+		{}
 
 		basic_message(const basic_message&) = default;
 
@@ -36,7 +48,10 @@ namespace aquarius
 			return *this;
 		}
 
-		virtual ~basic_message() = default;
+		virtual ~basic_message()
+		{
+			alloc_.deallocate(this->get(), 1);
+		}
 
 	public:
 		bool operator==(const basic_message& other) const
@@ -54,12 +69,15 @@ namespace aquarius
 	public:
 		body_type& body()
 		{
-			return this->get();
+			return *this->get();
 		}
 
 		const body_type& body() const
 		{
-			return this->get();
+			return *this->get();
 		}
+
+	private:
+		Allocator alloc_;
 	};
 } // namespace aquarius

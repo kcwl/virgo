@@ -4,13 +4,13 @@
 
 namespace aquarius
 {
-	template <bool Request, typename Body>
-	class basic_tcp_message : public basic_message<Body>, public basic_tcp_header<Request>
+	template <bool Request, typename Body, typename Allocator = std::allocator<Body>>
+	class basic_tcp_message : public basic_message<Body*, Allocator>, public basic_tcp_header<Request>
 	{
 	public:
 		using header_type = basic_tcp_header<Request>;
 
-		using base_type = basic_message<Body>;
+		using base_type = basic_message<Body*, Allocator>;
 
 		using typename base_type::body_type;
 
@@ -23,17 +23,6 @@ namespace aquarius
 
 	public:
 		std::ostream& operator<<(std::ostream& os) const
-		{
-			header_type::operator<<(os);
-
-			os << uuid_ << "\t" << result_ << "\t";
-
-			base_type::operator<<(os);
-
-			return os;
-		}
-
-		std::ostream& operator<<(std::ostream& os)
 		{
 			header_type::operator<<(os);
 
@@ -79,18 +68,34 @@ namespace aquarius
 			result_ = r;
 		}
 		
-		bool pack(std::vector<char>& completed_buffer)
+		template<typename BuffSequence>
+		void pack(BuffSequence& completed_buffer)
 		{
-			serialize::to_binary<body_type>(this->get(), completed_buffer);
+			header_type::pack(completed_buffer);
 
-			return true;
+			serialize::to_binary<uint64_t>(uuid_, completed_buffer);
+
+			if constexpr (!Request)
+			{
+				serialize::to_binary<int32_t>(result_, completed_buffer);
+			}
+
+			serialize::to_binary<body_type>(*this->get(), completed_buffer);
 		}
 
-		bool unpack(std::vector<char>& completed_buffer)
+		template<typename BuffSequence>
+		void unpack(BuffSequence& completed_buffer)
 		{
-			this->get() = serialize::from_binary<body_type>(completed_buffer);
+			header_type::unpack(completed_buffer);
 
-			return true;
+			uuid_ = serialize::from_binary<uint64_t>(completed_buffer);
+
+			if constexpr (!Request)
+			{
+				result_ = serialize::from_binary<int32_t>(completed_buffer);
+			}
+
+			*this->get() = serialize::from_binary<body_type>(completed_buffer);
 		}
 
 	private:

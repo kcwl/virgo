@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <ostream>
+#include <span>
+#include <aquarius_protocol/binary.hpp>
 
 namespace aquarius
 {
@@ -23,13 +25,6 @@ namespace aquarius
 			return os;
 		}
 
-		std::ostream& operator<<(std::ostream& os)
-		{
-			os << version_;
-
-			return os;
-		}
-
 	public:
 		void version(uint32_t v)
 		{
@@ -39,6 +34,18 @@ namespace aquarius
 		uint32_t version() const
 		{
 			return version_;
+		}
+
+		template <typename BuffSequence>
+		void unpack(BuffSequence& buffer)
+		{
+			version_ = serialize::from_binary<uint32_t>(buffer);
+		}
+
+		template <typename BufferSequence>
+		void pack(BufferSequence& buffer)
+		{
+			serialize::to_binary(version_, buffer);
 		}
 
 	private:

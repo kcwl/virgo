@@ -73,7 +73,9 @@ namespace aquarius
 			auto iter = std::find_if(span_buff.begin(), span_buff.end(), [](const auto s) { return (s & 0x80) == 0; });
 
 			if (iter == span_buff.end())
-				return T{};
+			{
+				throw std::runtime_error("syntax error!");
+			}
 
 			auto length = std::distance(span_buff.begin(), iter) + 1;
 
@@ -124,7 +126,9 @@ namespace aquarius
 			constexpr auto t_size = sizeof(T);
 
 			if (t_size > size) [[unlikely]]
-				return {};
+			{
+				throw std::runtime_error("buffer is not enough!");
+			}
 
 			auto sp = std::span(buff).subspan(0, t_size);
 
