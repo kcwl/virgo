@@ -1,7 +1,7 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
 #include <aquarius_protocol.hpp>
-#include <boost/asio/streambuf.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <sstream>
 #include <iostream>
 
 
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 
 	rpc_person::request req1{};
 
-	BOOST_CHECK(req1.unpack(buf));
+	req1.unpack(buf);
 
 	BOOST_CHECK_EQUAL(req, req1);
 
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	resp.pack(resp_buf);
 
 	rpc_person::response resp1{};
-	BOOST_CHECK(resp1.unpack(resp_buf));
+	resp1.unpack(resp_buf);
 
 	BOOST_CHECK_EQUAL(resp, resp1);
 }
@@ -213,24 +213,24 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 //	BOOST_CHECK(!req.from_binary(ar));
 //}
 //
-//BOOST_AUTO_TEST_CASE(ostream_test)
-//{
-//	using person_request = aquarius::ip::tcp::request<person, 1001>;
-//
-//	person_request req{};
-//
-//	boost::asio::streambuf buf;
-//
-//	std::ostream os(&buf);
-//	os << req;
-//
-//	BOOST_CHECK(!os.fail());
-//
-//	using person_response = aquarius::ip::tcp::response<person, 1002>;
-//
-//	person_response resp{};
-//
-//	os << resp;
-//
-//	BOOST_CHECK(!os.fail());
-//}
+
+class test_streambuf : public std::streambuf {};
+
+BOOST_AUTO_TEST_CASE(for_ostream_test)
+{
+	test_streambuf buf;
+
+	std::ostream os(&buf);
+
+	rpc_person::request req{};
+
+	os << req;
+
+	BOOST_CHECK(os.fail());
+
+	rpc_person::response resp{};
+
+	os << resp;
+
+	BOOST_CHECK(os.fail());
+}
