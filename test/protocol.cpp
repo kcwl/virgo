@@ -268,4 +268,25 @@ BOOST_AUTO_TEST_CASE(http_req)
 
 		BOOST_CHECK(os.fail());
 	}
+
+	// request header
+	{
+		req.header()->set_field(aquarius::http_field_type::connection, "keep-alive");
+
+		BOOST_CHECK(req.header()->keep_alive());
+
+		req.header()->set_chunked(true);
+
+		BOOST_CHECK(req.header()->chunked());
+
+		req.header()->content_length(16);
+
+		BOOST_CHECK(req.header()->has_content_length());
+
+		BOOST_CHECK_EQUAL(*req.header()->content_length(), 16);
+
+		req.header()->keep_alive(false);
+
+		BOOST_CHECK(!req.header()->keep_alive());
+	}
 }

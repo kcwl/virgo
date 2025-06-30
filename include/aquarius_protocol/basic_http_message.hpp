@@ -4,7 +4,6 @@
 #include <aquarius_protocol/http_filed_type.hpp>
 #include <optional>
 #include <map>
-#include <variant>
 
 namespace aquarius
 {
@@ -62,15 +61,18 @@ namespace aquarius
             }
         }
 
-    protected:
         void set_chunked(bool chunk)
         {
-            fields_[http_field_type::chunked] = chunk;
+            fields_[http_field_type::chunked] = chunk ? "chunked" : std::string{};
         }
 
         bool chunked()
         {
-            return std::get<std::string_view>(fields_[http_field_type::chunked]) == "chunked" ? true : false;
+            auto iter = fields_.find(http_field_type::chunked);
+            if (iter == fields_.end())
+                return false;
+
+            return iter->second == "chunked" ? true : false;
         }
 
         bool has_content_length() const
@@ -83,7 +85,7 @@ namespace aquarius
             if (!len.has_value())
                 return;
 
-            fields_[http_field_type::content_length] = *len;
+            fields_[http_field_type::content_length] = std::to_string(*len);
         }
 
         std::optional<uint64_t> content_length()
@@ -92,32 +94,25 @@ namespace aquarius
             if (iter == fields_.end())
                 return std::nullopt;
 
-            return std::get<uint64_t>(fields_[http_field_type::content_length]);
+            return std::atoi(iter->second.c_str());
         }
 
         bool keep_alive()
         {
             auto iter = fields_.find(http_field_type::connection);
             if (iter == fields_.end())
-                return true;
+                return false;
 
-            return std::get<bool>(iter->second);
+            return iter->second == "keep-alive" ? true : false;
         }
 
         void keep_alive(bool k)
         {
-            auto iter = fields_.find(http_field_type::connection);
-            if (iter != fields_.end())
-            {
-                if (std::get<bool>(iter->second) == k)
-                    return;
-            }
-
-            fields_[http_field_type::connection] = k;
+            fields_[http_field_type::connection] =  k ?  "keep-alive" : std::string{};
         }
 
     private:
-        std::map<http_field_type, std::variant<bool, uint64_t, std::string_view>> fields_;
+        std::map<http_field_type, std::string> fields_;
     };
 
     template<bool Request, typename Body, typename Allocator>
