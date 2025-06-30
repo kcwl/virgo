@@ -77,5 +77,8 @@
     <ClInclude Include="..\include\aquarius_protocol\http_response.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_version.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
