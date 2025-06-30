@@ -15,6 +15,28 @@ namespace aquarius
 		basic_http_header() = default;
 
 	public:
+		std::ostream operator<<(std::ostream& os) const
+		{
+			os << method_ << " " << path_;
+
+			if (!querys().empty())
+			{
+				os << "?";
+			}
+
+			for (auto& s : querys())
+			{
+				os << s.first << "=" << s.second;
+
+				os << "&";
+			}
+		
+			os.seekp(-1, std::ios::cur);
+				
+			os << version_ << "\r\n";
+		}
+
+	public:
 		http_method method() const
 		{
 			return method_;
@@ -45,17 +67,17 @@ namespace aquarius
 			version_ = v;
 		}
 
-		const std::vector<std::string>& path() const
+		const std::string& path() const
 		{
 			return path_;
 		}
 
-		std::vector<std::string>& path()
+		std::string& path()
 		{
 			return path_;
 		}
 
-		void path(std::vector<std::string> p)
+		void path(std::string p)
 		{
 			path_ = std::move(p);
 		}
@@ -80,7 +102,7 @@ namespace aquarius
 
 		http_version version_;
 
-		std::vector<std::string> path_;
+		std::string path_;
 
 		std::vector<std::pair<std::string, std::string>> querys_;
 	};

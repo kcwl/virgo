@@ -29,6 +29,12 @@ namespace aquarius
         }
 
     public:
+        std::ostream& operator<<(std::ostream& os) const
+        {
+            os << header() << this->body();
+
+            return os;
+        }
 
     public:
         template<typename T>
@@ -113,4 +119,12 @@ namespace aquarius
     private:
         std::map<http_field_type, std::variant<bool, uint64_t, std::string_view>> fields_;
     };
+
+    template<bool Request, typename Body, typename Allocator>
+    inline std::ostream& operator<<(std::ostream& os, const basic_http_message<Request, Body, Allocator>& other)
+    {
+        other << os;
+
+        return os;
+    }
 }

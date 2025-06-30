@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 
 namespace aquarius
 {
@@ -9,4 +10,11 @@ namespace aquarius
 		http2,
 		http3
 	};
+
+	inline std::ostream& operator<<(std::ostream& os, http_version v)
+	{
+		os << static_cast<int>(v);
+
+		return os;
+	}
 } // namespace aquarius
