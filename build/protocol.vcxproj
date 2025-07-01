@@ -135,11 +135,19 @@
   <ItemGroup>
     <ClInclude Include="..\include\aquarius_protocol.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_http_header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\basic_http_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_tcp_header.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_tcp_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\binary.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_filed_type.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_method.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_response.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_request.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_status.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\http_version.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\json.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\reflection.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\tcp_request.hpp" />

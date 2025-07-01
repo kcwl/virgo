@@ -234,3 +234,59 @@ BOOST_AUTO_TEST_CASE(for_ostream_test)
 
 	BOOST_CHECK(os.fail());
 }
+
+BOOST_AUTO_TEST_CASE(http_req)
+{
+	aquarius::http_request<std::string> req{};
+	// header
+	{
+		req.header()->method(aquarius::http_method::get);
+
+		BOOST_CHECK_EQUAL(req.header()->method(), aquarius::http_method::get);
+
+		req.header()->version(aquarius::http_version::http1_1);
+
+		BOOST_CHECK_EQUAL(req.header()->version(), aquarius::http_version::http1_1);
+
+		req.header()->path("/api/v1/create");
+
+		BOOST_CHECK_EQUAL(req.header()->path(), "/api/v1/create");
+
+		req.header()->querys().push_back({ "has_login","false" });
+
+		auto& first_query = req.header()->querys().at(0);
+
+		BOOST_CHECK_EQUAL(first_query.first, "has_login");
+
+		BOOST_CHECK_EQUAL(first_query.second, "false");
+
+		test_streambuf buf;
+
+		std::ostream os(&buf);
+
+		os << req;
+
+		BOOST_CHECK(os.fail());
+	}
+
+	// request header
+	{
+		req.header()->set_field(aquarius::http_field_type::connection, "keep-alive");
+
+		BOOST_CHECK(req.header()->keep_alive());
+
+		req.header()->set_chunked(true);
+
+		BOOST_CHECK(req.header()->chunked());
+
+		req.header()->content_length(16);
+
+		BOOST_CHECK(req.header()->has_content_length());
+
+		BOOST_CHECK_EQUAL(*req.header()->content_length(), 16);
+
+		req.header()->keep_alive(false);
+
+		BOOST_CHECK(!req.header()->keep_alive());
+	}
+}

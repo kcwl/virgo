@@ -56,5 +56,29 @@
     <ClInclude Include="..\include\aquarius_protocol\tcp_response.hpp">
       <Filter>头文件\aquarius_protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_method.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_status.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\basic_http_header.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\basic_http_message.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_filed_type.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_request.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_response.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\aquarius_protocol\http_version.hpp">
+      <Filter>头文件\aquarius_protocol</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
