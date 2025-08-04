@@ -138,36 +138,36 @@ namespace aquarius
 
 	void cpp_generator::generate_template(message_statement* state)
 	{
-		ofs_ << std::endl << "template <>";
-		ofs_ << std::endl << "struct aquarius::reflect<" << state->name_str << ">";
-		ofs_ << std::endl << "{";
-		ofs_ << std::endl << "\tusing value_type = " << state->name_str << ";";
-		ofs_ << std::endl << "\tconstexpr static std::string_view topic()";
-		ofs_ << std::endl << "\t{";
-		ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
-		ofs_ << std::endl << "\t}";
-		ofs_ << std::endl;
-		ofs_ << std::endl << "\tconstexpr static std::array<std::string_view, " << state->seqs.size() << "> fields()";
-		ofs_ << std::endl << "\t{";
-		ofs_ << std::endl << "\t\treturn {";
-		for (auto& s : state->seqs)
-		{
-			if (s->name_str.empty())
-				continue;
+		//ofs_ << std::endl << "template <>";
+		//ofs_ << std::endl << "struct aquarius::reflect<" << state->name_str << ">";
+		//ofs_ << std::endl << "{";
+		//ofs_ << std::endl << "\tusing value_type = " << state->name_str << ";";
+		//ofs_ << std::endl << "\tconstexpr static std::string_view topic()";
+		//ofs_ << std::endl << "\t{";
+		//ofs_ << std::endl << "\t\treturn \"" << state->name_str << "\"sv;";
+		//ofs_ << std::endl << "\t}";
+		//ofs_ << std::endl;
+		//ofs_ << std::endl << "\tconstexpr static std::array<std::string_view, " << state->seqs.size() << "> fields()";
+		//ofs_ << std::endl << "\t{";
+		//ofs_ << std::endl << "\t\treturn {";
+		//for (auto& s : state->seqs)
+		//{
+		//	if (s->name_str.empty())
+		//		continue;
 
-			ofs_ << "\"" << s->name_str << "\"sv, ";
-		}
+		//	ofs_ << "\"" << s->name_str << "\"sv, ";
+		//}
 
-		if (!state->seqs.empty())
-		{
-			ofs_.seekp(-2, std::ios::cur);
-		}
+		//if (!state->seqs.empty())
+		//{
+		//	ofs_.seekp(-2, std::ios::cur);
+		//}
 
-		ofs_ << "};";
+		//ofs_ << "};";
 
-		ofs_ << std::endl << "\t}";
+		//ofs_ << std::endl << "\t}";
 
-		ofs_ << std::endl << "};\n";
+		//ofs_ << std::endl << "};\n";
 	}
 
 	void cpp_generator::generate_single(statement_base* state)

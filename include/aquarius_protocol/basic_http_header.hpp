@@ -2,6 +2,7 @@
 #include <aquarius_protocol/http_method.hpp>
 #include <aquarius_protocol/http_status.hpp>
 #include <aquarius_protocol/http_version.hpp>
+#include <vector>
 
 namespace aquarius
 {

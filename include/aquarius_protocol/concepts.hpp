@@ -1,9 +1,9 @@
 #pragma once
-#include <concepts>
-#include <vector>
-#include <string>
-#include <cstdint>
 #include <boost/asio/buffer.hpp>
+#include <concepts>
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace aquarius
 {
@@ -35,10 +35,12 @@ namespace aquarius
 	template <typename T>
 	concept repeated_t = is_vector<std::remove_cvref_t<T>>::value;
 
-	template<typename T>
+	template <typename T>
 	concept zig_zag = disjunction_same_as<T, int8_t, int16_t, int32_t, int64_t>;
 
+	template <typename T>
+	concept pod_t = disjunction_same_as<std::remove_cvref_t<T>, char, bool, float, double>;
 
-	template<typename T>
-	concept reflectable = std::is_trivially_copyable_v<T> && std::is_standard_layout_v<T> && std::is_class_v<T>;
+	template <typename T>
+	concept reflectable = std::is_aggregate_v<std::remove_cvref_t<T>>;
 } // namespace aquarius

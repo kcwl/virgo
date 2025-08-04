@@ -29,12 +29,12 @@ namespace aquarius
 			return to_binary<uint64_t>(temp, buff);
 		}
 
-		template <typename T, typename BufferSequence>
-		inline void to_binary(const T& value, BufferSequence& buff)
+		template <pod_t T, typename BufferSequence>
+		static void to_binary(T value, BufferSequence& buff)
 		{
-			auto begin = (char*)&value;
-			auto end = (char*)&value + sizeof(T);
-			std::copy(begin, end, std::back_inserter(buff));
+			constexpr auto size = sizeof(T);
+
+			std::copy((char*)&value, (char*)&value + size, std::back_inserter(buff));
 		}
 
 		template <repeated_t T, typename BufferSequence>
@@ -118,34 +118,21 @@ namespace aquarius
 			return static_cast<T>((value >> 1) ^ (~(value & 1) + 1));
 		}
 
-		template <typename T, typename BuffSequence>
-		inline auto from_binary(BuffSequence& buff) -> T
+		template <pod_t T, typename BufferSequence>
+		inline auto from_binary(BufferSequence& buff)
 		{
-			auto size = buff.size();
-
-			constexpr auto t_size = sizeof(T);
-
-			if (t_size > size) [[unlikely]]
-			{
-				throw std::runtime_error("buffer is not enough!");
-			}
-
-			auto sp = std::span(buff).subspan(0, t_size);
+			constexpr auto size = sizeof(T);
 
 			T value{};
 
-			if constexpr (std::same_as<T, bool>)
-			{
-				value =  !!*sp.data();
-			}
-			else
-			{
-				std::memcpy((char*)&value, sp.data(), t_size);
-			}
+			if (buff.size() < size)
+				return value;
+
+			std::memcpy((char*)&value, buff.data(), size);
 
 			auto dynamic_buf = boost::asio::dynamic_buffer(buff);
 
-			dynamic_buf.consume(t_size);
+			dynamic_buf.consume(size);
 
 			return value;
 		}

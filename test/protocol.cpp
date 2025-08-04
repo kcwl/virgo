@@ -61,7 +61,7 @@ struct rpc_person
 BOOST_AUTO_TEST_CASE(tcp_proto)
 {
 	rpc_person::request req{};
-	req.header()->uuid(1);
+	req.header().uuid(1);
 	req.body().sex = true;
 	req.body().addr = 2;
 	req.body().age = 15;
@@ -74,18 +74,18 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	req.body().orders = { 1, 2, 3, 4, 5 };
 
 	std::vector<char> buf;
-	req.pack(buf);
+	req.commit(buf);
 
 	rpc_person::request req1{};
 
-	req1.unpack(buf);
+	req1.consume(buf);
 
 	BOOST_CHECK_EQUAL(req, req1);
 
 
 	rpc_person::response resp{};
-	resp.header()->uuid(1);
-	resp.header()->result(1);
+	resp.header().uuid(1);
+	resp.header().result(1);
 	resp.body().sex = true;
 	resp.body().addr = 2;
 	resp.body().age = 15;
@@ -98,10 +98,10 @@ BOOST_AUTO_TEST_CASE(tcp_proto)
 	resp.body().orders = { 1, 2, 3, 4, 5 };
 
 	std::vector<char> resp_buf{};
-	resp.pack(resp_buf);
+	resp.commit(resp_buf);
 
 	rpc_person::response resp1{};
-	resp1.unpack(resp_buf);
+	resp1.consume(resp_buf);
 
 	BOOST_CHECK_EQUAL(resp, resp1);
 }
