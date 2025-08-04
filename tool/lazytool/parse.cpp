@@ -223,7 +223,8 @@ namespace aquarius
 			else if (c == ' ')
 			{
 				ifs.get();
-				break;
+				if(!keyword.empty())
+					break;
 			}
 			else
 			{

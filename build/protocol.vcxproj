@@ -134,11 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\aquarius_protocol.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_header.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_http_header.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_http_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_tcp_header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\custom_tcp_header.hpp" />
+    <ClInclude Include="..\include\aquarius_protocol\layer_tcp_header.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\basic_tcp_message.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\binary.hpp" />
     <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />

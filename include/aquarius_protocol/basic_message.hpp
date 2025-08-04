@@ -35,7 +35,7 @@ namespace aquarius
 		basic_message& operator=(const basic_message&) = default;
 
 		basic_message(basic_message&& other) noexcept
-			: base_body(boost::empty_init, std::move(other.get()))
+			: base_body(boost::empty_init, std::exchange(other.get(), nullptr))
 		{}
 
 		basic_message& operator=(basic_message&& other) noexcept
@@ -43,6 +43,8 @@ namespace aquarius
 			if (this != std::addressof(other))
 			{
 				this->get() = std::move(other.get());
+				other.get() = nullptr;
+				alloc_ = std::move(other.alloc_);
 			}
 
 			return *this;
@@ -50,7 +52,10 @@ namespace aquarius
 
 		virtual ~basic_message()
 		{
-			alloc_.deallocate(this->get(), 1);
+			if (this->get())
+			{
+				alloc_.deallocate(this->get(), 1);
+			}
 		}
 
 	public:
@@ -64,6 +69,18 @@ namespace aquarius
 			os << body();
 
 			return os;
+		}
+
+		template <typename BufferSequence>
+		void commit(BufferSequence& buffer)
+		{
+			serialize::to_binary(*this->get(), buffer);
+		}
+
+		template <typename BuffSequence>
+		void consume(BuffSequence& buffer)
+		{
+			*this->get() = serialize::from_binary<body_type>(buffer);
 		}
 
 	public:
