@@ -1,125 +1,74 @@
 #pragma once
-#include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/basic_http_header.hpp>
+#include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/http_filed_type.hpp>
-#include <optional>
+#include <aquarius_protocol/http_header_fileds.hpp>
 #include <map>
+#include <optional>
 
 namespace aquarius
 {
-    template<bool Request, typename Body, typename Allocator = std::allocator<Body>>
-    class basic_http_message : public basic_http_header<Request>, public basic_message<Body*, Allocator>
-    {
-    public:
-        using header_type = basic_http_message;
+	template <bool Request, typename Body, typename Fields = http_header_fields,
+			  typename Allocator = std::allocator<Body>>
+	class basic_http_message : public basic_message<std::add_pointer_t<Body>, Allocator>,
+							   public basic_http_header<Request>
+	{
+	public:
+		using header_t = basic_http_header<Request>;
 
-    public:
-        basic_http_message() = default;
+		using filed = Fields;
 
-    public:
-        header_type* header()
-        {
-            return this;
-        }
+	public:
+		basic_http_message() = default;
 
-        const header_type* header() const
-        {
-            return this;
-        }
+	public:
+		filed& header()
+		{
+			return fields_;
+		}
 
-    public:
-        std::ostream& operator<<(std::ostream& os) const
-        {
-            os << header() << this->body();
+		const filed& header() const
+		{
+			return fields_;
+		}
 
-            return os;
-        }
+	public:
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			os << header() << this->body();
 
-    public:
-        template<typename T>
-        T find(http_field_type f)
-        {
-            auto iter = fields_.find(f);
+			return os;
+		}
 
-            if (iter == fields_.end())
-                return {};
+		template <typename BufferSequence>
+		void commit(BufferSequence& buffer)
+		{
+			header_t::commit(buffer);
 
-            return std::get<T>(iter->second);
-        }
+			fields_.commit(buffer);
 
-        template<typename T>
-        void set_field(http_field_type f, T v)
-        {
-            auto iter = fields_.find(f);
-            if (iter != fields_.end())
-            {
-                iter->second = v;
-            }
-            else
-            {
-                fields_[f] = v;
-            }
-        }
+			this->body().commit(buffer);
+		}
 
-        void set_chunked(bool chunk)
-        {
-            fields_[http_field_type::chunked] = chunk ? "chunked" : std::string{};
-        }
+		template <typename BufferSequence>
+		void consume(BufferSequence& buffer)
+		{
+			header_t::consume(buffer);
 
-        bool chunked()
-        {
-            auto iter = fields_.find(http_field_type::chunked);
-            if (iter == fields_.end())
-                return false;
+			fields_.consume(buffer);
 
-            return iter->second == "chunked" ? true : false;
-        }
+			this->body().consume(buffer);
+		}
 
-        bool has_content_length() const
-        {
-            return fields_.find(http_field_type::content_length) != fields_.end();
-        }
+	private:
+		filed fields_{};
+	};
 
-        void content_length(std::optional<uint64_t> len)
-        {
-            if (!len.has_value())
-                return;
+	template <bool Request, typename Body, typename Allocator>
+	inline std::ostream& operator<<(std::ostream& os, const basic_http_message<Request, Body, Allocator>& other)
+	{
+		other << os;
 
-            fields_[http_field_type::content_length] = std::to_string(*len);
-        }
-
-        std::optional<uint64_t> content_length()
-        {
-            auto iter = fields_.find(http_field_type::content_length);
-            if (iter == fields_.end())
-                return std::nullopt;
-
-            return std::atoi(iter->second.c_str());
-        }
-
-        bool keep_alive()
-        {
-            auto iter = fields_.find(http_field_type::connection);
-            if (iter == fields_.end())
-                return false;
-
-            return iter->second == "keep-alive" ? true : false;
-        }
-
-        void keep_alive(bool k)
-        {
-            fields_[http_field_type::connection] =  k ?  "keep-alive" : std::string{};
-        }
-
-    private:
-        std::map<http_field_type, std::string> fields_;
-    };
-
-    template<bool Request, typename Body, typename Allocator>
-    inline std::ostream& operator<<(std::ostream& os, const basic_http_message<Request, Body, Allocator>& other)
-    {
-        other << os;
-
-        return os;
-    }
-}
+		return os;
+	}
+} // namespace aquarius

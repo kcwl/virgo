@@ -3,7 +3,6 @@
 
 namespace aquarius
 {
-
 	enum class http_status : uint32_t
 	{
 		unknown = 0,
@@ -75,6 +74,98 @@ namespace aquarius
 		not_extended = 510,
 		network_authentication_required = 511
 	};
+
+	inline std::string_view get_http_status_string(http_status status)
+	{
+		static const std::map<http_status, std::string> statuses = {
+			{ http_status::unknown, "unknown" },
+			{ http_status::continue_, "Continue" },
+			{ http_status::switching_protocols, "Switching Protocols" },
+			{ http_status::processing, "Processing" },
+			{ http_status::early_hints, "Early Hints" },
+			{ http_status::ok, "OK" },
+			{ http_status::created, "Created" },
+			{ http_status::accepted, "Accepted" },
+			{ http_status::non_authoritative_information, "Non Authoritative Information" },
+			{ http_status::no_content, "No Content" },
+			{ http_status::reset_content, "Reset Content" },
+			{ http_status::partial_content, "Partial Content" },
+			{ http_status::multi_status, "Multi Status" },
+			{ http_status::already_reported, "Already Reported" },
+			{ http_status::im_used, "IM Used" },
+			{ http_status::multiple_choices, "Multiple Choices" },
+			{ http_status::moved_permanently, "Moved Permanently" },
+			{ http_status::found, "Found" },
+			{ http_status::see_other, "See Other" },
+			{ http_status::not_modified, "Not Modified" },
+			{ http_status::use_proxy, "Use Proxy" },
+			{ http_status::temporary_redirect, "Temporary Redirect" },
+			{ http_status::permanent_redirect, "Permanent Redirect" },
+			{ http_status::bad_request, "Bad Request" },
+			{ http_status::unauthorized, "Unauthorized" },
+			{ http_status::payment_required, "Payment Required" },
+			{ http_status::forbidden, "Forbidden" },
+			{ http_status::not_found, "Not Found" },
+			{ http_status::method_not_allowed, "Method Not Allowed" },
+			{ http_status::not_acceptable, "Not Acceptable" },
+			{ http_status::proxy_authentication_required, "Proxy Authentication Required" },
+			{ http_status::request_timeout, "Request Timeout" },
+			{ http_status::conflict, "Conflict" },
+			{ http_status::gone, "Gone" },
+			{ http_status::length_required, "Length Required" },
+			{ http_status::precondition_failed, "Precondition Failed" },
+			{ http_status::payload_too_large, "Payload Too Large" },
+			{ http_status::uri_too_long, "Uri Too Long" },
+			{ http_status::unsupported_media_type, "Unsupported Media Type" },
+			{ http_status::range_not_satisfiable, "Range Not Satisfiable" },
+			{ http_status::expectation_failed, "Expectation Failed" },
+			{ http_status::i_am_a_teapot, "I'm a teapot" },
+			{ http_status::misdirected_request, "Misdirected Request" },
+			{ http_status::unprocessable_entity, "Unprocessable Entity" },
+			{ http_status::locked, "Locked" },
+			{ http_status::failed_dependency, "Failed Dependency" },
+			{ http_status::too_early, "too_early" },
+			{ http_status::upgrade_required, "upgrade_required" },
+			{ http_status::precondition_required, "precondition_required" },
+			{ http_status::too_many_requests, "too_many_requests" },
+			{ http_status::request_header_fields_too_large, "request_header_fields_too_large" },
+			{ http_status::unavailable_for_legal_reasons, "unavailable_for_legal_reasons" },
+			{ http_status::internal_server_error, "internal_server_error" },
+			{ http_status::not_implemented, "not_implemented" },
+			{ http_status::bad_gateway, "bad_gateway" },
+			{ http_status::service_unavailable, "service_unavailable" },
+			{ http_status::gateway_timeout, "gateway_timeout" },
+			{ http_status::http_version_not_supported, "http_version_not_supported" },
+			{ http_status::variant_also_negotiates, "variant_also_negotiates" },
+			{ http_status::insufficient_storage, "insufficient_storage" },
+			{ http_status::loop_detected, "loop_detected" },
+			{ http_status::not_extended, "not_extended" },
+			{ http_status::network_authentication_required, "network_authentication_required" }
+		};
+		return statuses.at(status);
+	}
+
+	class http_statue_category : public std::error_category
+	{
+	public:
+		constexpr http_statue_category() = default;
+
+		[[nodiscard]] const char* name() const noexcept override
+		{
+			return "serviced errc";
+		}
+
+		[[nodiscard]] std::string message(int err_code) const override
+		{
+			return std::string(get_http_status_string(static_cast<http_status>(err_code)).data());
+		}
+	};
+
+	template <typename ErrorCode>
+	inline ErrorCode make_error_code(http_status result)
+	{
+		return ErrorCode(std::error_code(static_cast<int>(result), http_statue_category()));
+	}
 
 	enum class http_status_class : unsigned
 	{
