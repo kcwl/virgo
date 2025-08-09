@@ -3,6 +3,7 @@
 #include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/http_filed_type.hpp>
 #include <aquarius_protocol/http_header_fileds.hpp>
+#include <aquarius_protocol/json.hpp>
 #include <map>
 #include <optional>
 
@@ -21,6 +22,12 @@ namespace aquarius
 	public:
 		basic_http_message() = default;
 
+		basic_http_message(header_t h)
+			: header_t(h)
+		{
+
+		}
+
 	public:
 		filed& header()
 		{
@@ -30,6 +37,26 @@ namespace aquarius
 		const filed& header() const
 		{
 			return fields_;
+		}
+
+		header_t& base_header()
+		{
+			return *this;
+		}
+
+		const header_t& base_header() const
+		{
+			return *this;
+		}
+
+		Body& body()
+		{
+			return *this->get();
+		}
+
+		const Body& body() const
+		{
+			return *this->get();
 		}
 
 	public:
@@ -43,21 +70,18 @@ namespace aquarius
 		template <typename BufferSequence>
 		void commit(BufferSequence& buffer)
 		{
-			header_t::commit(buffer);
+			auto str = serialize::to_json(this->body());
 
-			fields_.commit(buffer);
-
-			this->body().commit(buffer);
+			std::copy(str.begin(), str.end(), std::back_inserter(buffer));
 		}
 
 		template <typename BufferSequence>
 		void consume(BufferSequence& buffer)
 		{
-			header_t::consume(buffer);
+			if (!fields_.consume(buffer))
+				return;
 
-			fields_.consume(buffer);
-
-			this->body().consume(buffer);
+			this->body() = serialize::from_json<Body>(std::string(buffer.data(), buffer.size()));
 		}
 
 	private:
