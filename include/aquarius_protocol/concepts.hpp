@@ -29,6 +29,10 @@ namespace aquarius
 	struct is_string<std::string> : public std::true_type
 	{};
 
+	template <>
+	struct is_string<std::string_view> : public std::true_type
+	{};
+
 	template <typename T>
 	concept string_t = is_string<std::remove_cvref_t<T>>::value;
 

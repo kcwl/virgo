@@ -17,4 +17,22 @@ namespace aquarius
 
 		return os;
 	}
+
+	inline std::string version_to_string(http_version v)
+	{
+		switch (v)
+		{
+		case http_version::http1_0:
+			return "HTTP/1.0";
+		case http_version::http1_1:
+			return "HTTP/1.1";
+		case http_version::http2:
+			return "HTTP/2";
+		case http_version::http3:
+			return "HTTP/3";
+		}
+
+		return {};
+	}
+
 } // namespace aquarius

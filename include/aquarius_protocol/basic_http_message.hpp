@@ -1,125 +1,103 @@
 #pragma once
-#include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/basic_http_header.hpp>
+#include <aquarius_protocol/basic_message.hpp>
 #include <aquarius_protocol/http_filed_type.hpp>
-#include <optional>
+#include <aquarius_protocol/http_header_fileds.hpp>
+#include <aquarius_protocol/json.hpp>
 #include <map>
+#include <optional>
 
 namespace aquarius
 {
-    template<bool Request, typename Body, typename Allocator = std::allocator<Body>>
-    class basic_http_message : public basic_http_header<Request>, public basic_message<Body*, Allocator>
-    {
-    public:
-        using header_type = basic_http_message;
+	template <bool Request, typename Body, typename Fields = http_header_fields,
+			  typename Allocator = std::allocator<Body>>
+	class basic_http_message : public basic_message<std::add_pointer_t<Body>, Allocator>,
+							   public basic_http_header<Request>
+	{
+	public:
+		using header_t = basic_http_header<Request>;
 
-    public:
-        basic_http_message() = default;
+		using filed = Fields;
 
-    public:
-        header_type* header()
-        {
-            return this;
-        }
+	public:
+		basic_http_message() = default;
 
-        const header_type* header() const
-        {
-            return this;
-        }
+		basic_http_message(header_t h)
+			: header_t(h)
+		{
 
-    public:
-        std::ostream& operator<<(std::ostream& os) const
-        {
-            os << header() << this->body();
+		}
 
-            return os;
-        }
+	public:
+		filed& header()
+		{
+			return fields_;
+		}
 
-    public:
-        template<typename T>
-        T find(http_field_type f)
-        {
-            auto iter = fields_.find(f);
+		const filed& header() const
+		{
+			return fields_;
+		}
 
-            if (iter == fields_.end())
-                return {};
+		header_t& base_header()
+		{
+			return *this;
+		}
 
-            return std::get<T>(iter->second);
-        }
+		const header_t& base_header() const
+		{
+			return *this;
+		}
 
-        template<typename T>
-        void set_field(http_field_type f, T v)
-        {
-            auto iter = fields_.find(f);
-            if (iter != fields_.end())
-            {
-                iter->second = v;
-            }
-            else
-            {
-                fields_[f] = v;
-            }
-        }
+		Body& body()
+		{
+			return *this->get();
+		}
 
-        void set_chunked(bool chunk)
-        {
-            fields_[http_field_type::chunked] = chunk ? "chunked" : std::string{};
-        }
+		const Body& body() const
+		{
+			return *this->get();
+		}
 
-        bool chunked()
-        {
-            auto iter = fields_.find(http_field_type::chunked);
-            if (iter == fields_.end())
-                return false;
+	public:
+		std::ostream& operator<<(std::ostream& os) const
+		{
+			os << header() << this->body();
 
-            return iter->second == "chunked" ? true : false;
-        }
+			return os;
+		}
 
-        bool has_content_length() const
-        {
-            return fields_.find(http_field_type::content_length) != fields_.end();
-        }
+		template <typename BufferSequence>
+		void commit(BufferSequence& buffer)
+		{
+			auto str = serialize::to_json(this->body());
 
-        void content_length(std::optional<uint64_t> len)
-        {
-            if (!len.has_value())
-                return;
+			std::copy(str.begin(), str.end(), std::back_inserter(buffer));
+		}
 
-            fields_[http_field_type::content_length] = std::to_string(*len);
-        }
+		void consume(std::span<char> buffer)
+		{
+			auto next_span = fields_.consume(buffer);
 
-        std::optional<uint64_t> content_length()
-        {
-            auto iter = fields_.find(http_field_type::content_length);
-            if (iter == fields_.end())
-                return std::nullopt;
+			if(next_span.size() < sizeof("\r\n"))
+				return;
 
-            return std::atoi(iter->second.c_str());
-        }
+			auto body_span = next_span.subspan(2);
 
-        bool keep_alive()
-        {
-            auto iter = fields_.find(http_field_type::connection);
-            if (iter == fields_.end())
-                return false;
+			auto body_length = body_span.size() > *header().length() ? *header().length() : body_span.size();
 
-            return iter->second == "keep-alive" ? true : false;
-        }
+			this->body() = serialize::from_json<Body>(std::string(body_span.data(), body_length));
+		}
 
-        void keep_alive(bool k)
-        {
-            fields_[http_field_type::connection] =  k ?  "keep-alive" : std::string{};
-        }
+	private:
+		filed fields_{};
+	};
 
-    private:
-        std::map<http_field_type, std::string> fields_;
-    };
+	template <bool Request, typename Body, typename Allocator>
+	inline std::ostream& operator<<(std::ostream& os, const basic_http_message<Request, Body, Allocator>& other)
+	{
+		other << os;
 
-    template<bool Request, typename Body, typename Allocator>
-    inline std::ostream& operator<<(std::ostream& os, const basic_http_message<Request, Body, Allocator>& other)
-    {
-        other << os;
-
-        return os;
-    }
-}
+		return os;
+	}
+} // namespace aquarius

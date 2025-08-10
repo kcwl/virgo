@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <cstdint>
+#include <string_view>
 #include <aquarius_protocol/binary.hpp>
 
 namespace aquarius
@@ -11,7 +12,7 @@ namespace aquarius
 		{
 			int32_t version_;
 			int32_t transfer_;
-			uint64_t rpc_;
+			std::string_view rpc_;
 			uint64_t length_;
 			uint32_t crc_;
 			int64_t timestamp_;
@@ -60,12 +61,12 @@ namespace aquarius
 			impl_.transfer_ = transfer;
 		}
 
-		uint64_t rpc() const
+		std::string_view rpc() const
 		{
 			return impl_.rpc_;
 		}
 
-		void rpc(uint64_t rpc_id)
+		void rpc(std::string_view rpc_id)
 		{
 			impl_.rpc_ = rpc_id;
 		}
@@ -115,7 +116,7 @@ namespace aquarius
 		{
 			impl_.version_ = serialize::from_binary<int32_t>(buffer);
 			impl_.transfer_ = serialize::from_binary<int32_t>(buffer);
-			impl_.rpc_ = serialize::from_binary<uint64_t>(buffer);
+			impl_.rpc_ = serialize::from_binary<std::string_view>(buffer);
 			impl_.length_ = serialize::from_binary<uint64_t>(buffer);
 			impl_.crc_ = serialize::from_binary<uint32_t>(buffer);
 			impl_.timestamp_ = serialize::from_binary<int64_t>(buffer);
