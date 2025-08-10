@@ -5,9 +5,9 @@
 namespace virgo
 {
 	template <typename T>
-	std::string to_json(const T& value)
+	std::string to_json(const T& v)
 	{
-		auto value = boost::json::value_from(value);
+		auto value = boost::json::value_from(v);
 
 		return boost::json::serialize(value);
 	}
