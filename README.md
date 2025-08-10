@@ -1,2 +1,2 @@
-# aquarius_proto
+# virgo
 protocol for aquarius
