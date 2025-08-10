@@ -18,24 +18,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\lazytool\cpp_generate.cpp" />
-    <ClCompile Include="..\src\lazytool\lazytool.cpp" />
-    <ClCompile Include="..\src\lazytool\parse.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\lazytool\cpp_generate.h" />
-    <ClInclude Include="..\src\lazytool\parse.h" />
-    <ClInclude Include="..\src\lazytool\statement.hpp" />
-    <ClInclude Include="..\src\lazytool\stream.hpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0cea2305-ec77-4bc7-a6ef-dcd2b1a4b160}</ProjectGuid>
-    <RootNamespace>aquariusprotocol</RootNamespace>
+    <ProjectGuid>{ed1b01be-ddac-4c0d-b89f-99313a20bd5e}</ProjectGuid>
+    <RootNamespace>test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>lazytool</ProjectName>
+    <ProjectName>test</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -114,14 +103,16 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BOOST_ALL_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)../include;D:\boost_1_88_0;$(SolutionDir)../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\boost_1_88_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,18 +121,47 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;BOOST_ALL_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)../include;D:\boost_1_88_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\boost_1_88_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test\test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\virgo.hpp" />
+    <ClInclude Include="..\include\virgo\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\detail\binary.hpp" />
+    <ClInclude Include="..\include\virgo\detail\concepts.hpp" />
+    <ClInclude Include="..\include\virgo\detail\config.hpp" />
+    <ClInclude Include="..\include\virgo\detail\json.hpp" />
+    <ClInclude Include="..\include\virgo\detail\reflection.hpp" />
+    <ClInclude Include="..\include\virgo\http.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\basic_header.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\header_fileds.hpp" />
+    <ClInclude Include="..\include\virgo\http\method.hpp" />
+    <ClInclude Include="..\include\virgo\http\request.hpp" />
+    <ClInclude Include="..\include\virgo\http\response.hpp" />
+    <ClInclude Include="..\include\virgo\http\status.hpp" />
+    <ClInclude Include="..\include\virgo\http\version.hpp" />
+    <ClInclude Include="..\include\virgo\tcp.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\custom_header.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\layer_header.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\request.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\response.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

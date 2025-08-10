@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{9ceb8ef4-21cf-48f5-847a-b6bf94a1ccd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo">
+      <UniqueIdentifier>{a1557ee1-053d-4182-9671-db7cbc30ee47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo\detail">
+      <UniqueIdentifier>{a4725913-466d-48c7-b817-a7b7368ae5e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo\http">
+      <UniqueIdentifier>{00529329-7153-4b22-a464-262bfde4287e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo\tcp">
+      <UniqueIdentifier>{7bfd4106-c855-405f-90b5-2f106de1b51c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{2342592e-ce8a-4567-9e72-714d574b0f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{d56cf2eb-e985-4e2b-ab84-567561e65d85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo\http\detail">
+      <UniqueIdentifier>{6d7a7532-158b-4de1-bded-12fe097f5933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\virgo\tcp\detail">
+      <UniqueIdentifier>{528ec5a4-beee-42d3-aecd-5ad694739ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{cd5e9bdb-494e-44cd-9996-0d425034e903}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\virgo\http.hpp">
+      <Filter>include\virgo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp.hpp">
+      <Filter>include\virgo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\basic_message.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\binary.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\concepts.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\config.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\json.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\reflection.hpp">
+      <Filter>include\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\method.hpp">
+      <Filter>include\virgo\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\request.hpp">
+      <Filter>include\virgo\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\response.hpp">
+      <Filter>include\virgo\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\status.hpp">
+      <Filter>include\virgo\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\version.hpp">
+      <Filter>include\virgo\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\detail\basic_header.hpp">
+      <Filter>include\virgo\http\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\detail\basic_message.hpp">
+      <Filter>include\virgo\http\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\http\detail\header_fileds.hpp">
+      <Filter>include\virgo\http\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp\request.hpp">
+      <Filter>include\virgo\tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp\response.hpp">
+      <Filter>include\virgo\tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp\detail\basic_message.hpp">
+      <Filter>include\virgo\tcp\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp\detail\custom_header.hpp">
+      <Filter>include\virgo\tcp\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\tcp\detail\layer_header.hpp">
+      <Filter>include\virgo\tcp\detail</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test\test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
