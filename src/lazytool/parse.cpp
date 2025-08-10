@@ -10,7 +10,152 @@ namespace virgo
 		: statements_()
 		, row_(1)
 		, column_(1)
-	{}
+	{
+		regist_message_invoke("message", [&] (std::fstream& ifs, statement& state) 
+							  {
+								  read_value<' ', '{'>(ifs, state.name, column_, row_);
+								  seek<'{'>(ifs, column_, row_);
+
+								  while (!ifs.eof())
+								  {
+									  try
+									  {
+										  seek<'}'>(ifs, column_, row_);
+										  break;
+									  }
+									  catch (...)
+									  {
+										  state.states.push_back({});
+
+										  read_value<' '>(ifs, state.states.back().type, column_, row_);
+
+										  seek<' '>(ifs,column_, row_);
+
+										  read_value<';'>(ifs,state.states.back().name, column_, row_);
+
+										  seek<';'>(ifs, column_, row_);
+									  }
+								  }
+							  });
+
+		regist_message_invoke("enum", [&] (std::fstream& ifs, statement& state) 
+							  {
+								  read_value<' ', '{'>(ifs, state.name, column_, row_);
+
+								  seek<'{'>(ifs, column_, row_);
+
+								  while (!ifs.eof())
+								  {
+									  try
+									  {
+										  seek<'}'>(ifs, column_, row_);
+										  break;
+									  }
+									  catch (...)
+									  {
+										  state.states.push_back({});
+
+										  read_value<';'>(ifs, state.states.back().name, column_, row_);
+
+										  seek<';'>(ifs,column_,row_);
+									  }
+								  }
+							  });
+
+		regist_message_invoke("tcp", [&] (std::fstream& ifs, statement& state)
+							  {
+								  read_value<' ', '='>(ifs, state.name, column_, row_);
+
+								  seek<'='>(ifs, column_, row_);
+
+								  std::string number{};
+
+								  read_value<'{'>(ifs, number, column_, row_);
+
+								  seek<'{'>(ifs, column_, row_);
+
+								  state.number.emplace(number);
+
+								  while (!ifs.eof())
+								  {
+									  try
+									  {
+										  seek<'}'>(ifs, column_, row_);
+										  break;
+									  }
+									  catch (...)
+									  {
+										  state.states.push_back({});
+										  auto& sub_state = state.states.back();
+
+										  read_value<' '>(ifs, sub_state.type, column_, row_);
+
+										  read_value<' '>(ifs, sub_state.name, column_, row_);
+
+										  std::string return_key_word;
+
+										  read_value<' '>(ifs, return_key_word, column_, row_);
+
+										  if (return_key_word != "returns")
+											  throw std::runtime_error(log("rpc", "syntax error! missing returns!", column_, row_));
+
+										  std::string sub_type{};
+										  read_value<' ', ';'>(ifs, sub_type, column_, row_);
+
+										  state.sub_type.emplace(sub_type);
+
+										  seek<';'>(ifs, column_, row_);
+									  }
+								  }
+							  });
+
+		regist_message_invoke("http", [&] (std::fstream& ifs, statement& state)
+							  {
+								  read_value<' ', '='>(ifs, state.name, column_, row_);
+
+								  seek<'='>(ifs, column_, row_);
+
+								  std::string number{};
+
+								  read_path<'{'>(ifs, number, column_, row_);
+
+								  seek<'{'>(ifs, column_, row_);
+
+								  state.number.emplace(number);
+
+								  while (!ifs.eof())
+								  {
+									  try
+									  {
+										  seek<'}'>(ifs, column_, row_);
+										  break;
+									  }
+									  catch (...)
+									  {
+										  state.states.push_back({});
+										  auto& sub_state = state.states.back();
+
+										  read_value<' '>(ifs, sub_state.type, column_, row_);
+
+										  read_value<' '>(ifs, sub_state.name, column_, row_);
+
+										  std::string return_key_word;
+
+										  read_value<' '>(ifs, return_key_word, column_, row_);
+
+										  if (return_key_word != "returns")
+											  throw std::runtime_error(log("rpc", "syntax error! missing returns!", column_, row_));
+
+										  std::string sub_type{};
+										  read_value<' ', ';'>(ifs, sub_type, column_, row_);
+
+										  state.sub_type.emplace(sub_type);
+
+										  seek<';'>(ifs, column_, row_);
+									  }
+								  }
+							  });
+	}
 
 	bool parse::read_file(const std::string& file_name)
 	{
@@ -50,7 +195,7 @@ namespace virgo
 
 	void parse::regist_message_invoke(
 		const std::string& type,
-		const std::function<void(std::fstream&, statement&, std::size_t&, std::size_t&)>& invoke)
+		const std::function<void(std::fstream&, statement&)>& invoke)
 	{
 		auto iter = type_invokes_.find(type);
 
@@ -58,87 +203,6 @@ namespace virgo
 			return;
 
 		type_invokes_[type] = invoke;
-	}
-	void parse::enum_invoke(std::fstream& ifs, statement& state)
-	{
-		read_value<' ', '{'>(ifs, state.name, column_, row_);
-
-		seek<'{'>(ifs, column_, row_);
-
-		while (!ifs.eof())
-		{
-			try
-			{
-				seek<'}'>(ifs, column_, row_);
-				break;
-			}
-			catch (...)
-			{
-				state.states.push_back({});
-
-				read_value<';', ' '>(ifs, state.states.back().name, column_, row_);
-
-				seek<';'>(ifs, column_, row_);
-			}
-		}
-	}
-
-	void parse::message_invoke(std::fstream& ifs, statement& state)
-	{
-		read_value<' ', '{'>(ifs, state.name, column_, row_);
-		seek<'{'>(ifs, column_, row_);
-
-		while (!ifs.eof())
-		{
-			try
-			{
-				seek<'}'>(ifs, column_, row_);
-				break;
-			}
-			catch (...)
-			{
-				state.states.push_back({});
-				read_value<';', ' '>(ifs, state.states.back().name, column_, row_);
-			}
-		}
-	}
-
-	void parse::rpc_invoke(std::fstream& ifs, statement& state)
-	{
-		read_value<' ', '='>(ifs, state.name, column_, row_);
-
-		seek<'='>(ifs, column_, row_);
-
-		read_value<' ', '{'>(ifs, *state.number, column_, row_);
-
-		while (!ifs.eof())
-		{
-			try
-			{
-				seek<'}'>(ifs, column_, row_);
-				break;
-			}
-			catch (...)
-			{
-				state.states.push_back({});
-				auto& sub_state = state.states.back();
-
-				read_value<' '>(ifs, sub_state.type, column_, row_);
-
-				read_value<' '>(ifs, sub_state.name, column_, row_);
-
-				std::string return_key_word;
-
-				read_value<' '>(ifs, return_key_word, column_, row_);
-
-				if (return_key_word != "returns")
-					throw std::runtime_error(log("rpc", "syntax error! missing returns!", column_, row_));
-
-				read_value<' ', ';'>(ifs, *sub_state.sub_type, column_, row_);
-
-				seek<';'>(ifs, column_, row_);
-			}
-		}
 	}
 
 	void parse::common_invoke(std::fstream& ifs, statement& state)
@@ -163,13 +227,16 @@ namespace virgo
 
 		read_value<' '>(ifs, type_str, column_, row_);
 
+		if(type_str.empty())
+			return;
+
 		auto iter = type_invokes_.find(type_str);
 		if (iter == type_invokes_.end())
 		{
 			throw std::runtime_error("unknow type [" + type_str + "]");
 		}
 
-		iter->second(ifs, *state_ptr, column_, row_);
+		iter->second(ifs, *state_ptr);
 	}
 
 	// void parse::parse_message_statement(std::fstream& ifs, statement_base*& state_ptr)

@@ -22,7 +22,6 @@
     <ClCompile Include="..\src\lazytool\cpp_generate.cpp" />
     <ClCompile Include="..\src\lazytool\lazytool.cpp" />
     <ClCompile Include="..\src\lazytool\parse.cpp" />
-    <ClCompile Include="..\src\lazytool\stream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\lazytool\cpp_generate.h" />

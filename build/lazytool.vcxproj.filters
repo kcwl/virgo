@@ -24,9 +24,6 @@
     <ClCompile Include="..\src\lazytool\parse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\lazytool\stream.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\lazytool\cpp_generate.h">

@@ -19,7 +19,7 @@ namespace virgo
 	private:
 		void regist_message_invoke(
 			const std::string& type,
-			const std::function<void(std::fstream&, statement&, std::size_t&, std::size_t&)>& invoke);
+			const std::function<void(std::fstream&, statement&)>& invoke);
 
 		void enum_invoke(std::fstream& ifs, statement& state);
 
@@ -66,7 +66,7 @@ namespace virgo
 	private:
 		std::vector<statement> statements_;
 
-		std::map<std::string, std::function<void(std::fstream&, statement&, std::size_t&, std::size_t&)>> type_invokes_;
+		std::map<std::string, std::function<void(std::fstream&, statement&)>> type_invokes_;
 
 		std::size_t row_;
 

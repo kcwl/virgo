@@ -21,6 +21,9 @@ namespace virgo
 		{
 			c = ifs.peek();
 
+			if(c==-1)
+				return 0;
+
 			if (std::isalnum(c) || c == '_')
 			{
 				value += static_cast<char>(ifs.get());
@@ -41,7 +44,6 @@ namespace virgo
 			{
 				column++;
 				row = 0;
-				return c;
 			}
 
 			ifs.get();
@@ -50,8 +52,43 @@ namespace virgo
 		}
 
 		throw std::runtime_error(
-			log("read_value", ifs.eof() ? "syntax error! file is eof!" : std::format("not support {} for value!", c),
+			log("read_value", ifs.eof() ? "syntax error! file is eof!" : std::format("not support {} for value!", static_cast<char>(c)),
 				column, row));
+	}
+
+	template<char... end>
+	int read_path(std::fstream& ifs, std::string& value, std::size_t& column, std::size_t& row)
+	{
+		value.clear();
+
+		int c{};
+
+		while (!ifs.eof())
+		{
+			c = ifs.peek();
+
+			if (((c == end) || ...) && !value.empty())
+			{
+				return c;
+			}
+
+			if (c != '\t' && c != '\n' && c != '\r' && c != ' ')
+			{
+				value += static_cast<char>(c);
+			}
+
+			if (c == '\n')
+			{
+				column++;
+				row = 0;
+			}
+
+			ifs.get();
+
+			row++;
+		}
+
+		return c;
 	}
 
 	template <char sp>
