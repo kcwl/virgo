@@ -1,6 +1,6 @@
 #pragma once
-#include <virgo/detail/config.hpp>
 #include <ostream>
+#include <virgo/detail/config.hpp>
 
 namespace virgo
 {
@@ -38,4 +38,4 @@ namespace virgo
 			return {};
 		}
 	} // namespace http
-} // namespace aquarius
+} // namespace virgo

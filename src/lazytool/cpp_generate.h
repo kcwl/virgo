@@ -3,7 +3,7 @@
 #include <fstream>
 #include <queue>
 
-namespace aquarius
+namespace virgo
 {
 	class cpp_generator
 	{
@@ -13,26 +13,24 @@ namespace aquarius
 		~cpp_generator();
 
 	public:
-		void generate(statement_base* state);
+		void generate(statement* state);
 
 		void generate_header();
 
 	private:
 		bool create_file_stream();
 
-		void generate_namespace_begin(statement_base* state);
+		void generate_namespace_begin(statement* state);
 
 		void generate_namespace_end();
 
-		void generate_enum(enum_statement* state);
+		void generate_enum(statement* state);
 
-		void generate_message(message_statement* state);
+		void generate_message(statement* state);
 
-		void generate_template(message_statement* state);
+		void generate_single(statement* state);
 
-		void generate_single(statement_base* state);
-
-		void generate_rpc(rpc_statement* state);
+		void generate_rpc(statement* state);
 
 	private:
 		std::string convert_type(const std::string& type_str);
@@ -50,4 +48,4 @@ namespace aquarius
 
 		std::queue<std::pair<std::string, std::string>> resp_queue_;
 	};
-} // namespace aquarius
+} // namespace virgo
