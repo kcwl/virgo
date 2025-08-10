@@ -23,6 +23,8 @@ namespace virgo
 		if (!state)
 			return;
 
+		ofs_ << std::endl;
+
 		auto type_str = state->type;
 
 		if (type_str == "message")
@@ -50,7 +52,7 @@ namespace virgo
 	void cpp_generator::generate_header()
 	{
 		ofs_ << "#pragma once\n";
-		ofs_ << "#include <aquarius_protocol.hpp>\n\n";
+		ofs_ << "#include <virgo.hpp>\n";
 	}
 
 	bool cpp_generator::create_file_stream()
@@ -157,7 +159,7 @@ namespace virgo
 
 		ofs_ << "struct rpc_" << state->name << std::endl;
 		ofs_ << "{\n";
-		ofs_ << "\tconstexpr static auto id = " << *state->number << ";\n";
+		ofs_ << "\tconstexpr static auto id = \"" << *state->number << "\"sv;\n";
 		ofs_ << "\tusing request = virgo::" << protocol << "::request<" << state->name << ">;\n";
 		ofs_ << "\tusing response = virgo::" << protocol << "::response<" << state->name << ">;\n";
 		ofs_ << "};\n";
@@ -187,6 +189,8 @@ namespace virgo
 		{
 			result = "std::string";
 		}
+		else if(type_str == "bytes")
+			result = "std::vector<char>";
 
 		return result;
 	}

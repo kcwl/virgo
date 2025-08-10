@@ -11,8 +11,10 @@ namespace virgo
 		, row_(1)
 		, column_(1)
 	{
-		regist_message_invoke("message", [&] (std::fstream& ifs, statement& state) 
+		regist_message_invoke("message",
+							  [&](std::fstream& ifs, statement& state)
 							  {
+								  state.type = "message";
 								  read_value<' ', '{'>(ifs, state.name, column_, row_);
 								  seek<'{'>(ifs, column_, row_);
 
@@ -29,17 +31,19 @@ namespace virgo
 
 										  read_value<' '>(ifs, state.states.back().type, column_, row_);
 
-										  seek<' '>(ifs,column_, row_);
+										  seek<' '>(ifs, column_, row_);
 
-										  read_value<';'>(ifs,state.states.back().name, column_, row_);
+										  read_value<';'>(ifs, state.states.back().name, column_, row_);
 
 										  seek<';'>(ifs, column_, row_);
 									  }
 								  }
 							  });
 
-		regist_message_invoke("enum", [&] (std::fstream& ifs, statement& state) 
+		regist_message_invoke("enum",
+							  [&](std::fstream& ifs, statement& state)
 							  {
+								  state.type = "enum";
 								  read_value<' ', '{'>(ifs, state.name, column_, row_);
 
 								  seek<'{'>(ifs, column_, row_);
@@ -57,13 +61,15 @@ namespace virgo
 
 										  read_value<';'>(ifs, state.states.back().name, column_, row_);
 
-										  seek<';'>(ifs,column_,row_);
+										  seek<';'>(ifs, column_, row_);
 									  }
 								  }
 							  });
 
-		regist_message_invoke("tcp", [&] (std::fstream& ifs, statement& state)
+		regist_message_invoke("tcp",
+							  [&](std::fstream& ifs, statement& state)
 							  {
+								  state.type = "tcp";
 								  read_value<' ', '='>(ifs, state.name, column_, row_);
 
 								  seek<'='>(ifs, column_, row_);
@@ -97,7 +103,8 @@ namespace virgo
 										  read_value<' '>(ifs, return_key_word, column_, row_);
 
 										  if (return_key_word != "returns")
-											  throw std::runtime_error(log("rpc", "syntax error! missing returns!", column_, row_));
+											  throw std::runtime_error(
+												  log("rpc", "syntax error! missing returns!", column_, row_));
 
 										  std::string sub_type{};
 										  read_value<' ', ';'>(ifs, sub_type, column_, row_);
@@ -109,8 +116,10 @@ namespace virgo
 								  }
 							  });
 
-		regist_message_invoke("http", [&] (std::fstream& ifs, statement& state)
+		regist_message_invoke("http",
+							  [&](std::fstream& ifs, statement& state)
 							  {
+								  state.type = "http";
 								  read_value<' ', '='>(ifs, state.name, column_, row_);
 
 								  seek<'='>(ifs, column_, row_);
@@ -144,7 +153,8 @@ namespace virgo
 										  read_value<' '>(ifs, return_key_word, column_, row_);
 
 										  if (return_key_word != "returns")
-											  throw std::runtime_error(log("rpc", "syntax error! missing returns!", column_, row_));
+											  throw std::runtime_error(
+												  log("rpc", "syntax error! missing returns!", column_, row_));
 
 										  std::string sub_type{};
 										  read_value<' ', ';'>(ifs, sub_type, column_, row_);
@@ -193,9 +203,8 @@ namespace virgo
 		return statements_;
 	}
 
-	void parse::regist_message_invoke(
-		const std::string& type,
-		const std::function<void(std::fstream&, statement&)>& invoke)
+	void parse::regist_message_invoke(const std::string& type,
+									  const std::function<void(std::fstream&, statement&)>& invoke)
 	{
 		auto iter = type_invokes_.find(type);
 
@@ -227,7 +236,7 @@ namespace virgo
 
 		read_value<' '>(ifs, type_str, column_, row_);
 
-		if(type_str.empty())
+		if (type_str.empty())
 			return;
 
 		auto iter = type_invokes_.find(type_str);

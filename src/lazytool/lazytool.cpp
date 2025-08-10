@@ -136,6 +136,7 @@ int main(int argc, char** args)
 
 		for (auto& state : statements)
 		{
+
 			gen.generate(&state);
 		}
 	}

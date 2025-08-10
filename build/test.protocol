@@ -1,0 +1,42 @@
+enum color
+{
+	red;
+	yellow;
+	black;
+}
+
+message test_structure_req
+{
+	int32 a;
+	uint32 b;
+	int64 c;
+	uint64 d;
+	bool e;
+	string f;
+	bytes g;
+	float h;
+	double i;
+}
+
+message test_structure_resp
+{
+	int32 a;
+	uint32 b;
+	int64 c;
+	uint64 d;
+	bool e;
+	string f;
+	bytes g;
+	float h;
+	double i;
+}
+
+tcp test_structure = 1001
+{
+	rpc test_structure_req returns test_structure_resp;
+}
+
+http test_structure = /login
+{
+	post test_structure_req returns test_structure_resp;
+}

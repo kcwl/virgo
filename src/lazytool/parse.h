@@ -21,12 +21,6 @@ namespace virgo
 			const std::string& type,
 			const std::function<void(std::fstream&, statement&)>& invoke);
 
-		void enum_invoke(std::fstream& ifs, statement& state);
-
-		void message_invoke(std::fstream& ifs, statement& state);
-
-		void rpc_invoke(std::fstream& ifs, statement& state);
-
 		void common_invoke(std::fstream& ifs, statement& state);
 
 		void repeated_invoke(std::fstream& ifs, statement& state);
