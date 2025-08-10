@@ -102,15 +102,16 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;BOOST_ALL_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)../include;F:\boost_1_83_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../include;D:\boost_1_88_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\boost_1_88_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,40 +120,45 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;BOOST_ALL_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdclatest</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)../include;D:\boost_1_88_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\boost_1_88_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\test\protocol.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\aquarius_protocol.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_http_header.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_http_message.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\custom_tcp_header.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_header_fileds.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\layer_tcp_header.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\basic_tcp_message.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\binary.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\concepts.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_filed_type.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_method.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_response.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_request.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_status.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\http_version.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\json.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\reflection.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\tcp_request.hpp" />
-    <ClInclude Include="..\include\aquarius_protocol\tcp_response.hpp" />
+    <ClInclude Include="..\include\virgo.hpp" />
+    <ClInclude Include="..\include\virgo\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\detail\binary.hpp" />
+    <ClInclude Include="..\include\virgo\detail\concepts.hpp" />
+    <ClInclude Include="..\include\virgo\detail\config.hpp" />
+    <ClInclude Include="..\include\virgo\detail\json.hpp" />
+    <ClInclude Include="..\include\virgo\http.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\basic_header.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\http\detail\header_fileds.hpp" />
+    <ClInclude Include="..\include\virgo\http\method.hpp" />
+    <ClInclude Include="..\include\virgo\http\request.hpp" />
+    <ClInclude Include="..\include\virgo\http\response.hpp" />
+    <ClInclude Include="..\include\virgo\http\status.hpp" />
+    <ClInclude Include="..\include\virgo\http\version.hpp" />
+    <ClInclude Include="..\include\virgo\tcp.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\basic_message.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\custom_header.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\detail\layer_header.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\request.hpp" />
+    <ClInclude Include="..\include\virgo\tcp\response.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

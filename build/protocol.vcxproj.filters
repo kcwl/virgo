@@ -13,8 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\aquarius_protocol">
+    <Filter Include="头文件\virgo">
       <UniqueIdentifier>{6d6093c5-0beb-4408-8ae9-60aa68983305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\virgo\tcp">
+      <UniqueIdentifier>{06226794-1c8f-488a-b78e-e08171aff773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\virgo\http">
+      <UniqueIdentifier>{98bf06f4-4c2a-42ce-bff8-b8c03d3c4c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\virgo\http\detail">
+      <UniqueIdentifier>{c317a1af-70a0-47f0-8698-47a4d16a3774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\virgo\tcp\detail">
+      <UniqueIdentifier>{2c5a8d2a-e21d-4262-bf5f-1b77e4e99dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\virgo\detail">
+      <UniqueIdentifier>{1d2d8204-324c-40a4-9518-1a25031d7439}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -23,65 +38,68 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\aquarius_protocol.hpp">
+    <ClInclude Include="..\include\virgo.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\binary.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http.hpp">
+      <Filter>头文件\virgo</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\concepts.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp.hpp">
+      <Filter>头文件\virgo</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\json.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp\request.hpp">
+      <Filter>头文件\virgo\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_message.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp\response.hpp">
+      <Filter>头文件\virgo\tcp</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\layer_tcp_header.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\request.hpp">
+      <Filter>头文件\virgo\http</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_tcp_message.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\response.hpp">
+      <Filter>头文件\virgo\http</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\reflection.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\detail\basic_header.hpp">
+      <Filter>头文件\virgo\http\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\tcp_request.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\detail\basic_message.hpp">
+      <Filter>头文件\virgo\http\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\tcp_response.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\detail\header_fileds.hpp">
+      <Filter>头文件\virgo\http\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_method.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp\detail\basic_message.hpp">
+      <Filter>头文件\virgo\tcp\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_status.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp\detail\custom_header.hpp">
+      <Filter>头文件\virgo\tcp\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_http_header.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\tcp\detail\layer_header.hpp">
+      <Filter>头文件\virgo\tcp\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\basic_http_message.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\method.hpp">
+      <Filter>头文件\virgo\http</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_filed_type.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\status.hpp">
+      <Filter>头文件\virgo\http</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_request.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\http\version.hpp">
+      <Filter>头文件\virgo\http</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_response.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\detail\basic_message.hpp">
+      <Filter>头文件\virgo\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_version.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\detail\concepts.hpp">
+      <Filter>头文件\virgo\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\custom_tcp_header.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\detail\binary.hpp">
+      <Filter>头文件\virgo\detail</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\aquarius_protocol\http_header_fileds.hpp">
-      <Filter>头文件\aquarius_protocol</Filter>
+    <ClInclude Include="..\include\virgo\detail\json.hpp">
+      <Filter>头文件\virgo\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\virgo\detail\config.hpp">
+      <Filter>头文件\virgo\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

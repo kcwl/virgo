@@ -1,5 +1,5 @@
 ﻿#define BOOST_TEST_MODULE UnitTest
-#include <aquarius_protocol.hpp>
+#include <virgo.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <sstream>
 #include <iostream>
@@ -54,8 +54,8 @@ std::ostream& operator<<(std::ostream& os, const person& p)
 
 struct rpc_person
 {
-	using request = aquarius::tcp_request<person>;
-	using response = aquarius::tcp_response<person>;
+	using request = virgo::tcp::request<person>;
+	using response = virgo::tcp::response<person>;
 };
 
 BOOST_AUTO_TEST_CASE(tcp_proto)
@@ -237,24 +237,24 @@ BOOST_AUTO_TEST_CASE(for_ostream_test)
 
 BOOST_AUTO_TEST_CASE(http_req)
 {
-	aquarius::http_request<std::string> req{};
+	virgo::http::request<std::string> req{};
 	// header
 	{
-		req.header()->method(aquarius::http_method::get);
+		req.base_header().method(virgo::http::method::get);
 
-		BOOST_CHECK_EQUAL(req.header()->method(), aquarius::http_method::get);
+		BOOST_CHECK_EQUAL(req.base_header().method(), virgo::http::method::get);
 
-		req.header()->version(aquarius::http_version::http1_1);
+		req.base_header().version(virgo::http::version::http1_1);
 
-		BOOST_CHECK_EQUAL(req.header()->version(), aquarius::http_version::http1_1);
+		BOOST_CHECK_EQUAL(req.base_header().version(), virgo::http::version::http1_1);
 
-		req.header()->path("/api/v1/create");
+		req.base_header().path("/api/v1/create");
 
-		BOOST_CHECK_EQUAL(req.header()->path(), "/api/v1/create");
+		BOOST_CHECK_EQUAL(req.base_header().path(), "/api/v1/create");
 
-		req.header()->querys().push_back({ "has_login","false" });
+		req.base_header().querys().push_back({ "has_login","false" });
 
-		auto& first_query = req.header()->querys().at(0);
+		auto& first_query = req.base_header().querys().at(0);
 
 		BOOST_CHECK_EQUAL(first_query.first, "has_login");
 
@@ -271,22 +271,18 @@ BOOST_AUTO_TEST_CASE(http_req)
 
 	// request header
 	{
-		req.header()->set_field(aquarius::http_field_type::connection, "keep-alive");
+		req.header().keep_alive(true);
 
-		BOOST_CHECK(req.header()->keep_alive());
+		BOOST_CHECK(req.header().keep_alive());
 
-		req.header()->set_chunked(true);
+		req.header().content_length(16);
 
-		BOOST_CHECK(req.header()->chunked());
+		BOOST_CHECK(req.header().content_length());
 
-		req.header()->content_length(16);
+		BOOST_CHECK_EQUAL(*req.header().content_length(), 16);
 
-		BOOST_CHECK(req.header()->has_content_length());
+		req.header().keep_alive(false);
 
-		BOOST_CHECK_EQUAL(*req.header()->content_length(), 16);
-
-		req.header()->keep_alive(false);
-
-		BOOST_CHECK(!req.header()->keep_alive());
+		BOOST_CHECK(!req.header().keep_alive());
 	}
 }

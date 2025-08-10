@@ -1,11 +1,10 @@
 #pragma once
-#include <boost/asio/buffer.hpp>
 #include <concepts>
 #include <cstdint>
 #include <string>
 #include <vector>
 
-namespace aquarius
+namespace virgo
 {
 	template <typename T, typename... Args>
 	concept disjunction_same_as = std::disjunction_v<std::is_same<std::remove_cvref_t<T>, Args>...>;
@@ -47,4 +46,4 @@ namespace aquarius
 
 	template <typename T>
 	concept reflectable = std::is_aggregate_v<std::remove_cvref_t<T>>;
-} // namespace aquarius
+} // namespace virgo
