@@ -345,6 +345,8 @@ namespace aquarius
 			header_str += std::to_string(static_cast<int>(status_)) + ' ';
 			header_str += get_http_status_string(status_);
 			header_str += "\r\n";
+
+			std::copy(header_str.begin(), header_str.end(), std::back_inserter(buffer));
 		}
 
 		template <typename BufferSequence>

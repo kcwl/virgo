@@ -1,8 +1,8 @@
 #pragma once
 #include <aquarius_protocol/http_filed_type.hpp>
+#include <boost/asio/buffer.hpp>
 #include <map>
 #include <ranges>
-#include <boost/asio/buffer.hpp>
 
 namespace aquarius
 {
@@ -68,7 +68,7 @@ namespace aquarius
 			if (iter == fields_.end())
 				return std::nullopt;
 
-			return std::atoi(iter->second.c_str());
+			return std::atoi(iter->second.data());
 		}
 
 		bool keep_alive()
@@ -90,38 +90,33 @@ namespace aquarius
 		void commit(BufferSequence& buffer)
 		{}
 
-		template <typename BufferSequence>
-		bool consume(BufferSequence& buffer)
+		std::span<char> consume(std::span<char> buffer)
 		{
-			auto header_span = prase_header_span(buffer);
+			auto [header_span, next_span] = prase_header_span(buffer);
 
-			constexpr auto delm="\r\n"sv;
+			constexpr auto delm = "\r\n"sv;
 
 			for (const auto line : std::views::split(header_span, delm))
 			{
-				if (line.empty())
-					break;
-
 				auto line_view = line | std::views::split(':');
 
 				auto iter = line_view.begin();
 				if (iter == line_view.end())
-					return false;
+					return {};
 
 				auto key = std::string_view(*iter);
 
 				if (++iter == line_view.end())
-					return false;
+					return {};
 
-				fields_[from_string(key)] = std::string(std::string_view(*iter).data());
+				fields_[from_string(key)] = std::string_view(*iter);
 			}
 
-			return true;
+			return next_span;
 		}
 
 	private:
-		template <typename BufferSequence>
-		std::span<char> prase_header_span(BufferSequence& buffer)
+		auto prase_header_span(std::span<char> buffer) -> std::pair<std::span<char>, std::span<char>>
 		{
 			constexpr auto delm = "\r\n\r\n"sv;
 
@@ -130,30 +125,28 @@ namespace aquarius
 			auto buf_view = std::views::slide(buffer, delm_size);
 
 			auto iter = std::ranges::find_if(buf_view,
-											[&](const auto& v)
-											{
-												if (v.size() < delm_size)
-													return false;
+											 [&](const auto& v)
+											 {
+												 if (v.size() < delm_size)
+													 return false;
 
-												return std::string_view(v) == delm;
-											});
+												 return std::string_view(v) == delm;
+											 });
 
-			if(iter == buf_view.end())
+			if (iter == buf_view.end())
 				return {};
 
-			auto pos = std::distance(buf_view.begin(),iter);
+			auto pos = std::distance(buf_view.begin(), iter);
 
-			auto result_span = buf_view.subspan(0, pos);
+			auto result_span = buffer.subspan(0, pos);
 
-			auto dy_buffer = boost::asio::dynamic_buffer(buffer);
+			auto next_span = buffer.subspan(pos + 2);
 
-			dy_buffer.consume(result_span.size());
-
-			return result_span;
+			return { result_span, next_span };
 		}
 
 	private:
-		std::map<http_field_type, std::string> fields_;
+		std::map<http_field_type, std::string_view> fields_;
 	};
 
 } // namespace aquarius

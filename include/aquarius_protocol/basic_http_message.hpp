@@ -75,13 +75,18 @@ namespace aquarius
 			std::copy(str.begin(), str.end(), std::back_inserter(buffer));
 		}
 
-		template <typename BufferSequence>
-		void consume(BufferSequence& buffer)
+		void consume(std::span<char> buffer)
 		{
-			if (!fields_.consume(buffer))
+			auto next_span = fields_.consume(buffer);
+
+			if(next_span.size() < sizeof("\r\n"))
 				return;
 
-			this->body() = serialize::from_json<Body>(std::string(buffer.data(), buffer.size()));
+			auto body_span = next_span.subspan(2);
+
+			auto body_length = body_span.size() > *header().length() ? *header().length() : body_span.size();
+
+			this->body() = serialize::from_json<Body>(std::string(body_span.data(), body_length));
 		}
 
 	private:
