@@ -1,0 +1,39 @@
+enum color
+{
+    red;
+    black;
+};
+
+struct person
+{
+    int age;
+    string name;
+};
+
+protocol hello {
+    request {
+        router:
+            tcp-key 1001;
+            http-str "/login";
+            http-regular "^/login$";
+            udp-key 1001;
+        header:
+            int id;
+            
+        body:
+            int id;
+            
+        };
+    response {
+        router:
+        tcp-key 1001;
+        http-str "/login";
+        http-regular "^/login$";
+        udp-key 1001;
+    header:
+        int id;
+            
+    body:
+        int id;
+    };
+};

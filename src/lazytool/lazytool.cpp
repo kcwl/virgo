@@ -127,18 +127,6 @@ int main(int argc, char** args)
 
 		if (!parser.read_file(file))
 			return 0;
-
-		auto statements = parser.get_statements();
-
-		virgo::cpp_generator gen{ file, standard };
-
-		gen.generate_header();
-
-		for (auto& state : statements)
-		{
-
-			gen.generate(&state);
-		}
 	}
 
 	return 0;

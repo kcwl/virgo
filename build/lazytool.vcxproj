@@ -20,14 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\lazytool\cpp_generate.cpp" />
+    <ClCompile Include="..\src\lazytool\keyword.cpp" />
     <ClCompile Include="..\src\lazytool\lazytool.cpp" />
     <ClCompile Include="..\src\lazytool\parse.cpp" />
+    <ClCompile Include="..\src\lazytool\log.cpp" />
+    <ClCompile Include="..\src\lazytool\registor.cpp" />
+    <ClCompile Include="..\src\lazytool\scope.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\lazytool\cpp_generate.h" />
+    <ClInclude Include="..\src\lazytool\keyword.h" />
+    <ClInclude Include="..\src\lazytool\keyword_impl.h" />
+    <ClInclude Include="..\src\lazytool\log.h" />
     <ClInclude Include="..\src\lazytool\parse.h" />
+    <ClInclude Include="..\src\lazytool\registor.h" />
+    <ClInclude Include="..\src\lazytool\scope.h" />
     <ClInclude Include="..\src\lazytool\statement.hpp" />
-    <ClInclude Include="..\src\lazytool\stream.hpp" />
+    <ClInclude Include="..\src\lazytool\read_value.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

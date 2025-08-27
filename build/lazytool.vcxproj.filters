@@ -24,6 +24,18 @@
     <ClCompile Include="..\src\lazytool\parse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\lazytool\log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lazytool\keyword.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lazytool\scope.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lazytool\registor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\lazytool\cpp_generate.h">
@@ -35,7 +47,22 @@
     <ClInclude Include="..\src\lazytool\statement.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lazytool\stream.hpp">
+    <ClInclude Include="..\src\lazytool\read_value.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lazytool\keyword.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lazytool\scope.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lazytool\log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lazytool\registor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lazytool\keyword_impl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

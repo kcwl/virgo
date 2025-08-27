@@ -2,18 +2,24 @@
 #include <format>
 #include <fstream>
 #include <string>
+#include "log.h"
 
 namespace virgo
 {
-	inline std::string log(const std::string& func_name, const std::string& str, std::size_t column, std::size_t row)
+	enum token
 	{
-		return std::format("[{}] {} at [column_:{},row_:{}]", func_name, str, column, row);
-	}
+		value,
+		type,
+		key
+	};
 
 	template <char... end>
-	int read_value(std::fstream& ifs, std::string& value, std::size_t& column, std::size_t& row)
+	int read_value(std::fstream& ifs, std::string& value, std::size_t& column, std::size_t& row, token t = token::value)
 	{
 		value.clear();
+
+		std::string temp_value;
+		int offset = 0;
 
 		int c{};
 
@@ -21,17 +27,19 @@ namespace virgo
 		{
 			c = ifs.peek();
 
-			if(c==-1)
+			if (c == -1)
 				return 0;
 
-			if (std::isalnum(c) || c == '_')
+			if (std::isalnum(c) || (t == token::value && c == '_') || (t == token::type && c == '-'))
 			{
-				value += static_cast<char>(ifs.get());
+				temp_value += static_cast<char>(ifs.get());
+				offset++;
 				continue;
 			}
 
-			if (((c == end) || ...) && !value.empty())
+			if (((c == end) || ...) && !temp_value.empty())
 			{
+				value = temp_value;
 				return c;
 			}
 
@@ -47,16 +55,20 @@ namespace virgo
 			}
 
 			ifs.get();
+			offset++;
 
 			row++;
 		}
 
-		throw std::runtime_error(
-			log("read_value", ifs.eof() ? "syntax error! file is eof!" : std::format("not support {} for value!", static_cast<char>(c)),
-				column, row));
+		ifs.seekg(-offset, std::ios_base::cur);
+
+		throw std::runtime_error(log("read_value",
+									 ifs.eof() ? "syntax error! file is eof!"
+											   : std::format("not support {} for value!", static_cast<char>(c)),
+									 column, row));
 	}
 
-	template<char... end>
+	template <char... end>
 	int read_path(std::fstream& ifs, std::string& value, std::size_t& column, std::size_t& row)
 	{
 		value.clear();
