@@ -11,8 +11,8 @@ namespace virgo
 	parse::parse()
 		: pros_()
 		, regist_()
-		, row_(1)
-		, column_(1)
+		, row_(0)
+		, column_(0)
 	{
 		regist_.regist("protocol", [this](std::fstream& ifs)
 					  {

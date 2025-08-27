@@ -25,6 +25,8 @@ namespace virgo
 
 		while (!ifs.eof())
 		{
+			column++;
+
 			c = ifs.peek();
 
 			if (c == -1)
@@ -50,14 +52,12 @@ namespace virgo
 
 			if (c == '\n')
 			{
-				column++;
-				row = 0;
+				column = 0;
+				row++;
 			}
 
 			ifs.get();
 			offset++;
-
-			row++;
 		}
 
 		ifs.seekg(-offset, std::ios_base::cur);
