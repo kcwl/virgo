@@ -126,8 +126,7 @@ int main(int argc, char** args)
 	{
 		virgo::parse parser{};
 
-		if (!parser.read_file(file))
-			return 0;
+		parser.read_file(file);
 	}
 
 	return 0;

@@ -8,6 +8,8 @@ namespace virgo
 		std::string keyword{};
 		read_value<'{'>(ifs, keyword, column, row);
 
+		name = keyword;
+
 		seek<'{'>(ifs, column, row);
 
 		int times = 2;
@@ -33,8 +35,8 @@ namespace virgo
 
 	void protocol::generate(const std::string& file_name)
 	{
-		auto header_file = std::format("{}.virgo.h", file_name);
-		auto src_file = std::format("{}.virgo.h", file_name);
+		auto header_file = std::format("{}.h", file_name);
+		auto src_file = std::format("{}.cpp", file_name);
 
 		std::fstream ofs(header_file, std::ios::out);
 
