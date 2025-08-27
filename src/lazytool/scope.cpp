@@ -158,6 +158,8 @@ namespace virgo
 
 	bool proto::parse(std::fstream& ifs, std::size_t column, std::size_t row)
 	{
+		bool result = false;
+
 		while (!ifs.eof())
 		{
 			std::string keyword{};
@@ -165,12 +167,34 @@ namespace virgo
 
 			seek<':'>(ifs, column, row);
 
-			
-			
+			auto tk = from_scope_string(keyword);
 
-			
+			switch (tk)
+			{
+				case scope::s_router:
+					result = rt_.parse(ifs, column, row);
+					try
+					{
+						seek<'}'>(ifs, column, row);
+						seek<';'>(ifs, column, row);
+					}
+					catch (...)
+					{
+						result = false;
+					}
+					break;
+				case scope::s_header:
+					result = hr_.parse(ifs, column, row);
+					break;
+				case scope::s_body:
+					result = by_.parse(ifs, column, row);
+					break;
+				default:
+					break;
+			}
 
-			by_.parse(ifs, column, row);
+			if (result)
+				break;
 		}
 
 		return true;
