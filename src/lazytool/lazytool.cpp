@@ -5,6 +5,7 @@
 #include "parse.h"
 #include <iomanip>
 #include <iostream>
+#include <filesystem>
 
 void help()
 {
@@ -18,6 +19,13 @@ void help()
 			  << "Generate C++ code and output on <file_path>\n";
 	std::cout << std::setw(3) << " " << std::left << std::setw(50) << "--cpp_standard <c++11|c++14|c++17|c++20>"
 			  << "Specify the C++ standard\n";
+}
+
+bool check_suffix(const std::string& file_path, const std::string& suffix)
+{
+	std::filesystem::path file(file_path);
+
+	return file.extension().compare(suffix);
 }
 
 bool parse_command(int argc, char** argv, std::vector<std::string>& input_files, std::string& output_file,
@@ -40,17 +48,10 @@ bool parse_command(int argc, char** argv, std::vector<std::string>& input_files,
 			while (i + 1 < argc && argv[i + 1][0] != '-')
 			{
 				std::string file = argv[++i];
-				auto pos = file.find_last_of('.');
-				if (pos == std::string::npos)
-				{
-					std::cout << "Input file error! there must be *.protocol file!\n";
-					return false;
-				}
 
-				auto suffix = file.substr(pos);
-				if (suffix != ".protocol")
+				if (!check_suffix(file, "virgo"))
 				{
-					std::cout << "Input file error! there must be *.protocol file!\n";
+					std::cout << "Input file error! there must be *.virgo file!\n";
 					return false;
 				}
 

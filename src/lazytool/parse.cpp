@@ -38,13 +38,6 @@ namespace virgo
 
 	bool parse::read_file(const std::string& file_name)
 	{
-		if (!check_suffix(file_name, "virgo"))
-		{
-			std::cout << "file type error! please input *.virgo\n";
-
-			return false;
-		}
-
 		std::fstream ifs(file_name, std::ios::in | std::ios::binary);
 
 		if (!ifs.is_open())
@@ -62,7 +55,9 @@ namespace virgo
 
 			seek<' '>(ifs, column_, row_);
 
-			regist_.invoke(keyword, column_, row_);
+			auto f = regist_.invoke(keyword, column_, row_);
+
+			f(ifs);
 		}
 
 		for (auto& p : pros_)
@@ -73,11 +68,6 @@ namespace virgo
 		return true;
 	}
 
-	bool parse::check_suffix(const std::string& file_path, const std::string& suffix)
-	{
-		std::filesystem::path file(file_path);
 
-		return file.extension().compare(suffix);
-	}
 
 } // namespace virgo
