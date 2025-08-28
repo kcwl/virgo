@@ -1,5 +1,6 @@
 #include "keyword.h"
 #include "read_value.hpp"
+#include <filesystem>
 
 namespace virgo
 {
@@ -21,9 +22,9 @@ namespace virgo
 			seek<'{'>(ifs, column, row);
 
 			if (keyword == "request")
-				request.parse(ifs, column, row);
+				request.parse(name+"_req", ifs, column, row);
 			else if (keyword == "response")
-				response.parse(ifs, column, row);
+				response.parse(name + "_resp", ifs, column, row);
 			else
 				throw std::runtime_error("syntax error! missing request or response keyword!");
 		}
@@ -43,6 +44,9 @@ namespace virgo
 		if (!ofs.is_open())
 			return;
 
+		ofs << "#pragma once\n";
+		ofs << "#include <virgo.hpp>\n\n";
+
 		ofs << "struct " << name << "_protocol\n";
 		ofs << "{\n";
 		ofs << "private:\n";
@@ -56,6 +60,10 @@ namespace virgo
 		std::fstream src_ofs(src_file, std::ios::out);
 		if (!src_ofs.is_open())
 			return;
+
+		std::filesystem::path header_file_path(header_file);
+
+		src_ofs << "#include " << header_file_path.filename() << "\n\n";
 
 		request.generate(name, src_ofs);
 

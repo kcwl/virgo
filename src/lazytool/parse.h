@@ -10,10 +10,7 @@ namespace virgo
 		parse();
 
 	public:
-		bool read_file(const std::string& file_path);
-
-	private:
-		bool check_suffix(const std::string& file_path, const std::string& suffix);
+		bool read_file(const std::string& file_path, const std::string& output);
 
 	private:
 		std::vector<std::shared_ptr<keyword>> pros_;

@@ -39,7 +39,7 @@ namespace virgo
 					   });
 	}
 
-	bool parse::read_file(const std::string& file_name)
+	bool parse::read_file(const std::string& file_name, const std::string& output)
 	{
 		std::fstream ifs(file_name, std::ios::in | std::ios::binary);
 
@@ -70,9 +70,14 @@ namespace virgo
 			}
 		}
 
+		std::filesystem::path out_path(file_name);
+
+		std::filesystem::path final_output_path(output);
+		final_output_path.append(out_path.filename().string());
+
 		for (auto& p : pros_)
 		{
-			p->generate(file_name);
+			p->generate(final_output_path.string());
 		}
 
 		return true;

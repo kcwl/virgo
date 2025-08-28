@@ -102,12 +102,15 @@ namespace virgo
 		return false;
 	}
 
-	void header::generate(const std::string& name, std::fstream& ofs)
+	void header::generate(std::fstream& ofs)
 	{
-		ofs << "struct " << name << "::header\n";
+		ofs << "struct header\n";
 		ofs << "{\n";
 		for (auto& [type, value] : scopes_)
 		{
+			if (type.empty())
+				continue;
+
 			ofs << "  " << type << " " << value << ";\n";
 		}
 		ofs << "};\n";
@@ -145,19 +148,24 @@ namespace virgo
 		return false;
 	}
 
-	void body::generate(const std::string& name, std::fstream& ofs)
+	void body::generate(std::fstream& ofs)
 	{
-		ofs << "struct " << name << "::header\n";
+		ofs << "struct body\n";
 		ofs << "{\n";
 		for (auto& [type, value] : scopes_)
 		{
+			if (type.empty())
+				continue;
+
 			ofs << "  " << type << " " << value << ";\n";
 		}
 		ofs << "};\n";
 	}
 
-	bool proto::parse(std::fstream& ifs, std::size_t column, std::size_t row)
+	bool proto::parse(const std::string& parent, std::fstream& ifs, std::size_t column, std::size_t row)
 	{
+		name_ = parent;
+
 		bool result = false;
 
 		while (!ifs.eof())
@@ -200,13 +208,13 @@ namespace virgo
 		return true;
 	}
 
-	void proto::generate(std::string& name, std::fstream& ofs)
+	void proto::generate(const std::string& name, std::fstream& ofs)
 	{
-		ofs << "struct " << name << "\n";
+		ofs << "struct " << name << "::" << name_ << "\n";
 		ofs << "{\n";
 		rt_.generate(ofs);
-		hr_.generate(name, ofs);
-		by_.generate(name, ofs);
+		hr_.generate(ofs);
+		by_.generate(ofs);
 		ofs << "};\n";
 	}
 

@@ -37,7 +37,7 @@ namespace virgo
 	public:
 		bool parse(std::fstream& ifs, std::size_t column, std::size_t row);
 
-		void generate(const std::string& name, std::fstream& ofs);
+		void generate(std::fstream& ofs);
 
 	public:
 		std::vector<std::pair<std::string, std::string>> scopes_;
@@ -48,7 +48,7 @@ namespace virgo
 	public:
 		bool parse(std::fstream& ifs, std::size_t column, std::size_t row);
 
-		void generate(const std::string& name, std::fstream& ofs);
+		void generate(std::fstream& ofs);
 
 	public:
 		std::vector<std::pair<std::string, std::string>> scopes_;
@@ -60,9 +60,9 @@ namespace virgo
 		proto() = default;
 
 	public:
-		bool parse(std::fstream& ifs, std::size_t column, std::size_t row);
+		bool parse(const std::string& parent, std::fstream& ifs, std::size_t column, std::size_t row);
 
-		void generate(std::string& name, std::fstream& ofs);
+		void generate(const std::string& name, std::fstream& ofs);
 
 		std::string name() const;
 

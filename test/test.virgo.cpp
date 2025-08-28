@@ -1,25 +1,25 @@
-struct hello
+#include "test.virgo.h"
+
+struct hello::hello_req
 {
 constexpr static auto id = 1001;
-struct hello::header
-{
-  int id;
-   ;
-};
-struct hello::header
+struct header
 {
   int id;
 };
+struct body
+{
+  int id;
 };
-struct hello
+};
+struct hello::hello_resp
 {
 constexpr static auto id = 1001;
-struct hello::header
+struct header
 {
   int id;
-   ;
 };
-struct hello::header
+struct body
 {
   int id;
 };
