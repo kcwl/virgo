@@ -1,6 +1,16 @@
 #pragma once
 #include <virgo.hpp>
 
+enum class color
+{
+    red,
+    black,
+};
+struct person
+{
+    int age;
+    string name;
+};
 struct hello_protocol
 {
 private:

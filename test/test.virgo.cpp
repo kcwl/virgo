@@ -1,4 +1,4 @@
-#include "test.virgo.h"
+#include <test.virgo.h>
 
 struct hello::hello_req
 {

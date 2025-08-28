@@ -75,9 +75,23 @@ namespace virgo
 		std::filesystem::path final_output_path(output);
 		final_output_path.append(out_path.filename().string());
 
+		auto header_file = std::format("{}.h", final_output_path.string());
+		auto src_file = std::format("{}.cpp", final_output_path.string());
+
+		std::fstream ofs_h(header_file, std::ios::out);
+
+		std::fstream ofs_s(src_file, std::ios::out);
+		
+		if (!ofs_h.is_open() || !ofs_s.is_open())
+			return false;
+
+		ofs_h << "#pragma once\n";
+		ofs_h << "#include <virgo.hpp>\n\n";
+		ofs_s << "#include <" << out_path.filename().string() << ".h>\n\n";
+
 		for (auto& p : pros_)
 		{
-			p->generate(final_output_path.string());
+			p->generate(ofs_h, ofs_s);
 		}
 
 		return true;

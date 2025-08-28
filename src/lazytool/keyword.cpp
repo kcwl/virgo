@@ -9,7 +9,7 @@ namespace virgo
 		std::string keyword{};
 		read_value<'{'>(ifs, keyword, column, row);
 
-		name = keyword;
+		name_ = keyword;
 
 		seek<'{'>(ifs, column, row);
 
@@ -22,9 +22,9 @@ namespace virgo
 			seek<'{'>(ifs, column, row);
 
 			if (keyword == "request")
-				request.parse(name+"_req", ifs, column, row);
+				request_.parse(name_+"_req", ifs, column, row);
 			else if (keyword == "response")
-				response.parse(name + "_resp", ifs, column, row);
+				response_.parse(name_ + "_resp", ifs, column, row);
 			else
 				throw std::runtime_error("syntax error! missing request or response keyword!");
 		}
@@ -34,40 +34,21 @@ namespace virgo
 		seek<';'>(ifs, column, row);
 	}
 
-	void protocol::generate(const std::string& file_name)
+	void protocol::generate(std::fstream& ofs_h, std::fstream& ofs_s)
 	{
-		auto header_file = std::format("{}.h", file_name);
-		auto src_file = std::format("{}.cpp", file_name);
+		ofs_h << "struct " << name_ << "_protocol\n";
+		ofs_h << "{\n";
+		ofs_h << "private:\n";
+		ofs_h << "    struct " << request_.name() << ";\n";
+		ofs_h << "    struct " << response_.name() << ";\n";
+		ofs_h << "public:\n";
+		ofs_h << "    using request = virgo::" << request_.type() << "::request<" << request_.name() << ">;\n";
+		ofs_h << "    using response = virgo::" << response_.type() << "::request<" << request_.name() << ">;\n";
+		ofs_h << "};\n";
 
-		std::fstream ofs(header_file, std::ios::out);
+		request_.generate(name_, ofs_s);
 
-		if (!ofs.is_open())
-			return;
-
-		ofs << "#pragma once\n";
-		ofs << "#include <virgo.hpp>\n\n";
-
-		ofs << "struct " << name << "_protocol\n";
-		ofs << "{\n";
-		ofs << "private:\n";
-		ofs << "    struct " << request.name() << ";\n";
-		ofs << "    struct " << response.name() << ";\n";
-		ofs << "public:\n";
-		ofs << "    using request = virgo::" << request.type() << "::request<" << request.name() << ">;\n";
-		ofs << "    using response = virgo::" << response.type() << "::request<" << request.name() << ">;\n";
-		ofs << "};\n";
-
-		std::fstream src_ofs(src_file, std::ios::out);
-		if (!src_ofs.is_open())
-			return;
-
-		std::filesystem::path header_file_path(header_file);
-
-		src_ofs << "#include " << header_file_path.filename() << "\n\n";
-
-		request.generate(name, src_ofs);
-
-		response.generate(name, src_ofs);
+		response_.generate(name_, ofs_s);
 	}
 
 	void structure::parse(std::fstream& ifs, std::size_t column, std::size_t row)
@@ -96,15 +77,15 @@ namespace virgo
 		}
 	}
 
-	void structure::generate(std::fstream& ofs)
+	void structure::generate(std::fstream& ofs_h, std::fstream& /*ofs_s*/)
 	{
-		ofs << "struct " << name_ << "\n";
-		ofs << "{\n";
+		ofs_h << "struct " << name_ << "\n";
+		ofs_h << "{\n";
 		for (auto& [type, name] : scopes_)
 		{
-			ofs << "    " << type << " " << name << ";\n";
+			ofs_h << "    " << type << " " << name << ";\n";
 		}
-		ofs << "};\n";
+		ofs_h << "};\n";
 	}
 
 	void enum_struct::parse(std::fstream& ifs, std::size_t column, std::size_t row)
@@ -131,15 +112,15 @@ namespace virgo
 		}
 	}
 
-	void enum_struct::generate(std::fstream& ofs)
+	void enum_struct::generate(std::fstream& ofs_h, std::fstream& /*ofs_s*/)
 	{
-		ofs << "enum class " << name_ << "\n";
-		ofs << "{\n";
+		ofs_h << "enum class " << name_ << "\n";
+		ofs_h << "{\n";
 		for (auto& name : scopes_)
 		{
-			ofs << "    " << name << ",\n";
+			ofs_h << "    " << name << ",\n";
 		}
-		ofs << "};\n";
+		ofs_h << "};\n";
 	}
 
 	bool check_keyword_type(const std::string& name)
